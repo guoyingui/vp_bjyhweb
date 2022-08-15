@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>任务看板 - VP应用全生命周期管理系统</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
+    <link rel="shortcut icon" href="img/favicon.ico">
+    <link href="../../css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="../../css/font-awesome.min.css?v=4.7.0" rel="stylesheet">
+    <link href="../../css/animate.css" rel="stylesheet">
+    <link href="../../css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+    <link href="../../css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+    
+    <link href="../../css/plugins/zTree/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+	<link href="../../js/plugins/layui/css/layui.css" rel="stylesheet" media="all">
+    <!-- 自定义css -->
+    <link href="../../css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="../../css/common.css" rel="stylesheet">
+    <link href="../../css/vp.css" rel="stylesheet">
+    <script src="../../../vpcommon/config.js"></script>
+    <script src="../../../vpcommon/vputils.min.js"></script>
+
+    <!--[if lte IE 9]>
+        <script src="../../js/html5shiv.min.js"></script>
+        <script src="../../js/respond.js"></script>
+    <![endif]-->
+	<style>
+	</style>
+</head>
+
+<body class="wight-bg">
+    <div class="">
+		<div class="col-sm-12">
+			<div class="ibox">
+				<div class="ibox-title p-l-none">
+				    <div class="col-sm-2 sub-head" id="vpsearch">           
+			        </div>
+			        <div class="col-sm-6 subnav">
+			            <div data-toggle="buttons" class="btn-group" id="vpfilter">
+			                
+			            </div>
+			        </div>			
+					<div class="ibox-tools" id="vptoolbar">
+					
+					</div>
+				</div>
+				<div class="ibox-content p-n m-t-sm vp-overflow-x" style="display: block;">
+					 <div class="vp-overflow-x vpcontent">
+						<ul id="vptreetable" class="ztree" lay-filter="vpclick"></ul>
+						<script type="text/html" id="vpbar">
+							{{# if(UrlParm.parm("iid")==undefined){ }}
+							
+							{{#}else{ }}
+							    <a lay-event="up"><i class="fa fa-arrow-up" data-toggle="tooltip" title="上移"></i></a>
+								<a lay-event="down"><i class="fa fa-arrow-down" data-toggle="tooltip" title="下移"></i></a>
+							{{# }}}
+						</script>
+					</div>
+					<div class="layui-table-page" id="vppagebar">
+					  
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+  
+    <!-- 全局js -->
+    <script src="../../js/jquery-1.11.3.min.js"></script>
+	<!--[if IE 8]>
+	<script type="text/javascript" src="../../js/jquery-1.9.1.min.js"></script>
+	<![endif]-->
+    <script src="../../js/bootstrap.min.js?v=3.3.6"></script>
+    <!-- 自定义js -->
+    <script src="../../js/content.js?v=1.0.0"></script>
+    <!-- 日期控件 -->
+    <script src="../../js/plugins/datapicker/bootstrap-datepicker.js"></script>
+    <!-- layer弹出层 -->
+    <script src="../../js/plugins/layer/layer.min.js"></script>
+    <script src="../../js/plugins/layui/layui.js"></script>
+    <!-- 下拉选择列表 -->
+    <script src="../../js/plugins/chosen/chosen.jquery.js"></script>
+    <!-- zTree模拟树表 -->
+    <script src="../../js/plugins/zTree/jquery.ztree.all.min.js"></script>
+    <script src="../../js/vpsoft/TreeTable.js"></script>
+    <script src="../../js/vpsoft/common.js"></script>
+    <script src="../../js/vpsoft/form.js"></script>
+    <script src="../../js/plugins/iCheck/icheck.min.js"></script>
+<script src="../../js/vpsoft/getUrlParam.js"></script>
+</body>
+<script>
+var iid_ = "";
+var ientityid_ = UrlParm.parm("iid");
+var sysentityid_ = 1;
+if(ientityid_==undefined){
+	document.write('<style>	.ibox-tools li {margin-left: 10px;}</style>');
+	ientityid_ = 0;
+	sysentityid_ = 0;
+	var otool = ListTool({ el: 'vptoolbar', primary:'vpadd', data: [ 
+			{ id: 'vpdel', faclass: 'fa-times fa-fw text-muted', title: '删除' },
+			{ id: 'vpadd', faclass: 'fa-plus', title: '新建' }
+	] });
+	otool.parseEl();
+}else{
+	var otool = RelationTool({ el: 'vptoolbar', primary:'vpadd', data: [ 
+			{ id: 'vpadd', faclass: 'fa-plus', title: '新增' },
+			{ id: 'vpdel', faclass: 'fa-times fa-fw text-danger', title: '删除' }
+	] });
+	otool.parseEl();
+}
+
+var osearch = Search({ el: 'vpsearch', id: 'quicksearch' });
+osearch.parseEl();
+
+/* var ofilter = Filter({ el: 'vpfilter', data: [ 
+			{ value: '0', text: '启用' },
+			{ value: '1', text: '禁用' },
+			{ value: '', text: '全部' } 
+	] });
+ofilter.parseEl(); */
+
+var olisttable = ListTable({ el: 'vptreetable', vpurl: '/cfgrole/page', checkbox: true, toolbar: true, toolbarwidth: 60, toolbarevent: 'viewEdit',
+		param:  { ientityid: ientityid_ }
+	});
+olisttable.parseEl();
+
+
+$("#vptoolbar").find("div,a").click(function() {
+	if ($(this).attr("id") == 'vpadd') {
+		viewEdit();
+	}
+	else if ($(this).attr("id") == 'vpdel') {
+		var checkStatus = olisttable.getTable().checkStatus("vptable"), idlist = "";
+		for(var i=0;i<checkStatus.data.length;i++){
+			if (checkStatus.data[i].iroletypeid == 0 ) {
+				layer.msg('类别为负责人角色不允许删除', { icon: 2, time: 2000 });
+				return false;
+			}
+			else if (checkStatus.data[i].iroletypeid == 4) {
+				layer.msg('类别为创建人角色不允许删除', { icon: 2, time: 2000 });
+				return false;
+			}
+
+			if (i != 0) {			
+				idlist+=',';
+			}
+			idlist += checkStatus.data[i].iid;
+		}
+		
+		vpPostAjax('/cfgrole/delete', { ids: idlist }, "POST", function(rst) {
+			try {
+				reload();
+				$(".tooltip").remove();
+				var aa = $("#vptoolbar").find(".open")
+				$(aa).removeClass("open");
+			}
+			catch(exception) {
+				layer.msg(msg004 + callback, { icon: 2, time: 2000 });
+			}	
+		});
+	}
+});
+systemRole();
+function viewEdit(obj) {
+	console.log(obj);
+	var title = '新建';
+	if (obj) {
+		title = obj.data.sname;
+		iid_ = obj.data.iid;
+		ientityid_ = obj.data.ientityid;
+	}else{
+		iid_ = "";
+	}
+
+	if(obj != undefined && obj.event=='up'){
+		$('[lay-event="'+obj.event+'"] i').tooltip('hide');
+		var sparam = {iid:obj.data.iid,seqtype:'up'};
+		console.log(sparam);
+		vpPostAjax('/cfgrole/seq', sparam, 'POST', function(rst) {
+			   if(rst.success){
+					olisttable.parseEl();
+				}
+		   });
+	} else if(obj != undefined && obj.event=='down'){
+		$('[lay-event="'+obj.event+'"] i').tooltip('hide');
+		var sparam = {iid:obj.data.iid,seqtype:'down'};
+		console.log(sparam);
+		vpPostAjax('/cfgrole/seq', sparam, 'POST', function(rst) {
+			   if(rst.success){
+					olisttable.parseEl();
+				}
+		   });
+	}else{
+	var param = {};
+	if(window.sysaccess == 1){
+		param["btn"] = new Array(["保存"]);
+	}
+	//alert(iid_);
+	var openurl = 'entity_roleform.html?roleid='+iid_+'&sysentityid='+sysentityid_+'&entityid='+ientityid_;
+	if(sysentityid_==0){
+		openWindowfirst(openurl, title, param, function(index, layero, ibtn) {
+			try
+			{
+				$(layero).find("iframe")[0].contentWindow.saveForm(function(data) {
+					reload();
+					layer.close(index);
+				});
+			}
+			catch (e)
+			{
+				layer.msg(e, { icon: 2, time: 2000 });
+			}
+		});
+	}else{
+		parent.openWindowfirst(openurl, title, param, function(index, layero, ibtn) {
+			try
+			{
+				$(layero).find("iframe")[0].contentWindow.saveForm(function(data) {
+					reload();
+					parent.layer.close(index);
+				});
+			}
+			catch (e)
+			{
+				parent.layer.msg(e, { icon: 2, time: 2000 });
+			}
+		});
+	}
+  }
+}
+
+function formReload(obj) {
+	console.log(obj);
+}
+function systemRole () {
+	let sparam = {saccesskey:"system"}
+	vpAjax('/api/pur/point', sparam, 'GET', function(rst) {
+		window.sysaccess = rst.system//全局存在系统操作权限码
+		if(rst.system != 1){
+			$("#vptoolbar").remove()
+		}
+	});
+}
+</script>
+</html>

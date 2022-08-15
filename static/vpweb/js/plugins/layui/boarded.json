@@ -1,0 +1,18 @@
+{
+	"code": 0,
+	"msg": "",
+	"count": 1000,
+	"data": [{
+		"class": "<input type='checkbox' name='board' lay-skin='primary' lay-filter='board' title='需求'>",
+		"board": "<input type='checkbox' name='board' lay-skin='primary' title='需求看板'><input type='checkbox' name='board' lay-skin='primary' title='需求矩阵'>"
+	},{
+		"class": "<input type='checkbox' name='project' lay-skin='primary' lay-filter='layTableAllChoose2' title='项目'>",
+		"board": "<input type='checkbox' name='project' lay-skin='primary' title='项目周报'>"
+	},  {
+		"class": "<input type='checkbox' name='test' lay-skin='primary' lay-filter='layTableAllChoose3' title='测试'>",
+		"board": "<input type='checkbox' name='test' lay-skin='primary' title='测试案例'>"
+	}, {
+		"class": "<input type='checkbox' name='product' lay-skin='primary' lay-filter='layTableAllChoose4' title='产品'>",
+		"board": "<input type='checkbox' name='product' lay-skin='primary' title='产品案例'>"
+	}]
+}

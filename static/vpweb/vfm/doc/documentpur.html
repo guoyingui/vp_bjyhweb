@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="author" content="vpsoft">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>登录</title>
+    <link href="../../css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="../../css/font-awesome.min.css?v=4.7.0" rel="stylesheet">
+    <link href="../../css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+    <link href="../../css/animate.css" rel="stylesheet">
+    <link href="../../css/style.css" rel="stylesheet">
+    <link href="../../css/vp.css" rel="stylesheet">
+    <link href="../../css/common.css" rel="stylesheet">
+    <link href="../../css/plugins/zTree/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+    
+    <link href="../../css/plugins/zTree/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+	<link href="../../js/plugins/layui/css/layui.css" rel="stylesheet" media="all">
+	<!-- 自定义css -->
+    <link href="../../css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="../../css/common.css" rel="stylesheet">
+    <link href="../../css/vp.css" rel="stylesheet">
+    <script src="../../../vpcommon/config.js"></script>
+    <script src="../../../vpcommon/vputils.min.js"></script>
+	
+    <!--[if lte IE 9]>
+        <script src="../../js/html5shiv.min.js"></script>
+        <script src="../../js/respond.js"></script>
+    <![endif]-->
+</head>
+<style>
+	.fa-fw {
+		font-size: 24px;
+	}
+	.text-fail {
+		color: #bbb;
+	}
+	.vpbutton {
+		position: fixed; z-index: 100; border-top: 1px solid #ddd; background: #fff;  margin-left: -20px; height: 50px; line-height: 50px;
+		text-align: center;
+	}
+	.btn {
+		margin-top: 5px; 
+	}
+	.vptree, .vpcontent {
+		overflow: auto; 
+	    border-bottom: 0;
+		border: 1px solid #ccc;
+		margin: 10px 0;
+		padding-bottom: 5px;
+	}
+</style>
+
+<body class="white-bg">
+	<div class="ibox-title p-l-none">					
+		<div class="ibox-tools" id="vptoolbar">
+		
+		</div>
+	</div>
+    <div class="clearfix animated white-bg fadeInRight vp-pr" >
+        <div class="vp-overflow-x " id="listdiv">
+            <ul id="vptreetable" class="ztree" lay-filter="vpclick"></ul>
+            <script type="text/html" id="vpbar">
+				<a lay-event="download"><i class="fa fa-download text-info" data-toggle="tooltip" title="下载"></i></a>
+				<a lay-event="view"><i class="fa fa-eye text-info" data-toggle="tooltip" title="预览"></i></a>
+			</script>
+        </div>
+		<div class="layui-table-page" id="vppagebar" >
+		  
+		</div>
+	</div> 
+</body>
+<!-- 全局js -->
+    <script src="../../js/jquery-1.11.3.min.js"></script>
+	<!--[if IE 8]>
+	<script type="text/javascript" src="../../js/jquery-1.9.1.min.js"></script>
+	<![endif]-->
+    <script src="../../js/bootstrap.min.js?v=3.3.6"></script>
+    <!-- 自定义js -->
+    <script src="../../js/content.js?v=1.0.0"></script>
+    <!-- 日期控件 -->
+    <script src="../../js/plugins/datapicker/bootstrap-datepicker.js"></script>
+    <!-- layer弹出层 -->
+    <script src="../../js/plugins/layer/layer.min.js"></script>
+    <script src="../../js/plugins/layui/layui.js"></script>
+    <!-- 下拉选择列表 -->
+    <script src="../../js/plugins/chosen/chosen.jquery.js"></script>
+    <!-- zTree模拟树表 -->
+    <script src="../../js/plugins/zTree/jquery.ztree.all.min.js"></script>
+    <script src="../../js/vpsoft/TreeTable.js"></script>
+    <script src="../../js/vpsoft/common.js"></script>
+    <script src="../../js/vpsoft/form.js"></script>
+    <script src="../../js/plugins/iCheck/icheck.min.js"></script>
+    <!--选择用户-->
+	<script src="../../js/vpsoft/chosenEntity.js?v=1.0.0" charset="utf-8"></script>
+    <script>
+    	var documentid = $('#vpeditform', parent.document).attr('documentid');
+    	var ilibraryid = $('#vpeditform', parent.document).attr('ilibraryid');
+    	var ifolderid = $('#ifolderid', parent.document).val();
+    	var entityrole = true;
+    	if(parent.window.appdoclist){ //
+    		documentid = getParameter("documentid");
+    		ilibraryid = getParameter("ilibraryid");
+    		ifolderid = getParameter("ifolderid");
+    		entityrole = getParameter("entityrole");
+    	}
+    	var otool;
+    	if(entityrole==true || entityrole=='true'){
+    		otool = RelationTool({ el: 'vptoolbar', primary:'vpadd', data: [ 
+    			{ id: 'vpadd', faclass: 'fa-plus', title: '添加访客' },
+    			{ id: 'vpdel', faclass: 'fa-times text-danger', title: '删除' }
+    		] });
+    		otool.parseEl();
+    	}
+		
+		var olisttable = ListTable({ el: 'vptreetable', vpurl: '/document/page', checkbox: true, toolbar: false, toolbarevent: 'viewEdit',
+			param:  { documentid: documentid ,pageType: 'documentpur'}
+		});
+		olisttable.parseEl();
+		
+		$("#vptoolbar").find("div,a").click(function() {
+			if ($(this).attr("id") == 'vpadd') {
+				openAuthWindow({ids:documentid,names:''});
+			}
+			else if($(this).attr("id") == 'vpdel'){
+				var checkStatus = olisttable.getTable().checkStatus("vptable");
+				var idlist = "";
+				var names = "";
+				if(checkStatus.data.length>0){
+					//console.log('选中：'+idlist);
+					if ($(this).attr("id") == 'vpdel') {//删除
+						layer.confirm("确认要删除吗，删除后不能恢复", { title: "删除确认" }, function (index) { 
+							deleteDocPur({ ids: documentid,list: checkStatus.data });
+						});
+					}
+				}else{
+					layer.msg("请至少选择一条数据！", { icon: 2, time: 2000 });
+				}
+			} 
+		});
+		
+		function openAuthWindow(objparam){
+			if(parent.window.appdoclist){ //
+				parent.window.appdoclist.authDoc(objparam.ids, objparam.names, true, entityrole);
+	    	} else {
+	    		var openurl = 'authdocument.html';
+				parent.layer.open({
+			        type: 2, 
+			        maxmin: true,
+					title: '文档授权',
+			        btn: ['确定', '取消'],
+			        btnAlign:'c',
+			        area: ['80%', '80%'],
+			        resize: false,
+			        shift: 2,
+			        shade: 0.3,
+			        content: [openurl], //iframe的url，no代表不显示滚动条
+			        success: function(layero, index){
+		        		$(layero.find('.layui-layer-btn')).show();
+						layero.find('.layui-layer-btn').css('text-align', 'center');
+						reload();
+			        },
+			        yes: function(layerindex, layero){
+			        	var frame = $(layero).find("iframe")[0].contentWindow.document;
+			        	var authObj = new Object();
+						authObj.ifolderid = ifolderid;
+						authObj.ilibraryid = ilibraryid;
+						authObj.ids = objparam.ids;
+						var list = [];
+						var items = $(frame).find('#valueList').find('.form-item');
+						if(items){
+							var index = 0;
+							var obj ;
+							var issubmit = true;
+							$.each(items, function(i, item) {
+								obj = new Object();
+								index = $(this).attr('index');
+								obj.iid = $(this).attr('hidid');
+								obj.objname = $(this).attr('objname');
+								obj.datatype = $(this).attr('datatype');
+								var namestr = 'roletype'+index;
+								obj.roletype = $(frame).find('input[name="'+namestr+'"]:checked').val();
+								if(obj.roletype==undefined){
+									parent.layer.msg('第'+(parseInt(index)+1)+'行数据请选择授予权限的类型！', { icon: 2, time: 2000 });
+									issubmit = false;
+									return false;
+								}
+								list.push(obj);
+							});
+							if(!issubmit){
+								return;
+							}
+						}
+						
+						if(list.length<=0){
+							parent.layer.msg("请添加授权信息", { icon: 2, time: 2000 });
+							return;
+						}
+						authObj.list = list;
+						console.log(authObj);
+						vpPostAjax('/document/auth', authObj, "POST", function(rst) {
+							try {
+								if(rst.success){
+									parent.layer.close(layerindex);	
+									reload();
+								}
+							}
+							catch(exception) {
+								parent.layer.msg("刷新列表失败！", { icon: 2, time: 2000 });
+							}	
+						});
+						
+			        },
+			        end: function(){ //此处用于演示
+			            
+			        }
+			    });
+	    	}
+		}
+		
+		function deleteDocPur(obj){
+			vpPostAjax('/document/delete', { ids: obj.ids,delType:'documentpur',list: obj.list }, "POST", function(rst) {
+				try {
+					if(rst.success){
+						layer.msg("删除成功！", { icon: 1, time: 2000 });
+						reload();
+						$(".tooltip.fade.top.in").remove();
+					}
+				}
+				catch(exception) {
+					layer.msg("刷新列表失败！", { icon: 2, time: 2000 });
+				}	
+			});
+		}
+		
+		function viewEdit(obj) {
+			console.log(obj);
+		}
+    </script>
+</html>

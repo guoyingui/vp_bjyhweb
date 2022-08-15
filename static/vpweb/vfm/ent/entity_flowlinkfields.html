@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>任务看板 - VP应用全生命周期管理系统</title>
+<meta name="keywords" content="">
+<meta name="description" content="">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Cache-control" content="no-cache">
+<meta http-equiv="Cache" content="no-cache">
+<link rel="shortcut icon" href="img/favicon.ico">
+<link href="../../css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+<link href="../../css/font-awesome.min.css?v=4.7.0" rel="stylesheet">
+<link href="../../css/animate.css" rel="stylesheet">
+<link href="../../css/plugins/datapicker/datepicker3.css"
+	rel="stylesheet">
+<link
+	href="../../css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css"
+	rel="stylesheet">
+<!-- zTree树表 -->
+<link href="../../css/plugins/zTree/zTreeStyle/zTreeStyle.css"
+	rel="stylesheet">
+<!-- layUI表格 -->
+<link rel="stylesheet" href="../../js/plugins/layui/css/layui.css"
+	media="all">
+<link href="../../css/style.css?v=4.1.0" rel="stylesheet">
+<link href="../../css/common.css" rel="stylesheet">
+<link href="../../css/vp.css" rel="stylesheet">
+    <script src="../../../vpcommon/config.js"></script>
+    <script src="../../../vpcommon/vputils.min.js"></script>
+<!--[if lte IE 9]>
+        <script src="../../js/html5shiv.min.js"></script>
+        <script src="../../js/respond.js"></script>
+    <![endif]-->
+<!-- 全局js -->
+<script src="../../js/jquery-1.11.3.min.js"></script>
+<!--[if IE 8]>
+	<script type="text/javascript" src="../../js/jquery-1.9.1.min.js"></script>
+	<![endif]-->
+<script src="../../js/bootstrap.min.js?v=3.3.6"></script>
+<!-- 自定义js -->
+<script src="../../js/content.js?v=1.0.0"></script>
+<!-- 日期控件 -->
+<script src="../../js/plugins/datapicker/bootstrap-datepicker.js"></script>
+<!-- layer弹出层 -->
+<script src="../../js/plugins/layer/layer.min.js"></script>
+<!-- 下拉选择列表 -->
+<script src="../../js/plugins/chosen/chosen.jquery.js"></script>
+<!-- layui表格 -->
+<script src="../../js/plugins/layui/layui.js" charset="utf-8"></script>
+<script src="../../js/vpsoft/common.js"></script>
+<script src="../../js/vpsoft/form.js"></script>
+<script src="../../js/vpsoft/getUrlParam.js"></script>
+<script src="../../js/plugins/iCheck/icheck.min.js"></script>
+</head>
+
+<body>
+		<div class="sub-navigator clearfix">
+				<div class="col-sm-2 sub-head" id="vpsearch">           
+				</div>
+				<div class="col-sm-10 subnav">
+					<div data-toggle="buttons" class="btn-group" id="vpfilter">
+						
+					</div>
+				</div>
+			</div>
+	<div class="padding-10" style="padding-top:45px; ">
+			<div class="col-sm-12">
+			<div class="ibox">
+				<div class="ibox-content p-n m-t-sm vp-overflow-x" style="display: block;">
+					 <div class="vp-overflow-x vpcontent">
+						<ul id="vptreetable" class="ztree" lay-filter="vpclick"></ul>
+						<script type="text/html" id="vpbar">
+							{{# if(d.slinkcode==""){ }}
+							<a lay-event="linkfield"><i class="fa fa-edit fa-fw text-success" data-toggle="tooltip" title="关联"></i></a>
+							{{#}else{ }}
+							<a lay-event="linkfield"><i class="fa fa-edit fa-fw text-success" data-toggle="tooltip" title="关联"></i></a>
+							<a lay-event="btnunpub"><i class="fa fa-times fa-fw text-danger" data-toggle="tooltip" title="删除"></i></a>
+							{{# }}}
+						</script>
+					</div>
+					<div class="layui-table-page" id="vppagebar">
+					  
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+<script>
+var globalSequencekey=0;
+var entityid=UrlParm.parm("ientityid");
+
+var osearch = Search({ el: 'vpsearch', id: 'quicksearch' });
+osearch.parseEl();
+
+if (decodeURI(getParameter("quicksearch")) != 'null') {
+	$("#quicksearch").val(decodeURI(getParameter("quicksearch")));
+}
+var olisttable = ListTable({ el:'vptreetable',vpurl:'/cfgentview/getflowfield',layfilter:'vpclick',checkbox: true,multiple:true,toolbar: true, toolbarwidth: 60, toolbarevent: 'viewEdit',pager: false,opt:false,param: { ientityid: entityid,linkientityid:UrlParm.parm("linkientityid"), quickvalue: $("#quicksearch").val()  } });
+
+
+olisttable.parseEl();
+
+function viewEdit(obj) {
+var iid=0;
+var title = '新建';
+if (obj) {	
+	title = obj.data.sname;
+	iid= obj.data.iid;
+	var linkientityid= UrlParm.parm("linkientityid");
+	var idatatype=obj.data.idatatype;
+	var scode=obj.data.scode;
+	if(obj.event=='btnunpub'){
+		var param = {iid:iid,linkientityid:linkientityid,ientityid:entityid,scode:scode};
+		 vpPostAjax('/cfgentview/deleteflowlinkfields', param, 'POST', function(rst) {
+			 parent.layer.msg('删除成功！', { icon: 1, time: 2000 });
+			olisttable.parseEl();
+
+		   });
+	}else if(obj.event=='linkfield'){
+	
+		openflowfield(iid,linkientityid,idatatype,scode);
+	}else{
+		//openview(iid,title,UrlParm.parm("iviewtype"));
+	}
+}else{
+	//openview(iid,title,UrlParm.parm("iviewtype"));
+}
+}
+
+ function openflowfield(iid,linkientityid,idatatype,scode){
+	var param = {};
+	if ($('#vpeditform', parent.document).attr("accesslevel") == 1)	{
+		param["btn"] = new Array("确定");
+	}
+
+	parent.openWindow('../ent/entity_flowlinkentityfield.html?iid='+iid+'&linkientityid='+linkientityid
+	+'&idatatype='+idatatype+'&ientityid='+entityid+'&scode='+scode, '属性映射', param, function(layerindex,layero,index) {
+		//var resData = $(layero).find("iframe")[0].contentWindow.returnData();
+		if(index==1){
+			$(layero).find("iframe")[0].contentWindow.addFields();
+			    parent.layer.close(layerindex);
+				olisttable.parseEl();
+		}else if(index==2){
+			//$(layero).find("iframe")[0].contentWindow.delFormInfo();
+			
+		}
+	});
+}
+</script>
+</html>

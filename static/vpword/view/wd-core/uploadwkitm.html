@@ -1,0 +1,72 @@
+<script type="text/javascript" src="static/plugins/bootstrap-validator/0.5.3/bootstrapValidator.js"></script>
+<script type="text/javascript" src="static/plugins/bootstrap-validator/0.5.3/bootstrapValidator.patch.js"></script>
+<script type="text/javascript" src="static/plugins/bootstrap-validator/i18n/zh_CN.js"></script>
+<script type="text/javascript" src="static/plugins/jquery-form/3.51.0/jquery.form.js"></script>
+<script type="text/javascript" src="static/plugins/bootstrap-filestyle/bootstrap-filestyle.min.js"></script>
+<link rel="stylesheet" href="static/plugins/bootstrap-validator/0.5.3/bootstrapValidator.css" />
+<link rel="stylesheet" href="static/plugins/bootstrap-filestyle/bootstrap-filestyle.css" />
+<form id="wordContentFileForm" method="post" role="form" class="form-horizontal" enctype="multipart/form-data" action="">
+    <div class="form-group">
+        <input type="hidden" name="docWkItmId" id="docWkItmId" value=''>
+        <label class="col-sm-3 control-label"><span style="color: red">*</span>选择文档：</label>
+        <div class="col-sm-8">
+            <input class="form-control  ui-file"  type="file" id="docFile" name="docFile"  data-bv-notempty="true"
+                    data-bv-notempty-message="需求文件不能为空"
+                    data-bv-file="true" data-bv-file-message="需求文件格式不正确(*.doc,*.docx)"
+                    data-bv-file-extension="doc,docx" accept=".docx,.doc"/>
+        </div>
+    </div>
+</form>
+<script>
+    $(function(){
+        vpUtils.file('#docFile', {
+            placeholder : '请选择文档（doc,docx）'
+        });
+        vpUtils.formvalidation($("#wordContentFileForm"),{
+            submitHandler: function(form, _bootstrapValidator, e) {                
+                vpUtils.formSubmit(form, {
+                    url : config.uploadWkItmUrl(),
+                    mask : $(".modal-content"),
+                    maskinfo: '正在上传请稍等..',
+                    method:'POST'
+                }, function (json) {
+                    wordContentFileForm.dialogClose();
+                    var VE = window.vrmEditor;
+                    VE.LOCK.removeDocOutlineTag(wordContentFileForm.dialog.$outline.data('outlineid'),"_selflock");
+                    show_message('上传成功', 'success');
+                }, function () {
+                    _bootstrapValidator.disableSubmitButtons(false);
+                })
+            },
+            excluded: [':disabled'],
+            fields : {
+                wordFile : {
+                    message: '上传文件验证失败',
+                    validators: {
+                        notEmpty: {
+                            message: '上传文件不能为空'
+                        },
+                        file: {
+                            extension: 'doc,docx',
+                            message: '请选择正确的文件格式(doc、docx)'
+                        }
+                    }
+                }
+            }
+        });
+    })
+
+    var wordContentFileForm={
+        dialog:null,
+        loadData:function(dialog,data){
+            $("#docWkItmId").val(data.docWkItmId);
+        },
+        save : function (dialog) {
+            this.dialog = dialog;
+            $('#wordContentFileForm').submit();
+        },
+        dialogClose : function () {
+            wordContentFileForm.dialog.close();
+        }
+    }
+</script>

@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>任务看板 - VP应用全生命周期管理系统</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
+    <link rel="shortcut icon" href="img/favicon.ico">
+    <link href="../../css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="../../css/font-awesome.min.css?v=4.7.0" rel="stylesheet">
+    <link href="../../css/animate.css" rel="stylesheet">
+    <link href="../../css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+    <link href="../../css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+    <link href="../../css/plugins/zTree/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+	<link href="../../js/plugins/layui/css/layui.css" rel="stylesheet" media="all">
+
+    <!-- 自定义css -->
+    <link href="../../css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="../../css/common.css" rel="stylesheet">
+    <link href="../../css/vp.css" rel="stylesheet">
+    <script src="../../../vpcommon/config.js"></script>
+    <script src="../../../vpcommon/vputils.min.js"></script>
+
+    <!--[if lte IE 9]>
+        <script src="../../js/html5shiv.min.js"></script>
+        <script src="../../js/respond.js"></script>
+    <![endif]-->
+	<style>
+
+	</style>
+</head>
+
+<style>
+.formgroup3 {
+    height: 21px;
+    cursor: pointer;
+    border-bottom-style: none;
+}
+ ::-webkit-scrollbar {display:none}
+ 
+ .inner-container::-webkit-scrollbar {
+    display: none;
+}
+</style>
+<body >
+	<div class="padding-10 space-10" style="top: 0px;">
+		<div id="form" class="ibox"></div>
+    </div>
+    
+    <div id="fwb_temp" style="display:none;">
+    
+    </div> 
+</body>
+    <!-- 全局js -->
+    <script src="../../js/jquery-1.11.3.min.js"></script>
+	<!--[if IE 8]>
+	<script type="text/javascript" src="../../js/jquery-1.9.1.min.js"></script>
+	<![endif]-->
+    <script src="../../js/bootstrap.min.js?v=3.3.6"></script>
+    <!-- 自定义js -->
+    <script src="../../js/content.js?v=1.0.0"></script>
+    <!-- 日期控件 -->
+    <script src="../../js/plugins/datapicker/bootstrap-datepicker.js"></script>
+    <!-- layer弹出层 -->
+    <script src="../../js/plugins/layer/layer.min.js"></script>
+    <script src="../../js/plugins/layui/layui.js"></script>
+    <!-- 下拉选择列表 -->
+    <script src="../../js/plugins/chosen/chosen.jquery.js"></script>
+    <!-- zTree模拟树表 -->
+    <script src="../../js/plugins/zTree/jquery.ztree.all.min.js"></script>
+    <script src="../../js/vpsoft/TreeTable.js"></script>
+    <script src="../../js/vpsoft/common.js"></script>
+    <script src="../../js/vpsoft/util.js"></script>
+    <script src="../../js/vpsoft/newform.js"></script>
+    <script src="../../js/plugins/iCheck/icheck.min.js"></script>
+    <script src="../../js/vpsoft/getUrlParam.js"></script>    
+
+    <script>
+	$(document).ready(function () {
+		$('.i-checks').iCheck({
+			checkboxClass: 'text-primary fa fa-fw fa-square-o'
+		});
+		var accesslevel = -1;
+		
+		var iid=$('#vpeditform', parent.document).attr("iid");
+		var entityid=$('#entityid', parent.document).attr("entityid");
+		if(UrlParm.parm("iflowentityid")){
+			entityid=UrlParm.parm("iflowentityid");
+			iid=UrlParm.parm("iid");
+		}
+		
+		var sparam= { entityid: entityid };
+		
+		if(iid!=0){
+			sparam= { entityid: entityid,iid:iid };
+		}
+		if(UrlParm.parm("iflowentityid")){
+			sparam["staskid"]=UrlParm.parm("staskid");
+			sparam["piid"]=UrlParm.parm("piid");
+			sparam["stepkey"]=UrlParm.parm("stepkey");
+			
+		}
+		
+		
+		
+		var allFrmFile = [];//附件		
+		
+		vpAjax('/vfrm/entity/getform', sparam, "GET", function(rst) {
+			console.log(rst);
+			var timedateList=new Array();
+			var radioList=new Array();
+			var checkboxList=new Array();
+			var textaraList=new Array();
+			if(rst.form.groups.length>0){
+				$.each(rst.form.groups, function(i, item) {
+					var groups=rst.form.groups[i];
+					
+					
+					var group_label=groups.group_label;
+					var group_type=groups.group_type;
+					
+					var section_ = new Form.Group({title:group_label,viewable:'1',wrapable:'1',defaultWrap:'1'});
+					var table_ = new Form.Table({defaultWrap:'1'});
+					
+					$.each(groups.fields, function(j, item1) {
+
+						var fields=rst.form.groups[i].fields[j];
+						var ientityid=fields.ientityid;
+						var field_name=fields.field_name;
+						var field_label=fields.field_label;
+						var iconstraint=fields.iconstraint;
+						var readonly=fields.readonly;
+						var widget=fields.widget;
+						var all_line=fields.all_line;
+						var itype=fields.itype;
+						var inorule=fields.inorule;
+						var widget_type=fields.widget_type
+						var propertyType=fields.propertyType;
+						var all_line=fields.all_line;
+						
+						
+						var default_label="";
+						if(fields.widget.default_label!=undefined){
+							default_label=fields.widget.default_label;
+						}
+						if(default_label=='undefined'){
+							default_label="";
+						}
+						
+						var default_value="";
+						if(fields.widget.default_value!=undefined){
+							default_value=fields.widget.default_value;
+						}
+						if(default_value=='undefined'){
+							default_value="";
+						}
+						
+						//公共属性
+						var cstCfg = '"id":"{#id}","value":"{#value}","mustInput":"{#inputType}","onvc":"{#onValueChange}","propertyText":"{#propertyText}","propertyType":"{#propertyType}","systype":"{#systype}"';
+						
+						var inputType=0;
+						if(iconstraint==0){
+							inputType=2;
+						}else if(iconstraint==2){
+							inputType=0;
+						}else{
+							inputType=1;
+						}
+						
+						if(field_name=='istatusid' || field_name=='iclassid' ){
+							propertyType=7;
+						}
+						
+					
+						cstCfg=cstCfg.replace("{#id}", field_name)
+						if(3==propertyType){
+							cstCfg=cstCfg.replace("{#value}", "")
+						}else{
+							cstCfg=cstCfg.replace("{#value}", default_label)
+						}
+						
+						
+						cstCfg =cstCfg.replace("{#onValueChange}", "");
+						cstCfg =cstCfg.replace("{#systype}", itype);
+						cstCfg =cstCfg.replace("{#propertyText}", field_label);
+						cstCfg =cstCfg.replace("{#propertyType}", propertyType);
+						cstCfg =cstCfg.replace("{#inputType}", inputType);
+						//console.log("cstCfg="+cstCfg);
+						switch (propertyType) {
+						
+						case 1:  //文本
+							var obj2=JSON.parse("{"+cstCfg+"}");
+							table_.addRow({lable:field_label,formItme: new Form.Input(obj2),mustInput:inputType,col:all_line});
+							 break;
+
+						case 2: //多行文本
+							var textaraeCfg = '"rows":"{#rows}",' + cstCfg;//多行文本
+							textaraeCfg = textaraeCfg.replace("{#rows}", String.valueOf(5));
+							var obj2=JSON.parse("{"+textaraeCfg+"}");
+							
+							table_.addRow({lable:field_label,formItme: new Form.Textarae(obj2),mustInput:inputType,col:all_line});
+							 break;
+						case 3: //富文本
+							var textaraeCfg = '"rows":"{#rows}",'+ cstCfg;//多行文本
+							textaraeCfg = textaraeCfg.replace("{#rows}", String.valueOf(5));
+							var obj2=JSON.parse("{"+textaraeCfg+"}");
+							table_.addRow({lable:field_label,formItme: new Form.RichText(obj2),mustInput:inputType,col:all_line});
+							
+							var checks= { id: field_name,value:default_value};
+							radioList.push(checks);
+							var _richTextdiv =	'<div id="'+field_name+'_temp" style="display:none;">'+default_value+'</div>';
+							document.getElementById('fwb_temp').innerHTML=document.getElementById('fwb_temp').innerHTML+_richTextdiv;
+							 break;							 
+						case 4: //金额
+							var inputNumberCfg = '"number":"true",' + cstCfg;
+							var obj2=JSON.parse("{"+inputNumberCfg+"}");
+							table_.addRow({lable:field_label,formItme: new Form.MoneyInput(obj2),mustInput:inputType,col:all_line});
+							 break;
+						case 5: //数字
+							var inputNumberCfg = '"number":"true",' + cstCfg;
+							console.log(inputNumberCfg);
+							var obj2=JSON.parse("{"+inputNumberCfg+"}");
+							table_.addRow({lable:field_label,formItme: new Form.Input(obj2),mustInput:inputType,col:all_line});
+							 break;
+						case 6: //日期
+							timedateList.push(field_name);
+							var obj2=JSON.parse("{"+cstCfg+"}");
+							table_.addRow({lable:field_label,formItme: new Form.DateInput(obj2),mustInput:inputType,col:all_line});
+							 break;
+						case 7: //下拉单选
+							var selectCfg = '"option":[{#option}],' + cstCfg;//单选列表
+						
+							var itemValueCfg = '{"text":"{#text}","value":"{#value}","selected":"{#selected}"}';
+							var itemCfgList=new Array();
+							if(fields.widget.load_template!=undefined){
+								$.each(fields.widget.load_template, function(k, item2) {
+									
+									var selected = "false";
+									itemCfgList[k]=itemValueCfg.replace("{#text}", item2.label).replace("{#value}", item2.value).replace("{#selected}", selected);
+									
+								});
+							} 
+							selectCfg=selectCfg.replace("{#option}",itemCfgList);
+
+							var obj2=JSON.parse("{"+selectCfg+"}");
+
+							table_.addRow({lable:field_label,formItme: new Form.Select(obj2),mustInput:inputType,col:all_line});
+							 break;
+						case 8: //下拉多选
+							var checkboxCfg = '"valueList":{#valueList},' + cstCfg;//复选框
+						
+							var itemValueCfg = '{"text":"{#text}","value":"{#value}","checked":"{#checked}"}';
+							var itemCfgList=new Array();
+							if(fields.widget.load_template!=undefined){
+								$.each(fields.widget.load_template, function(k, item2) {
+
+									var selected = "false";
+									itemCfgList[k]=itemValueCfg.replace("{#text}", item2.label).replace("{#value}", item2.value).replace("{#selected}", selected);
+									
+								});
+							} 
+							
+							checkboxCfg=checkboxCfg.replace("{#valueList}",itemCfgList);
+
+							var obj2=JSON.parse("{"+checkboxCfg+"}");
+							
+							
+							table_.addRow({lable:field_label,formItme: new Form.Checkbox(obj2),mustInput:inputType,col:all_line});
+							 break;
+						case 9: //单选框
+							var checkboxCfg = '"valueList":[{#valueList}],' + cstCfg;//单选框
+							
+							var itemValueCfg = '{"text":"{#text}","value":"{#value}","checked":"{#checked}"}';
+							var itemCfgList=new Array();
+							if(fields.widget.load_template!=undefined){
+								$.each(fields.widget.load_template, function(k, item2) {
+
+									var selected = "false";
+									if((","+default_value+",").indexOf(item2.value)>=0){
+										selected="true";
+										var checks= { id: field_name,value:item2.value};
+										radioList.push(checks);
+									}
+									itemCfgList[k]=itemValueCfg.replace("{#text}", item2.label).replace("{#value}", item2.value).replace("{#checked}", selected);
+									
+								});
+							} 
+							
+							checkboxCfg=checkboxCfg.replace("{#valueList}",itemCfgList);
+							
+							var obj2=JSON.parse("{"+checkboxCfg+"}");
+							
+							
+							table_.addRow({lable:field_label,formItme: new Form.Radiobox(obj2),mustInput:inputType,col:all_line});
+							 break;
+						case 10: //复选框
+							var checkboxCfg = '"valueList":[{#valueList}],' + cstCfg;//复选框
+							
+							var itemValueCfg = '{"text":"{#text}","value":"{#value}","checked":"{#checked}"}';
+							var itemCfgList=new Array();
+							if(fields.widget.load_template!=undefined){
+								$.each(fields.widget.load_template, function(k, item2) {
+
+									var selected = "false";
+									if((","+default_value+",").indexOf(item2.value)>=0){
+										selected="true";
+										var checks= { id: field_name,value:item2.value};
+										checkboxList.push(checks);
+									}
+									itemCfgList[k]=itemValueCfg.replace("{#text}", item2.label).replace("{#value}", item2.value).replace("{#checked}", selected);
+									
+								});
+							} 
+							
+							checkboxCfg=checkboxCfg.replace("{#valueList}",itemCfgList);
+							console.log(checkboxCfg);
+							var obj2=JSON.parse("{"+checkboxCfg+"}");
+							
+							
+							table_.addRow({lable:field_label,formItme: new Form.Checkbox(obj2),mustInput:inputType,col:all_line});
+							 break;
+						case 12: //多附件
+							var fileCfg = '"valueList":[{#valueList}],' + cstCfg;//复选框
+							var itemValueCfg = '{"text":"{#text}","value":"{#value}"';
+							
+							
+							
+							var itemCfgList=new Array();
+							var fieldids=new Array();
+							
+							if(fields.widget.load_template!=undefined){
+								$.each(fields.widget.load_template, function(k, item2) {
+
+									if((","+default_value+",").indexOf(item2.value)>=0){
+
+										var checks= { id: field_name,value:item2.value};
+										checkboxList.push(checks);
+									}
+									itemCfgList[k]=itemValueCfg.replace("{#text}", item2.label).replace("{#value}", item2.value);
+									fieldids.put(item2.value);
+								});
+							}
+						
+							fileCfg=fileCfg.replace("{#valueList}",itemCfgList);
+							var obj2=JSON.parse("{"+fileCfg+"}");
+							table_.addRow({lable:field_label,formItme: new Form.File(obj2),mustInput:inputType,col:all_line});
+							
+							break;
+						case 13: //单实体
+							var irelationentityid=fields.irelationentityid;
+						    var clickFn="";
+						
+						    if(!readonly){
+						    	clickFn="toSearch('"+field_name+"',"+irelationentityid+",false)";
+						    	
+						    }
+						
+						
+						
+							var entityCfg = '"irelationentityid":"{#irelationentityid}","clickFn":"{#clickFn}","hidID":"{#hidID}",'+ cstCfg;//多行文本
+							entityCfg = entityCfg.replace("{#irelationentityid}", irelationentityid);
+							entityCfg = entityCfg.replace("{#clickFn}", clickFn);
+							entityCfg = entityCfg.replace("{#hidID}", default_value);
+					
+							//console.log(entityCfg);
+							var obj2=JSON.parse("{"+entityCfg+"}");
+							
+							
+						
+							table_.addRow({lable:field_label,formItme: new Form.ObjectInput(obj2),mustInput:inputType,col:all_line});
+							 break;
+						case 14: //多实体
+							var irelationentityid=fields.irelationentityid;
+							 var clickFn="";
+								
+						    if(!readonly){
+						    	clickFn='toSearch("'+field_name+'",'+irelationentityid+',true)';
+						    }	
+						
+						    var entityCfg = '"irelationentityid":"{#irelationentityid}","clickFn":"{#clickFn}","hidID":"{#hidID}",'+ cstCfg;//多行文本
+							entityCfg = entityCfg.replace("{#irelationentityid}", irelationentityid);
+							entityCfg = entityCfg.replace("{#clickFn}", clickFn);
+							entityCfg = entityCfg.replace("{#hidID}", default_value);
+						
+							
+							
+							var obj2=JSON.parse("{"+entityCfg+"}");
+							table_.addRow({lable:field_label,formItme: new Form.ObjectInput(obj2),mustInput:inputType,col:all_line});
+							 break;
+						case 15: //子页面
+							table_.addRow({lable:field_label,formItme: new Form.Input({cstCfg}),mustInput:inputType,col:all_line});
+							 break;
+						default:
+
+							cstCfg =cstCfg.replace("{#propertyType}", "1");
+						    table_.addRow({lable:field_label,formItme: new Form.Input({cstCfg}),mustInput:inputType,col:all_line});
+
+						}
+				
+						});
+					for(var i = 0,len=textaraList.length;i<len;i++){
+						 document.getElementById(field+'_temp').innerHTML=textaraList[i].value;
+					 }
+					Form.addGroup(section_);
+					Form.addTable(table_);
+					
+
+
+				});
+				 Form.make('form');
+
+				 for(var i = 0,len=timedateList.length;i<len;i++){
+					 $('#'+timedateList[i]).datepicker();
+				
+				 }
+				 
+				 for(var i = 0,len=checkboxList.length;i<len;i++){
+					 $(":checkbox[name='"+checkboxList[i].id+"'][value='" +checkboxList[i].value + "']").prop("checked", "checked");
+				
+				 }
+				 for(var i = 0,len=radioList.length;i<len;i++){
+					 $(":radio[name='"+radioList[i].id+"'][value='" +radioList[i].value + "']").prop("checked", "checked");
+				
+				 }
+				 
+				 
+				 
+			}          
+			
+		    
+		});
+		
+
+		$('#btnbutton', parent.document).html('<button class="btn btn-sm btn-primary" id="saveBtn">保存</button>&nbsp;');
+		$('#btnbutton', parent.document).show();
+		
+		$('#btnbutton', parent.document).click(function() {	
+			var fieldList = getFieldData();
+			
+			console.log(fieldList);
+			//var dataObj=new Object();
+			//dataObj.sparam=JSON.stringify(fieldList);
+			//dataObj.entityid=7;
+			//dataObj.iid=0;
+			//dataObj.variid=0;
+
+			if(fieldList!=null){
+				var iid=$('#vpeditform', parent.document).attr("iid");
+				if(iid=='0'){
+					iid='';
+				}
+				
+				vpAjax(getVfmRootPath()+'/vfrm/entity/saveFormData',{sparam:JSON.stringify(fieldList),entityid:entityid,iid:iid,variid:0}, "POST", function(rst) {
+					
+					console.log(rst);
+					
+					
+				});
+			}
+			
+			
+			
+		});	
+		
+	});
+
+	function saveForm(){
+		var params = {};
+		var entityid=$('#entityid', parent.document).attr("entityid");
+		var iid=$('#vpeditform', parent.document).attr("iid");
+		var fieldList = getFieldData();
+		if(UrlParm.parm("iflowentityid")){
+			fieldList["staskid"]=UrlParm.parm("staskid");
+			fieldList["piid"]=UrlParm.parm("piid");
+			fieldList["stepkey"]=UrlParm.parm("stepkey");
+			entityid=UrlParm.parm("iflowentityid");
+			
+		}
+
+		if(fieldList!=null){
+
+			if(iid=='0'){
+				iid='';
+			}
+
+			vpAjax('/vfrm/entity/saveFormData',{sparam:JSON.stringify(fieldList),entityid:entityid,iid:iid}, "POST", function(rst) {
+				if(rst.success){   
+					   //parent.layer.msg('保存成功！', { icon: 1, time: 2000 });
+				}else{
+					parent.layer.msg('保存失败，！'+rst.msg, { icon: 2, time: 2000 });
+				}
+				
+				
+				
+			});
+		}
+		return params;
+	}
+	
+	
+	function getFieldData(){
+		var fieldList = Form.getFieldData();
+		var dataObj = {};
+		console.log(fieldList);
+		for(var i=0;i<fieldList.length;i++){
+			var field = fieldList[i];
+			if(field.id == 'accessories'){
+				continue;
+			}
+			var obj = document.getElementById(field.id);
+			//字段的类型 0：字符串 1：多行文本 4：数字 8：时间 11：单选列表 12：复选列表 15 单选框 16 复选框 999 查找
+			//alert(field.propertyText + "," + field.propertyName + "," + field.propertyType + "," + field.mustInput + "," + field.systype);
+			//如果为必须输入
+			if(field.mustInput == '2'){
+				//所有查找都需要添加
+				 if((field.value == '' && field.propertyType!='13') 
+						|| (field.propertyType == '13' && field.value == '0')
+						){
+
+					parent.layer.msg(field.propertyText + "不能为空", { icon: 2, time: 2000 });
+					obj.focus();
+					return null;
+				}
+			}
+			//数字校验
+			if(field.propertyType == '5' && field.value != ''){
+				if(Common.Data.isNumber(field.value) == false){
+
+					parent.layer.msg(field.propertyText + "必须是数字类型", { icon: 2, time: 2000 });
+					obj.focus();
+					return null;
+				}
+				if(9999999999999999.99 < parseFloat(field.value)){
+					parent.layer.msg(field.propertyText + "超出精度范围，不能大于[9999999999999999.99]", { icon: 2, time: 2000 });
+					obj.focus();
+					return null;
+				}
+			}
+			//金额校验
+			if(field.propertyType == '4' && field.value != ''){
+				if(!MoneyObj.judgeMoney(field)){
+					return null;
+				}
+			}
+			dataObj[field.id] = field.value;  
+		  }
+	
+		return dataObj;
+	}
+
+	layui.use('upload', function(){
+		  var upload = layui.upload;
+		   
+		  //执行实例
+		  var uploadInst = upload.render({
+		    elem: '.btn-white' //绑定元素
+		    ,url: '/vpweb/file/uploadfile' //上传接口
+		    ,accept: 'file'
+		    ,done: function(res){
+		      //上传完毕回调
+		          var item = this.item;
+		    	console.log(res);
+		    	$("#"+item.context.id+"_list").append('<a class="vp-pr p-xxs text-primary" data='+res.data.fileid+' href="" onclick="{#click}"><i class="fa fa-paperclip"></i>'+res.data.filename+'<em class="fa pull-right">x</em></a>');
+
+		    }
+		    ,error: function(){
+		      //请求异常回调
+		    }
+		  });
+		});	
+
+    </script>
+</html>

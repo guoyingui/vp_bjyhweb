@@ -1,0 +1,20 @@
+.timesheet_box{
+   border:1px #cccccc solid; border-collapse:collapse;
+}
+.timesheet_box_firsttd{
+   background:url(/project/images/interact/timesheet_firsttd_bg.gif); height:25px;
+ }
+.timesheet_box th{
+   height:22px; border-right:1px #cccccc solid; border-collapse:collapse;
+   font-style:normal; font-weight:normal; text-align:center;
+}
+
+.timesheet_box .master{
+   border-right:1px #cccccc solid; border-bottom:1px #cccccc solid; border-collapse:collapse;
+}	
+.timesheet_box .normal{
+   border-bottom:1px #cccccc solid; border-right:1px #cccccc solid; border-collapse:collapse;
+}	
+.timesheet_box .over{
+   border-right:1px #cccccc solid; border-bottom:1px #cccccc solid; border-collapse:collapse;
+}	

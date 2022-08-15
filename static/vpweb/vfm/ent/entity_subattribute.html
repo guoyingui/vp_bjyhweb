@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>实体属性 - VP应用全生命周期管理系统</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
+    <link rel="shortcut icon" href="img/favicon.ico">
+    <link href="../../css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="../../css/font-awesome.min.css?v=4.7.0" rel="stylesheet">
+    <link href="../../css/animate.css" rel="stylesheet">
+    <link href="../../css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+    <link href="../../css/plugins/chosen/chosen.css" rel="stylesheet">
+    <link href="../../css/plugins/iCheck/custom.css" rel="stylesheet">
+    <!-- zTree树表 -->
+    <link href="../../css/plugins/zTree/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+	<link rel="stylesheet" href="../../js/plugins/layui/css/layui.css" media="all">
+    <!-- 自定义css -->
+    <link href="../../css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="../../css/common.css" rel="stylesheet">
+    <link href="../../css/vp.css" rel="stylesheet">
+    <script src="../../../vpcommon/config.js"></script>
+    <script src="../../../vpcommon/vputils.min.js"></script>
+
+    <!--[if lte IE 9]>
+        <script src="../../js/html5shiv.min.js"></script>
+        <script src="../../js/respond.js"></script>
+    <![endif]-->
+	<style>
+
+	</style>
+</head>
+
+<body class="white-bg">
+    <div class="">
+		<div class="col-sm-12">
+			<div class="ibox">
+				<div class="ibox-title p-l-none">
+					<div class="col-sm-4 sub-head" id="vpsearch">           
+					</div>
+	
+					<div class="ibox-tools" id="vptoolbar">
+					
+					</div>
+				</div>
+				<div class="ibox-content p-n m-t-sm vp-overflow-x" style="display: block;">
+					 <div class="vp-overflow-x vpcontent">
+						<ul id="vptreetable" class="ztree" lay-filter="vpclick"></ul>
+						<script type="text/html" id="vpbar">
+							{{# if(d.inew=="0" || $('#vpeditform', parent.document).attr("accesslevel")==0){ }}
+								
+							{{#}else{ }}
+								<a lay-event="delete"><i class="fa fa-times fa-fw text-danger" data-toggle="tooltip" title="删除"></i></a>
+							{{# }}}
+						</script>
+					</div>
+					<div class="layui-table-page" id="vppagebar">
+					  
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+    <!-- 全局js -->
+    <script src="../../js/jquery-1.11.3.min.js"></script>
+	<!--[if IE 8]>
+	<script type="text/javascript" src="../../js/jquery-1.9.1.min.js"></script>
+	<![endif]-->
+    <script src="../../js/bootstrap.min.js?v=3.3.6"></script>
+    <!-- 自定义js -->
+    <script src="../../js/content.js?v=1.0.0"></script>
+    <!-- 日期控件 -->
+    <script src="../../js/plugins/datapicker/bootstrap-datepicker.js"></script>
+    <!-- layer弹出层 -->
+    <script src="../../js/plugins/layer/layer.min.js"></script>
+    <!-- 下拉选择列表 -->
+    <script src="../../js/plugins/chosen/chosen.jquery.js"></script>
+    <!-- layui表格 -->
+    <script src="../../js/plugins/layui/layui.js" charset="utf-8"></script>
+    <script src="../../js/vpsoft/common.js"></script>
+    <script src="../../js/vpsoft/form.js"></script>
+    <script src="../../js/plugins/iCheck/icheck.min.js"></script>
+    <!-- <script src="../../js/vpsoft/ListTable.js"></script> -->
+</body>
+<script>
+var entityid=$('#vpeditform', parent.document).attr("iid");
+var fromtype=$('#vpeditform', parent.document).attr("fromtype");
+
+var osearch = Search({ el: 'vpsearch', id: 'quicksearch' });
+osearch.parseEl();
+
+if($('#vpeditform', parent.document).attr("ientityid")!=undefined){
+	entityid=$('#vpeditform', parent.document).attr("ientityid");
+}
+
+var oparam = { entityid:entityid, initlimit: 100 } ;
+var cfg = { el: 'vptreetable', vpurl: '/cfgentview/sublist',toolbar: true,checkbox: true,param:  oparam };
+/* cfg = { 
+		el:'vptreetable',vpurl:'/cfgentattr/list',layfilter:'vpclick',
+		pageBar:'vppagebar',listType:'checkbox', optBar:'vpbar', param: oparam
+	}; */
+var olisttable = ListTable(cfg);
+olisttable.parseEl();
+
+var resArr=[];
+//列表事件
+function doListEvent(obj){ // obj.data 当前行数据  obj.event event参数对应的值  obj.tr 当前行tr的DOM对象
+	if(obj.event === 'edit'){//编辑
+		editObj(obj.data);
+    }else if(obj.event === 'delete'){//删除
+    	deleteObj(obj.data);
+    }else if(obj.event === 'click'){
+    	/* if(ischeckbox){//复选
+    		//选中点击行
+    		var checkCell = obj.tr.find("td div.laytable-cell-checkbox div.layui-form-checkbox I");
+		    if (checkCell.length>0) {
+		        checkCell.click();
+		    } 
+    	}else{
+    		//选中点击行
+    		resArr= [obj.data];
+    		obj.tr.parent().find(".layui-form-radioed").html('<input type="radio" name="radio" value="radio" title=" "><div class="layui-unselect layui-form-radio"><i class="layui-anim layui-icon"></i><span> </span></div>');
+			obj.tr.find("input[name='radio']").parent().html('<input type="radio" name="radio" value="radio" title=" "><div class="layui-unselect layui-form-radio layui-form-radioed"><i class="layui-anim layui-icon layui-anim-scaleSpring"></i><span> </span></div>');
+    	} */
+    	editObj(obj.data);
+    }else if(obj.event === 'checkbox'){//点击复选框
+    	resArr = obj.checkStatus.data;
+    }else if(obj.event === 'radio'){//点击单选框
+    	resArr= [obj.data];
+    }else{
+    	
+    }
+}
+
+var olisttool = RelationTool({ el: 'vptoolbar', primary:'vpadd', data: [
+	{ id: 'vpadd', faclass: 'fa-plus', title: '新建' },
+	{ id: 'vpdel', faclass: 'fa-times text-danger', title: '删除' }
+] });
+// $('#vpeditform', parent.document).attr("accesslevel", 1);
+if ($('#vpeditform', parent.document).attr("accesslevel") == 1) {
+	olisttool.parseEl();
+}
+
+$("#vpdel").on('click',function(event) {
+	if(cfg.checkbox){
+		resArr = olisttable.getTable().checkStatus('vptable').data;
+	} 
+	var arr = resArr;
+	if(arr.length>0){
+		var iid = "";
+		$.each(arr, function(i, item) {
+			var delflag = true;
+			if(item.iremove=='1'){//已删除
+				//layer.msg('属性['+item.scode+']已被标记为删除，请勿重复操作！', { icon: 2, time: 2000 });
+				delflag = false;
+			}
+			if(item.itype=='0'){//已删除
+				//layer.msg('预定义属性['+item.scode+']无法删除！', { icon: 2, time: 2000 });
+				delflag = false;
+			} 
+			if(delflag){
+				delflag = false;
+				iid += ","+item.iid;
+			}
+		});
+		if(iid!=''){
+			iid = iid.substring(1);
+		}
+		deleteObj({iid:iid});
+	}else{
+		layer.msg('请先选择要删除的数据！', { icon: 2, time: 2000 });
+	}
+});
+
+function deleteObj(obj){
+	var iid = obj.iid;
+	if(obj.iremove==undefined){//批量删除
+		if(iid==''){
+			layer.msg('请先选择允许删除的数据！', { icon: 2, time: 2000 });
+			return ;
+		}
+	}else{
+		if(obj.iremove=='1'){//已删除
+			layer.msg('属性已被标记为删除，请勿重复操作！', { icon: 2, time: 2000 });
+			return ;
+		}
+		/*
+		if(obj.itype=='0'||obj.itype=='1'){//已删除
+			layer.msg('预定义属性无法删除！', { icon: 2, time: 2000 });
+			return ;
+		}
+		*/
+	}
+	vpPostAjax('/cfgentview/subdelete', {iid:iid}, 'POST', function(rst) {
+		if(rst.success){
+			layer.msg('删除成功！', { icon: 1, time: 2000 });
+			//olisttable.parseEl();
+			olisttable.reload();
+			$(".tooltip.fade.top.in").remove();
+		}
+	});
+}
+
+$("#vpadd").on('click',function(event) {//新建
+	editObj();
+});
+
+function editObj(obj){
+	var iid;
+	var isEdit = true;
+	if(obj){//编辑
+		iid = obj.iid;
+		if(obj.iremove=='1'){//已删除
+			/* layer.msg('属性已被标记为删除，无法编辑！', { icon: 2, time: 2000 });
+			return ; */
+			isEdit = false;
+		}
+		if(obj.itype=='0'||obj.itype=='1'){//已删除
+			/* layer.msg('预定义属性无法编辑！', { icon: 2, time: 2000 });
+			return ; */
+			isEdit = false;
+		}
+	}else{
+		iid = '0';
+	}
+
+	var oprBtn = [];
+	if ($('#vpeditform', parent.document).attr("accesslevel") == 1) {
+		oprBtn = ['保存', '取消'];
+	}
+	parent.layer.open({
+        type: 2, 
+        maxmin: true,
+		title: '新建',
+        btn: oprBtn,
+        btnAlign:'c',
+        area: ['80%', '96%'],
+        resize: false,
+        shift: 2,
+        shade: 0.3,
+        content: ['../ent/entity_attributeform.html?entityid='+oparam.entityid+'&iid='+iid+'&fromtype='+fromtype+'&sfrom=sub'], //iframe的url，no代表不显示滚动条
+        success: function(layero, index){
+        	if(isEdit){
+        		$(layero.find('.layui-layer-btn')).show();
+        		layero.find('.layui-layer-btn').css('text-align', 'center');
+        	}else{
+        		//$(layero.find('.layui-layer-btn')).hide();
+        	}
+        },
+        yes: function(index, layero){
+			var aaa='abcdefabc';
+        	var frame = $(layero).find("iframe")[0].contentWindow.document;
+        	var iid = $(frame).find('#code').attr('hidid');
+        	if(iid==null||iid==''||iid==undefined){
+        		iid = '0';
+        	}
+        	var sprefix = $(frame).find('#datatype').attr('sprefix');
+        	var name = $(frame).find('#name').val().replace(/\s/g, "");
+			if(name==null||name==''){
+				parent.layer.msg("属性名称不能为空!", {icon: 5,time: 2000});
+	 			return;
+			}else{
+				var isUnique = true;
+				vpPostAjax('/cfgentview/checkUnique', {entityid:oparam.entityid,iid:iid,field:'sname',fieldval:name}, 'POST', function(rst) {
+					if(rst.success){
+						isUnique = rst.isUnique;
+					}else{
+						
+					}
+				});
+				if(!isUnique){
+					parent.layer.msg("属性名称已经存在，请重新输入!", {icon: 5,time: 2000});
+		 			return;
+				}
+			}
+
+			var code = $(frame).find('#code').val().replace(/\s/g, "");
+			if(code==null||code==''){
+				parent.layer.msg("属性码不能为空!", {icon: 5,time: 2000});
+	 			return;
+			}
+			else{
+				if (iid == '0') {	
+					if(code=='type' || code=='flag' || code=='viewtype' || code=='datatype' || code=='condition'){
+				    parent.layer.msg("属性码不能为type,flag,viewtype,datatype,<br>condition,请重新输入!", {icon: 5,time: 2000});
+	 			    return;
+			}
+					
+					var isUnique = true;
+					vpPostAjax('/cfgentview/checkUnique', {entityid:oparam.entityid,iid:iid,field:'scode',fieldval:sprefix+''+code}, 'POST', function(rst) {
+						if(rst.success){
+							isUnique = rst.isUnique;
+						}else{
+							
+						}
+					});
+					if(!isUnique){
+						parent.layer.msg("属性码已经存在，请重新输入!", {icon: 5,time: 2000});
+						return;
+					}
+				}
+			}
+        	var desc = $(frame).find('#desc').val();
+        	var datatypeid = $(frame).find('#datatype').attr('hidid');
+        	var relentityid = $(frame).find('#relentity').attr('hidid');
+			var idictionaryid = $(frame).find('#dictionary').attr('hidid');
+			var itype = $(frame).find('#itype').val();
+			var ilength = $(frame).find('#ilength').val();
+        	var idefault = '';
+        	var valuelist=[];
+			
+        	if(datatypeid=='0' && iid =='0'){
+				parent.layer.msg('请选择数据类型！', { icon: 5, time: 2000 });
+				return ;
+			}else{
+				if(ilength.length>0){
+					   if(/^[1-9]([0-9]*$)/g.test(ilength)){
+						}else{
+							parent.layer.msg('字段长度只能是数字组成！', { icon: 5, time: 2000 });
+						}
+
+                 if(datatypeid==1){
+							if(ilength/1.0>4000){
+							parent.layer.msg('字符串字段长度不能超过2000！', { icon: 5, time: 2000 });
+							return false;
+							}
+				 }else if(datatypeid==2){
+							if(ilength/1.0>4000){
+							parent.layer.msg('多行文本字段长度不能超过4000！', { icon: 5, time: 2000 });
+							return false;
+							}
+				 }else if(datatypeid==4 ||datatypeid==5){
+						if(ilength/1.0>30){
+						parent.layer.msg('数字金额字段长度不能超过30！', { icon: 5, time: 2000 });
+						return false;
+						}
+				 }
+				}
+
+			}
+        	if(sprefix=='i'){//数据字典项
+        		var vobj = new Object();
+        		var isNumber = true;
+				var isflag = true;
+        		$(frame).find('#valueListform').children('.form-item').each(function(i,option){
+        			$(option).find(":input[type=text],:input[type=checkbox]").each(function(j,inputobj){
+        				if($(inputobj).attr('id').indexOf('optionvalue')==0){
+        					vobj.optionval = $(inputobj).val().replace(/\s/g, "");
+        					vobj.iid = $(inputobj).attr('hidid');
+        				}else if($(inputobj).attr('id').indexOf('optionname')==0){
+        					vobj.optionname = $(inputobj).val().replace(/\s/g, "");
+        				}else if($(inputobj).attr('id').indexOf('isdefaultvalue')==0){
+        					if($(inputobj).is(':checked')){
+        						idefault = $(inputobj).closest('.form-item').find(':input[type=text]').eq(0).val();
+        					}
+        				}
+        			});
+        			if(vobj.optionval==''||vobj.optionname==''){
+    				    isflag=false ;
+        			}
+        			else if(isNaN(vobj.optionval)){
+        				isNumber = false;
+        			}
+        			else{
+        				valuelist.push(vobj);
+        			}
+        			console.log(valuelist);
+        			vobj = new Object();
+        		});
+        		if(!isNumber){
+        			parent.layer.msg('选项值必须为数字！', { icon: 5, time: 2000 });
+    				return ;
+        		}
+				if(!isflag){
+        			parent.layer.msg('选项值和选项名称不能为空！', { icon: 5, time: 2000 });
+    				return ;
+        		}
+        		if(valuelist.length<1 && (datatypeid=='7' || datatypeid=='8' || datatypeid=='9' || datatypeid=='10')){
+        			parent.layer.msg('请完善选项数据！', { icon: 5, time: 2000 });
+    				return ;
+        		}
+        	}else if(sprefix=='s'||sprefix=='f'){//文本、数字、金额
+        		idefault = $(frame).find('#idefault').val();
+        	}else if(sprefix=='r'){//关联类
+        		idefault = '0';
+        		if(datatypeid=='11'||datatypeid=='12'){//附件 
+        			idefault = '';
+        			relentityid = '0';
+        		}else{
+        			if(relentityid=='0'){
+        				parent.layer.msg('请选择实体！', { icon: 5, time: 2000 });
+        				return ;
+        			}
+        		}
+			}
+        	if(sprefix!='r'){
+        		relentityid = '0';
+        	}
+        	var param = {entityid:oparam.entityid,iid:iid,sname:name,scode:code,sdescription:desc,idefault:idefault, sgroup: $(frame).find('#sgroup').val(), 
+        				 idatatype:datatypeid,valuelist:valuelist,idictionaryid:idictionaryid,irelationentityid:relentityid,itype:itype,ilength:ilength};
+        	vpPostAjax('/cfgentview/subadd', param, 'POST', function(rst) {
+    			if(rst.success){
+    				if(sprefix=='o'){//保存富文本信息
+    	        		//获取文本信息
+    					param['savetype']='richtext';
+    					param['iid']=rst.iid;
+    	        	}
+    				parent.layer.close(index);
+    				//olisttable.parseEl();
+    				olisttable.reload();
+    				$(".tooltip.fade.top.in").remove();
+    			}
+    		});
+        },
+        end: function(){ //此处用于演示
+            
+        }
+    });
+}
+
+
+</script>
+
+</html>

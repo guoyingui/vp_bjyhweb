@@ -1,0 +1,212 @@
+.calendar-tb{
+	border-collapse:collapse;
+	border:0px;
+	padding:0px;
+}
+.calendar-tb .outer-td{
+	border:1px solid #d0d0d0;
+	height:70px;
+	text-align:center;
+	padding:0px;
+}
+.calendar-content-table{
+	border-collapse:collapse;
+	border:0px;
+	margin:0px;
+	padding:0px;
+	width:100%;
+	table-layout : auto ;
+}
+
+.calendar-content-table .outer-td{
+	border:1px solid #d0d0d0;
+	max-height:1500px;
+	text-align:center;
+	padding:0px;
+	vertical-align:top;
+	height:70px;
+	
+}
+.unit-table{
+	border-collapse:collapse;
+	height:100%;
+	width:100%;
+	padding:0px;
+	
+}
+
+.unit-table .unit-title{
+	height:12px;
+	font-size:12px;
+
+	text-align:center;
+	background-color:#eaeff3;
+	padding:0px;
+	
+}
+.unit-table .content-td{
+	text-align:left;
+	border:0px solid #000;
+	height:12px;
+	padding:0px;
+}
+
+.unit-table .today-title{
+	background-color:#eab85f;
+	padding:0px;
+}
+.today-content{
+	background-color:#f9e9cf;
+	padding:0px;
+}
+.week-title-tr td{
+	border:1px solid #d0d0d0;
+	font-size:12px;
+	text-align:center;
+	height:23px;
+	background:url(/project/images/calendarchart/xingqi_bg.gif);
+	padding:0px;
+	}
+
+
+.legend-tr td{
+	border:1px solid #d0d0d0;
+	font-size:12px;
+	text-align:center;
+	padding:0px;
+}
+.other-month-table  td{
+	background-color:#ebebeb!important;
+	border:0px!important;
+	padding:0px;
+}
+.other-month-title td{
+	background-color:#ebebeb;
+	border:0px;
+	padding:0px;
+}
+.other-month-content{
+	background-color:#ebebeb;
+	padding:0px;
+}
+.weekend-unit{
+	color:red;
+	padding:0px;
+}
+.pro-start-div{
+	background:url(/project/images/calendarchart/icon_start.gif) no-repeat center;
+	height:12px;
+	width:16px;
+	border:0px solid #000;
+	float:left;
+	padding:0px;
+
+}
+.pro-end-div{
+	background:url(/project/images/calendarchart/icon_end.gif) no-repeat center;
+	height:12px;
+	width:16px;
+	border:0px solid #000;
+	float:left;
+	padding:0px;
+
+	
+}
+
+.legend-tr td{
+	height:30px!important;
+	padding:0px;
+}
+
+#main-div{
+	width:100%;
+	padding:0px;
+	height:100%;
+	text-align:center;
+}
+
+#inner-div{
+	margin-left:auto;
+	margin-right:auto;
+	border:0px solid #000;
+	position:relative;
+}
+
+#inner-div table{
+	position:relative;
+	margin-left:auto;
+	margin-right:auto;
+}
+.tool-td{
+	height:24px;
+	background:url(/project/images/calendarchart/select_bg.gif);
+	margin:0px;
+	padding:0px;
+}
+.tool-td-left{
+	height:22px;
+	width:15px;
+	border:0px solid #d0d0d0;
+	text-align:right;
+	padding:0px;
+}
+.tool-td-center{
+	height:22px;
+	width:100px;
+	border:0px solid #d0d0d0;
+	text-align:center;
+	color:white;
+	font-size:12px;
+	font-weight:bold;
+	line-height:24px;
+	padding:0px;
+}
+.tool-td-right{
+	height:22px;
+	width:15px;
+	border:0px solid #d0d0d0;
+	text-align:left;
+	padding:0px;
+}
+
+.pre-month-icon{
+	background:url(/project/images/calendarchart/select_back.gif) no-repeat center;
+	height:100%;
+	width:15px;
+	border:0px solid #000;
+	
+}
+.choose-date{
+	margin-left:auto;
+	margin-right:auto;
+	border:0px solid #000;
+	position:relative;
+	height:100%;
+	width:85px;
+	text-align:center;
+	background:url(/project/images/calendarchart/select_yue.gif) no-repeat center;
+}
+.next-month-icon{
+	background:url(/project/images/calendarchart/select_next.gif) no-repeat center;
+	height:100%;
+	width:15px;
+	border:0px solid #000;
+}
+
+a:link,a:visited{
+    color:#353c44;
+	text-decoration:none;
+
+}
+a:hover{
+   color:#990000;
+   text-decoration:none;
+ }
+.cal-item-link{
+	word-break:break-all;
+	word-wrap:break-word;
+	text-indent:0px;
+}
+body{
+	margin:0px;
+}

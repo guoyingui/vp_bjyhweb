@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>状态</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
+    <link rel="shortcut icon" href="img/favicon.ico">
+    <link href="../../css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="../../css/font-awesome.min.css?v=4.7.0" rel="stylesheet">
+    <link href="../../css/animate.css" rel="stylesheet">
+    <link href="../../css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+    <link href="../../css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+    <!-- zTree树表 -->
+    <link href="../../css/plugins/zTree/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+    <!-- layUI表格 -->
+    <link href="../../css/plugins/chosen/chosen.css" rel="stylesheet">
+    <link href="../../css/plugins/iCheck/custom.css" rel="stylesheet">
+    <link href="../../js/plugins/layui/css/layui.css"  rel="stylesheet" media="all">
+    <link href="../../css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="../../css/common.css" rel="stylesheet">
+    <link href="../../css/vp.css" rel="stylesheet">
+    <script src="../../../vpcommon/config.js"></script>
+    <script src="../../../vpcommon/vputils.min.js"></script>
+	<style>
+	.step-box .valid {
+		color: #000000;
+	}
+	</style>
+    <!--[if lte IE 9]>
+        <script src="../../js/html5shiv.min.js"></script>
+        <script src="../../js/respond.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+	<div class="step-box-pan display-inline">
+		<div class="step-box m-t-md">
+			<div class="part1">
+				<div class="ibox">
+				    <div class="form-horizontal m-t" id="oForm">
+				    <input type="hidden" id="iid" name="iid">
+				    <input type="hidden" id="ientityid" name="ientityid">
+					<div class="ibox-content2 p-n clearfix">
+							<div class="form-group">
+								<div class="col-xs-12">
+									<label class="col-xs-3 control-label">流程步骤：</label>
+									<div class="col-xs-9">
+									    <select id="sstepkey" name="sstepkey" class="form-control">
+									    </select>
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="col-xs-12">
+									<label class="col-xs-3 control-label">关联表单：</label>
+									<div class="col-xs-9">
+									    <select id="iformid" name="iformid" class="form-control">
+									    </select>
+									</div>
+								</div>
+							</div>
+					</div>
+				
+
+
+				    </div>
+				</div>
+				
+				<!-- <div class="text-center">
+					<button class="btn btn-sm btn-primary" id="btnSaveEntityStatus">保存</button>
+				</div> -->
+			</div>
+		</div>
+	</div>
+
+</body>
+    <!-- 全局js -->
+    <script src="../../js/jquery-1.11.3.min.js"></script>
+	<!--[if IE 8]>
+	<script type="text/javascript" src="../../js/jquery-1.9.1.min.js"></script>
+	<![endif]-->
+    <script src="../../js/bootstrap.min.js?v=3.3.6"></script>
+    <!-- 自定义js -->
+    <script src="../../js/content.js?v=1.0.0"></script>
+    <!-- 日期控件 -->
+    <script src="../../js/plugins/datapicker/bootstrap-datepicker.js"></script>
+    <!-- layer弹出层 -->
+    <script src="../../js/plugins/layer/layer.min.js"></script>
+    <!-- 下拉选择列表 -->
+    <script src="../../js/plugins/chosen/chosen.jquery.js"></script>
+    <!-- jQuery 表单验证-->
+    <script src="../../js/plugins/validate/jquery.validate.min.js"></script>
+    <script src="../../js/plugins/validate/messages_zh.min.js"></script>
+    <!-- zTree模拟树表 -->
+    <script src="../../js/plugins/zTree/jquery.ztree.all.min.js"></script>
+    <script src="../../js/vpsoft/TreeTable.js"></script>
+    <script src="../../js/vpsoft/common.js"></script>
+    <script src="../../js/vpsoft/form.js"></script>
+    <script src="../../js/plugins/iCheck/icheck.min.js"></script>
+    <script src="../../js/vpsoft/getUrlParam.js"></script>
+</html>
+
+<script>
+var iid = parent.document.getElementById("frminfo").contentWindow.iid_;
+var parentid = parent.document.getElementById("frminfo").contentWindow.ientityid;
+var skey=UrlParm.parm("skey");
+console.log("skey="+skey);
+$("#iid").val(iid);
+$("#ientityid").val(ientityid);
+
+$(document).ready(function () {
+	$('.i-checks').iCheck({
+		checkboxClass: 'text-primary fa fa-fw fa-square-o'
+	});
+	initData(parentid);
+	vpAjax(getWorkflowPath()+'/rest/workflow/tasks?key='+skey, {}, "GET", function(rst) {
+		console.log(rst);
+		if(rst!=undefined){
+		    if(rst.length>0){
+				$.each(rst, function(i, item) {
+					var sname=rst[i].name;
+					var iid=rst[i].id;
+					//if(iflowid==iid){
+					//    $("#sstepkey").append("<option value='"+iid+"' selected>"+sname+"</option>");
+					//}else{
+						$("#sstepkey").append("<option value='"+iid+"'>"+sname+"</option>");
+					//}
+				});
+			
+			}
+   		}
+		
+	});
+	
+	if (iid != null && iid != '' && iid != undefined && iid != 0){
+		var sparam = {'parentid': parentid,'iid': iid};
+		vpPostAjax("/cfgentwfform/get", sparam, "POST", function(rst){
+			var obj = rst;
+			if(obj.success){
+				$("#iformid").val(obj.data.iformid); 
+				$("#sstepkey").val(obj.data.sstepkey); 
+				
+			}else{
+				layer.msg("初始化编辑数据失败！");
+			}
+		});
+	}
+	
+	
+
+	
+	
+});
+
+//新增功能初始化
+function initData(parentid){
+	var sparam = {'parentid': parentid};
+	vpPostAjax("/cfgentstatus/entityviewlist", sparam, "POST", function(rst){
+		if(rst.success){
+			
+			$.each(rst.list, function(i, data) {
+				$("#iformid").append("<option value='" + data.iid + "'>" + data.sname + "</option>");
+			});
+		}else{
+			layer.msg("初始化下拉框数据失败！");
+		}
+	});
+}
+
+
+
+function saveForm() {
+
+	if(document.getElementById("iformid").value==""){
+		parent.layer.msg('请选择步骤所关联的表单！', { icon: 5, time: 2000 });
+		return false;
+	}
+	else {
+		var dataObj=new Object();
+		 var sstepname=$("#sstepkey").find("option:selected").text();
+		//dataObj.ientityid=UrlParm.parm("ientityid");
+		dataObj.iformid=$("#iformid").val();
+		dataObj.sstepkey=$("#sstepkey").val();
+		dataObj.ientityid=parentid;
+		dataObj.sstepname=sstepname;
+		dataObj.iid=iid;
+
+		action='/cfgentwfform/save';
+		
+
+		vpPostAjax(action, dataObj, 'POST', function(rst) {
+			if(rst.success){   
+				//parent.layer.msg('保存成功！', { icon: 1, time: 2000 });
+			}else{
+				//parent.layer.msg('保存失败，！'+rst.msg, { icon: 2, time: 2000 });
+			}
+	   });
+	}
+	return true ;
+}
+</script>

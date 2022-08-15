@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>任务看板 - VP应用全生命周期管理系统</title>
+<meta name="keywords" content="">
+<meta name="description" content="">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Cache-control" content="no-cache">
+<meta http-equiv="Cache" content="no-cache">
+<link rel="shortcut icon" href="img/favicon.ico">
+<link href="../../css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+<link href="../../css/font-awesome.min.css?v=4.7.0" rel="stylesheet">
+<link href="../../css/animate.css" rel="stylesheet">
+<link href="../../css/plugins/datapicker/datepicker3.css"
+	rel="stylesheet">
+<link
+	href="../../css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css"
+	rel="stylesheet">
+<!-- zTree树表 -->
+<link href="../../css/plugins/zTree/zTreeStyle/zTreeStyle.css"
+	rel="stylesheet">
+<!-- layUI表格 -->
+<link rel="stylesheet" href="../../js/plugins/layui/css/layui.css"
+	media="all">
+<link href="../../css/style.css?v=4.1.0" rel="stylesheet">
+<link href="../../css/common.css" rel="stylesheet">
+<link href="../../css/vp.css" rel="stylesheet">
+    <script src="../../../vpcommon/config.js"></script>
+    <script src="../../../vpcommon/vputils.min.js"></script>
+<!--[if lte IE 9]>
+        <script src="../../js/html5shiv.min.js"></script>
+        <script src="../../js/respond.js"></script>
+    <![endif]-->
+<!-- 全局js -->
+<script src="../../js/jquery-1.11.3.min.js"></script>
+<!--[if IE 8]>
+	<script type="text/javascript" src="../../js/jquery-1.9.1.min.js"></script>
+	<![endif]-->
+<script src="../../js/bootstrap.min.js?v=3.3.6"></script>
+<!-- 自定义js -->
+<script src="../../js/content.js?v=1.0.0"></script>
+<!-- 日期控件 -->
+<script src="../../js/plugins/datapicker/bootstrap-datepicker.js"></script>
+<!-- layer弹出层 -->
+<script src="../../js/plugins/layer/layer.min.js"></script>
+<!-- 下拉选择列表 -->
+<script src="../../js/plugins/chosen/chosen.jquery.js"></script>
+<!-- layui表格 -->
+<script src="../../js/plugins/layui/layui.js" charset="utf-8"></script>
+<script src="../../js/vpsoft/common.js"></script>
+<script src="../../js/vpsoft/form.js"></script>
+<script src="../../js/vpsoft/getUrlParam.js"></script>
+<script src="../../js/plugins/iCheck/icheck.min.js"></script>
+
+
+</head>
+
+<body>
+	<div class="padding-10">
+		<div class="ibox-title border-bottom ">
+			<h5>基本信息</h5>
+			<div class="ibox-tools">
+				<a class="collapse-link" data-toggle="tooltip" data-placement="top"
+					title="收起"> <i class="fa fa-caret-up"></i>
+				</a>
+			</div>
+		</div>
+		<div class="ibox-content p-n clearfix">
+			<div class="form-horizontal m-t" id="signupForm">
+				<div class="form-group">
+					<div class="col-sm-6">
+						<label class="col-sm-3 col-md-2 control-label text-ellipsis">节编号：</label>
+						<div class="col-sm-9 col-md-10">
+							<input id="scode" name="scode" class="form-control" type="text" maxlength="20">
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<label class="col-sm-3 col-md-2 control-label text-ellipsis">节名称：</label>
+						<div class="col-sm-9 col-md-10">
+							<input id="sname" name="sname" class="form-control" type="text" maxlength="80">
+						</div>
+					</div>
+				</div>
+					<div class="form-group">
+						<div class="col-sm-6" style="display: none;">
+							<label class="col-sm-3 col-md-2 control-label text-ellipsis">是否显示：</label>
+							<div class="col-sm-9 col-md-10">
+								<div class="checkbox checkbox-info checkbox-inline">
+									<input type="checkbox" id="ishow" value="0" name="ishow" checked="">
+									<label for="ishow">显示</label>
+								</div>
+							</div>
+						</div>
+						<div class="col-sm-6">
+							<label class="col-sm-3 col-md-2 control-label text-ellipsis">是否展开：</label>
+							<div class="col-sm-9 col-md-10">
+								<div class="radio radio-info radio-inline">
+									<input type="radio" id="iexpend1" value="0" name="iexpend" checked>
+									<label for="iexpend1">节固定</label>
+								</div>
+								<div class="radio radio-info radio-inline">
+									<input type="radio" id="iexpend2" value="1" name="iexpend">
+									<label for="iexpend2">节默认展开</label>
+								</div>
+								<div class="radio radio-info radio-inline">
+									<input type="radio" id="iexpend3" value="2" name="iexpend">
+									<label for="iexpend3">节默认收缩</label>
+								</div>
+								<div class="radio radio-info radio-inline">
+									<input type="radio" id="iexpend4" value="3" name="iexpend">
+									<label for="iexpend4">节不显示</label>
+								</div>
+								<div class="radio radio-info radio-inline">
+									<input type="radio" id="iexpend5" value="4" name="iexpend">
+									<label for="iexpend5">节和属性隐藏不显示</label>
+								</div>
+							</div>
+						</div>
+					</div>
+	</div>
+</body>
+<script>
+$(document).ready(function() {
+	var sparam = { ientityid : UrlParm.parm("ientityid"), sectionid : UrlParm.parm("sectionid")};
+	  vpPostAjax('/cfgentview/getsectioninfo', sparam, 'POST', function(rst) {
+		  //console.log(rst);
+		   if(rst.success){   
+			   if(rst.data.sname!=undefined){
+				   document.getElementById("sname").value=rst.data.sname;
+				   document.getElementById("scode").value=rst.data.scode;
+				   var ishow=rst.data.ishow;
+				   var iexpend=rst.data.iexpend;
+				   if(ishow==0){
+		    		   document.getElementById("ishow").checked=true;
+		    	   }else{
+		    		   document.getElementById("ishow").checked=false;
+		    	   }
+				   if(iexpend==0){
+		    		   document.getElementById("iexpend1").checked=true;
+		    	   }else if(iexpend==1){
+		    		   document.getElementById("iexpend2").checked=true;
+		    	   }else if(iexpend==2){
+		    		   document.getElementById("iexpend3").checked=true;
+		    	   }else if(iexpend==3){
+		    		   document.getElementById("iexpend4").checked=true;
+		    	   }else{
+		    		   document.getElementById("iexpend5").checked=true;
+		    	   }
+
+			   } 
+			   
+			}else{
+				parent.layer.msg('查询失败，！'+rst.msg, { icon: 2, time: 2000 });
+			}
+	   });
+
+});
+
+ function addSection(){
+	if(document.getElementById("scode").value==""){
+		//alert(document.getElementById("scode").value=="");
+		parent.layer.msg('请填写节编号！', { icon: 5, time: 2000 });
+		return false;
+	}
+	else if(document.getElementById("sname").value==""){
+		parent.layer.msg('请填写节名称！', { icon: 5, time: 2000 });
+		return false;
+	}
+	else {
+		var dataObj=new Object();
+
+		var ishow=$("input[name='ishow']:checked").val()
+		if(ishow==undefined){
+			ishow=1;
+		}
+		var iexpend=$("input[name='iexpend']:checked").val()
+		if(iexpend==undefined){
+			iexpend=1;
+		}
+
+		//dataObj.ientityid=UrlParm.parm("ientityid");
+		dataObj.iviewid=UrlParm.parm("iviewid");
+		dataObj.sname=$("#sname").val();
+		dataObj.scode=$("#scode").val();
+		dataObj.ishow=ishow;
+		dataObj.iid=UrlParm.parm("sectionid");
+		dataObj.iexpend=iexpend;
+
+		action='/cfgentview/addsection';
+		var isClose = true;
+		vpPostAjax(action, dataObj, 'POST', function(rst) {
+			if(rst.success){   
+				parent.layer.msg('保存成功！', { icon: 1, time: 2000 });
+			}else{
+				isClose = false;
+				parent.layer.msg('保存失败，！'+rst.msg, { icon: 2, time: 2000 });
+			}
+	    });
+		return isClose;
+	}
+}
+
+
+</script>
+</html>

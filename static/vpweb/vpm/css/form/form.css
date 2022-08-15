@@ -1,0 +1,395 @@
+.fixtab{
+	table-layout: fixed;	
+}
+.checkbox{
+	height: 13px;
+	width: 13px;
+}
+.hideNode{
+	display: none;	
+}
+.cutContent{
+	white-space: nowrap;
+	overflow : hidden;
+	text-overflow: ellipsis;
+}
+.font_gray{
+	color: #CCCCCC;
+}
+.form_body_frame_table{
+	table-layout: fixed;
+}
+.selField{
+	/*
+	background-image: url(/project/vframe/images/form/form_field_sel.gif);
+	background-repeat: no-repeat;
+	background-position: top right;
+	*/
+}
+.selFieldBorder{
+	border: #b3b3b3 solid 1px;
+}
+.VBox_div{
+	position: absolute;
+	z-index: 500;
+	top: 0px;
+	left: 0px;
+	background-color: #FFFFFF;
+	border: 1px solid #B3B3B3;
+}
+.VBox_div_formborder{
+	padding-top:15px;
+	padding-left:5px;
+	padding-right:5px;
+}
+.VBox_div_formborder table{
+	table-layout: fixed;
+}
+.VBox_div_formborder th{
+	font-style:normal;
+   	font-weight:normal;
+	background:#D2D5DD;
+	padding-left:5px;
+	width: 60px;
+}
+.VBox_div_formborder table img{
+	cursor:pointer;
+}
+.selField_border{
+	padding: 0px;
+	height: 20px;
+}
+.selField_options{
+	position: relative;
+	left: -1px;
+	width: 100%;
+	border: 1px solid #B3B3B3;
+	padding: 0px;
+	display: none;
+	background-color: #FFFFFF;
+}
+.selField_options_opt{
+	height: 25px;
+	padding-top: 3px;
+	width: 100%;
+	cursor:pointer;
+}
+.selField_options_opt_over{
+	background-color: #cbcef9;
+	/*
+	color:#990000;
+	text-decoration:none;
+	
+	background-color: #6666ff !important;
+	color: #FFFFFF;
+	*/
+}
+.selField_options_opt_td{
+	padding-left: 3px;
+	width: 100%;	
+}
+.selField_field_tab{
+	padding-top: 0px;
+	margin: 0px;
+	background-image: url(/project/vframe/images/form/form_field_sel.gif);
+	background-repeat: no-repeat;
+	background-position: top right;
+}
+.selField_field_td{
+	
+}
+.selField_field_icon{
+	width: 14px;
+}
+.selField_field_dspValDiv{
+	
+}
+.selField_options_opt_icon_option{
+	background: url(/project/vframe/images/form/form_field_sel.gif);
+}
+.selField_options_opt_icon_list{
+	background: url(/project/vframe/images/form/form_field_sel.gif);
+}
+.VList_table{
+	table-layout: fixed;
+}
+.VList_border{
+	margin: 0px;
+	border: 1px solid #aaa;
+}
+.VList_title{
+	width: 100%;
+	overflow: hidden;
+/* 	background: url(/project/images/tdtitle_bg.gif) repeat-x; */
+ 	background-image: url(/project/vframe/images/ext/gray/grid/grid3-hrow2.gif); 
+	background-color: #f9f9f9;
+	height: 22px;
+}
+.VList_body{
+	overflow-y: scroll;
+	overflow-x: auto;
+	background-color: #FFF;
+}
+.VList_body_table{
+	border-right: 1px solid #F5F5F5;
+}
+.VList_table_td.Vlist_table_checkerTd{
+	padding-left: 0px;
+	text-align: center;
+}
+.VList_table_td{
+	min-width: 10px;
+	padding-left: 5px;
+	height: 21px;
+	white-space: nowrap;
+	word-break: keep-all;
+	text-overflow: ellipsis; 
+	overflow-x: hidden;
+	border-bottom: 1px solid #f5f5f5;
+}
+.VList_table_td>div{
+	white-space: nowrap;
+	word-break: keep-all;
+	text-overflow: ellipsis; 
+	overflow-x: hidden;
+}
+.VList_title .VList_table_td{
+	border-bottom: 0px;
+	border-left: 1px solid #eee;
+	border-right: 1px solid #d0d0d0;
+}
+.VList_body_row_over{
+	background-color: #efefef;
+	background-image: url(/project/vframe/images/ext/default/grid/row-over.gif);
+}
+.VList_body_row_over>td{
+	border-bottom: 1px solid #ddd;
+}
+.VList_body_row_gray{
+	background-color: #FAFAFA;
+}
+.searchform_section_border{
+	 margin-bottom: 5px;
+}
+.form_edit_radiobox{
+	float: left;
+}
+.form_edit_radioitem{
+	float: left;
+	clear: none;
+	height: 25px;
+	padding-top: 4px;
+	padding-left: 4px;
+	padding-right: 4px;
+}
+.form_edit_radioitem input[type=checkbox]{
+	height: 13px;
+	width: 13px;
+}
+.form_edit_radioitem input[type=radio]{
+	height: 13px;
+	width: 13px;
+}
+
+/* style of fields for search form. Since V5.1.1 */
+.selField_border{
+	height: 18px;
+}
+.selField_field_dspValDiv{
+	padding: 2px 0px;
+	width: 100%;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.selField_field_td{
+	padding: 0px 3px;
+}
+.selField_field_icon{
+	width: 12px;
+}
+.selField_options_opt_selected{
+	background-color: #cbcef9;
+}
+.Vp_searchField_Field_blank_div{
+	height: 12px; 
+	padding: 3px 3px; 
+	border:1px solid #B3B3B3;
+}
+.Vp_searchField_SelField_listAligner_div{
+	position: relative; 
+	top: 0px; 
+	margin: 0px 0px;
+	height: 0px; 
+	width: 100%;
+}
+
+.Vp_searchField_SearchField_border_div{
+	height: 20px;
+}
+.Vp_searchField_SearchField_frame_table{
+	border: 1px solid #666666;
+	background-color: #FFFFFF;
+}
+.Vp_searchField_SearchField_frame_first_td{
+	border-right: 1px dotted #6b6b6b;
+}
+.Vp_searchField_SearchField_frame_second_td{}
+.Vp_searchField_SearchField_frame_till_td{
+	position: relative;
+}
+.Vp_searchField_SearchField_frame_till_div{
+	position: absolute; 
+	top: -1px; 
+	width:12px; 
+	height: 15px; 
+	border-left: 1px solid #B3B3B3; 
+	border-right: 1px solid #B3B3B3;
+	border-tot: 0px; 
+	border-bottom: 0px; 
+	background-color: #FFF; 
+	text-align: center; 
+	padding-top: 5px;
+}
+.Vp_searchField_SearchField_frame_third_td{}
+.Vp_searchField_SearchField_frame_cancelIcon_aligner_div{
+	position: relative;
+	float: right;
+	width: 0px;
+	height: 0px;
+}
+.Vp_searchField_SearchField_frame_cancelIcon_div{
+	position: absolute;
+	top: -18px;
+	left: -14px;;
+	height: 25px;
+	width: 12px;
+	cursor: pointer;
+	background-color: #FFFFFF;
+	background-image: url(/project/vframe/images/search/icon_delete.gif);
+/*	background-image: url(/project/vframe/images/other/icon_jjsp.gif); */
+	background-repeat: no-repeat;
+	background-position: left center;
+}
+
+
+.Vp_searchField_CondSelector_selIconNode_div{
+	position: relative;
+	top: -18px;
+	width: 100%;
+	height: 25px;
+	background-image: url(/project/vframe/images/form/form_field_sel.gif);
+	background-repeat: no-repeat;
+	background-position: top right;
+}
+
+
+.Vp_searchField_StringValSelector_input_table{
+	height: 24px;
+}
+.Vp_searchField_TextInput{
+	width: 100%;
+	border: 0px solid #fff;
+	font-size: 12px;
+	padding-top: -2px;
+	height: 24px;
+}
+
+/* */
+.Vp_comp_ExtendAbleBox_div{
+	background-color: #FFF;
+	border-top: 1px solid #B3B3B3;
+	border-left: 1px solid #B3B3B3;
+	border-right: 1px solid #B3B3B3;
+}
+.Vp_comp_ExtendAbleBox_div .group_div{
+	width: 100%;
+}
+.Vp_comp_ExtendAbleBox_div .group_title_div{
+	cursor: pointer;
+	font-weight: bold;
+	width: 100%;
+	background-color: #F3F3F3;
+	border-bottom: 1px solid #B3B3B3;
+}
+.Vp_comp_ExtendAbleBox_div .group_title_font_div{
+	padding-top: 3px;
+	padding-bottom: 3px;
+	padding-left: 3px;
+}
+.Vp_comp_ExtendAbleBox_div .group_body_table{
+	width: 100%;
+	table-layout: fixed;
+	border-bottom: 1px solid #B3B3B3;
+}
+.Vp_comp_ExtendAbleBox_div .group_body_td{
+	padding: 5px;
+}
+
+.Vp_searchField_Var_title_top_over{
+	background-color: #cbcef9;
+}
+.Vp_searchField_Var_title_top_selected{
+	background-color: #cbcef9;
+}
+.Vp_searchField_Var_title_bottom_over{
+	background-image: url(/project/images/system/searchfield_date_varclass_hover.gif);
+	background-repeat: no-repeat;
+	background-position: top center;
+}
+.Vp_searchField_Var_title_bottom_selected{
+	background-image: url(/project/images/system/searchfield_date_varclass_hover.gif);
+	background-repeat: no-repeat;
+	background-position: top center;
+}
+.Vp_searchField_Var_item_over{
+	background-color: #cbcef9;
+}
+.Vp_searchField_Var_item_selected{
+	background-color: #cbcef9;
+}
+.Vp_searchField_Var_table .title_tbody .top_tr td{
+	text-align: center;
+	padding: 3px 3px;
+	cursor: pointer;
+}
+.Vp_searchField_Var_table .title_tbody .bottom_tr td{
+	height: 8px;
+	cursor: pointer;
+}
+.Vp_searchField_Var_table .line_tr{
+	height: 9px;
+	background-image: url(/project/images/system/searchfield_date_varclass_line.gif);
+	background-repeat: no-repeat;
+	background-position: center center;
+}
+.Vp_searchField_Var_table .vars_tbody{
+}
+.Vp_searchField_Var_table .vars_tbody td{
+	text-align: left;
+	height: 12px;
+	padding: 3px 0px;
+	cursor: pointer;
+}
+.Vp_searchField_FieldExtension_listContent_div{
+	height: 100%;
+	widht: 100%;
+	overflow-x: hidden;
+	overflow-y: scroll;
+}
+.Vp_searchField_SearchObjExtension_searchIcon_div{
+	float: right;
+	width: 16px;
+	height: 25px;
+	margin-top: 2px;
+	margin-right: 2px;
+	background-image: url(/project/images/icon/icon59.gif);
+	background-repeat: no-repeat;
+	background-position: center center;
+}
+.clearfix:after {
+	content: ".";
+	visibility: hidden;
+	display: block;
+	height: 0;
+	clear: both;
+}

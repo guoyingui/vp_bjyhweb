@@ -1,0 +1,194 @@
+﻿<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  
+  <link rel="stylesheet" href="style.css" type="text/css" media="screen">
+  <script src="js/jstools.js" type="text/javascript" charset="utf-8"></script>
+  <script src="js/raphael.js" type="text/javascript" charset="utf-8"></script>
+  
+  <script src="js/jquery/jquery.js" type="text/javascript" charset="utf-8"></script>
+  <script src="js/jquery/jquery.progressbar.js" type="text/javascript" charset="utf-8"></script>
+  <script src="js/jquery/jquery.asyncqueue.js" type="text/javascript" charset="utf-8"></script>
+  
+  <script src="js/Color.js" type="text/javascript" charset="utf-8"></script>
+  <script src="js/Polyline.js" type="text/javascript" charset="utf-8"></script>
+  <script src="js/ActivityImpl.js" type="text/javascript" charset="utf-8"></script>
+  <script src="js/ActivitiRest.js" type="text/javascript" charset="utf-8"></script>
+  <script src="js/LineBreakMeasurer.js" type="text/javascript" charset="utf-8"></script>
+  <script src="js/ProcessDiagramGenerator.js" type="text/javascript" charset="utf-8"></script>
+  <script src="js/ProcessDiagramCanvas.js" type="text/javascript" charset="utf-8"></script>
+
+  <link href="../js/plugins/layui/css/layui.css" rel="stylesheet" media="all">
+  <script src="../js/plugins/layer/layer.min.js"></script>
+  <script src="../js/plugins/layui/layui.js"></script>
+  
+  <style type="text/css" media="screen">
+	body {
+		background: #ffffff;
+	}
+    .ui-progressbar .ui-progressbar-value {
+		background: #ffffff; 
+	}
+
+	.diagramHolder .diagram {
+		border: 0px; margin: 0px; padding: 0px; 
+	}
+  </style>
+</head>
+<body>
+<div class="wrapper">
+  <div class="diagram-info" id="diagramInfo"></div>
+  <div id="pb1" style="display: none;"></div>
+  <div id="overlayBox">
+    <div id="diagramBreadCrumbs" style="display: none;" class="diagramBreadCrumbs" onmousedown="return false" onselectstart="return false"></div>
+    <div id="diagramHolder" class="diagramHolder" ></div>
+  </div>
+</div>
+<script language='javascript'>
+// 修改流程图预览的高度
+// alert($("body", parent.document).height() - 30);
+// $(".container-iframe", parent.document).height($("body", parent.document).height() - 120);
+      $("#diagramInfo").on('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        });
+function getWorkflowPath(){
+  return parent.vp.gateway.handleGateWay('{vpflow}');
+}
+
+var query_string = {};
+var query = window.location.search.substring(1);
+var vars = query.split("&");
+for (var i=0;i<vars.length;i++) {
+  var pair = vars[i].split("=");
+  query_string[pair[0]] = pair[1];
+}
+
+var processDefinitionId = query_string["processDefinitionId"];
+var processInstanceId = query_string["processInstanceId"];
+var cachedata;
+jQuery.ajaxSettings.async = false;
+jQuery.getJSON(getWorkflowPath()+"/rest/flowhandler/findByPiId",{'piId':processInstanceId,'pdId':processDefinitionId},function(result){
+  cachedata = result.data;
+});
+var DiagramGenerator = {};
+var pb1;
+$(document).ready(function(){
+
+  console.log("Initialize progress bar");
+  
+  pb1 = new $.ProgressBar({
+    boundingBox: '#pb1',
+    label: 'Progressbar!',
+    on: {
+      complete: function() {
+        console.log("Progress Bar COMPLETE");
+        this.set('label', '');
+        if (processInstanceId) {
+          ProcessDiagramGenerator.drawHighLights(processInstanceId);
+        }
+      },
+      valueChange: function(e) {
+        this.set('label', e.newVal + '%');
+      }
+    },
+    value: 0
+  });
+  console.log("Progress bar inited");
+
+  ProcessDiagramGenerator.options = {
+    diagramBreadCrumbsId: "diagramBreadCrumbs",
+    diagramHolderId: "diagramHolder",
+    diagramInfoId: "diagramInfo",
+    on: {
+      click: function(canvas, element, contextObject){
+        var mouseEvent = this;
+        console.log("[CLICK] mouseEvent: %o, canvas: %o, clicked element: %o, contextObject: %o", mouseEvent, canvas, element, contextObject);
+        console.log("id :"+ contextObject.id);
+        console.log(contextObject);
+        var documentation = JSON.parse(contextObject.getProperty("documentation"));
+        //console.log("-----------------------");
+        //console.log(cachedata.flowhandlers[contextObject.getId()]);
+        var flowhandler = cachedata.flowhandlers[contextObject.id];
+        var taskId = flowhandler.taskId;
+        var piId = processInstanceId;
+        var ientityid = cachedata.ientityid;
+        var iobjectid = cachedata.iobjectid;
+        var formkey = flowhandler.formkey;
+        var stepkey = contextObject.id;
+        var iflowentityid = cachedata.iflowentityid;
+        parent.window.flowtabs.iframeClick(taskId,piId,ientityid,iobjectid,formkey,iflowentityid,stepkey);
+
+        if (contextObject.getProperty("type") == "callActivity") {
+          var processDefinitonKey = contextObject.getProperty("processDefinitonKey");
+          var processDefinitons = contextObject.getProperty("processDefinitons");
+
+
+          var processDefiniton = processDefinitons[0];
+          console.log("Load callActivity '" + processDefiniton.processDefinitionKey + "', contextObject: ", contextObject);
+
+          // Load processDefinition
+          ProcessDiagramGenerator.drawDiagram(processDefiniton.processDefinitionId);
+        }
+      },
+      rightClick: function(canvas, element, contextObject){
+        var mouseEvent = this;
+        console.log("[RIGHTCLICK] mouseEvent: %o, canvas: %o, clicked element: %o, contextObject: %o", mouseEvent, canvas, element, contextObject);
+      },
+      over: function(canvas, element, contextObject){
+        var mouseEvent = this;
+        //console.log("[OVER] mouseEvent: %o, canvas: %o, clicked element: %o, contextObject: %o", mouseEvent, canvas, element, contextObject);
+
+        // TODO: show tooltip-window with contextObject info
+        ProcessDiagramGenerator.showActivityInfo(contextObject);
+        //超过右边的判断
+        if($("#diagramInfo>div").offset().left+$("#diagramInfo>div").width()>$(window).width()){
+          $("#diagramInfo>div").css({'left':$("#diagramInfo>div").css('left').split('px')[0]-$("#diagramInfo>div").width()+'px'})
+        }
+        //超过上边的判断
+        if($("#diagramInfo>div").offset().top+$("#diagramInfo>div").height()>$(window).height()){
+          $("#diagramInfo>div").css({'top':$("#diagramInfo>div").css('top').split('px')[0]-$("#diagramInfo>div").height()+'px'})
+        }
+        //超过左边的判断
+        if($("#diagramInfo>div").offset().left<$(window).scrollLeft()){
+          $("#diagramInfo>div").css({'left':parseInt($("#diagramInfo>div").css('left').split('px')[0])+$("#diagramInfo>div").width()+'px'})
+        }
+        //超过下边的判断
+        if($("#diagramInfo>div").offset().top<$(window).scrollTop()){
+          $("#diagramInfo>div").css({'top':parseInt($("#diagramInfo>div").css('top').split('px')[0])+$("#diagramInfo>div").height()+'px'})
+        }
+      },
+      out: function(canvas, element, contextObject){
+        var mouseEvent = this;
+        //console.log("[OUT] mouseEvent: %o, canvas: %o, clicked element: %o, contextObject: %o", mouseEvent, canvas, element, contextObject);
+
+        ProcessDiagramGenerator.hideInfo();
+      }
+    }
+  };
+  
+  //var baseUrl = window.document.location.protocol + "//" + window.document.location.host + "/";
+  //var shortenedUrl = window.document.location.href.replace(baseUrl, "");
+  //baseUrl = baseUrl + shortenedUrl.substring(0, shortenedUrl.indexOf("/"));
+  //var baseUrl = parent.vp.gateway.handleGateWay('{vpflow}');//.replace("/vpgatway","");
+  var baseUrl = getWorkflowPath();
+
+  ActivitiRest.options = {
+    processInstanceHighLightsUrl: baseUrl + "/service/process-instance/{processInstanceId}/highlights?callback=?",
+    processDefinitionUrl: baseUrl + "/service/process-definition/{processDefinitionId}/diagram-layout?callback=?",
+    processDefinitionByKeyUrl: baseUrl + "/service/process-definition/{processDefinitionKey}/diagram-layout?callback=?"
+  };
+  
+  if (processDefinitionId) {
+    ProcessDiagramGenerator.drawDiagram(processDefinitionId);
+    
+  } else {
+    alert("processDefinitionId parameter is required");
+  }
+});
+
+
+</script>
+</body>
+</html>

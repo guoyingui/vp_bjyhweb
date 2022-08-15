@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>日志</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
+    <link rel="shortcut icon" href="img/favicon.ico">
+    <link href="../../css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="../../css/font-awesome.min.css?v=4.7.0" rel="stylesheet">
+    <link href="../../css/animate.css" rel="stylesheet">
+    <link href="../../css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+    <link href="../../css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+    <link href="../../css/plugins/zTree/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+	<link href="../../js/plugins/layui/css/layui.css" rel="stylesheet" media="all">
+    <!-- 自定义css -->
+    <link href="../../css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="../../css/common.css" rel="stylesheet">
+    <link href="../../css/vp.css" rel="stylesheet">
+    <script src="../../../vpcommon/config.js"></script>
+    <script src="../../../vpcommon/vputils.min.js"></script>
+
+    <!--[if lte IE 9]>
+        <script src="../../js/html5shiv.min.js"></script>
+        <script src="../../js/respond.js"></script>
+    <![endif]-->
+
+	<style>
+		.ztree div.divTd {
+			min-width: 70px;
+		}
+		.nav-tabs li.active>a {
+			border: 0px;
+			color: #1890ff;
+		}
+		#vppagebar {
+			border-top: 0px;
+		}
+		
+		#outloading {
+			width: 100%; height: 100%; border: 1px; z-index:1000; position: absolute;  display: none;
+			filter:alpha(opacity=60);
+			opacity: 0.4;
+			-moz-opacity: 0.4;
+		}
+		.spinner {
+		  width: 30px;
+		  height: 30px;
+		 
+		  position: relative;
+		  margin: 100px auto;
+		}
+		 
+		.double-bounce1, .double-bounce2 {
+		  width: 100%;
+		  height: 100%;
+		  border-radius: 50%;
+		  background-color: #2db7f5;
+		  opacity: 0.6;
+		  position: absolute;
+		  top: 0;
+		  left: 0;
+		   
+		  -webkit-animation: bounce 2.0s infinite ease-in-out;
+		  animation: bounce 2.0s infinite ease-in-out;
+		}
+		 
+		.double-bounce2 {
+		  -webkit-animation-delay: -1.0s;
+		  animation-delay: -1.0s;
+		}
+		 
+		@-webkit-keyframes bounce {
+		  0%, 100% { -webkit-transform: scale(0.0) }
+		  50% { -webkit-transform: scale(1.0) }
+		}
+		 
+		@keyframes bounce {
+		  0%, 100% {
+			transform: scale(0.0);
+			-webkit-transform: scale(0.0);
+		  } 50% {
+			transform: scale(1.0);
+			-webkit-transform: scale(1.0);
+		  }
+		}
+	</style>
+</head>
+
+<body class="gray-bg">
+<div id="outloading">
+	<div class="spinner">
+	  <div class="double-bounce1"></div>
+	  <div class="double-bounce2"></div>
+	</div>
+</div>
+
+    <div class="sub-navigator clearfix">
+        <div class="col-sm-2 sub-head" id="vpsearch">           
+        </div>
+        <div class="col-sm-4 subnav">
+            <div data-toggle="buttons" class="btn-group" id="vpfilter">
+                
+            </div>
+        </div>
+        <div class="col-sm-3 subnav">
+            <!-- 放其他栏目或工具按钮 -->
+        </div>
+        <div class="col-sm-3 subnav tabs-container">
+            <ul class="toolicon clearfix" id="vptoolbar">
+                
+            </ul>
+        </div>
+    </div>
+    <div class="padding-10" id="vpcontainer" style="padding-top:45px; ">
+        <div class="clearfix white-bg padding-10 animated fadeInRight vp-pr">
+            <div class="vp-overflow-x vpcontent">
+                <ul id="vptreetable" class="ztree" lay-filter="vpclick"></ul>
+				<script type="text/html" id="vpbar">
+					{{# if(d.ipubstatus=="未发布"){ }}
+						<div>
+							<a lay-event="btnpub"><i class="fa fa-check-circle fa-fw text-success" data-toggle="tooltip" title="发布"></i></a>
+							<a lay-event="download"><i class="fa fa-download text-success" data-toggle="tooltip" title="导出"></i></a>
+							<a lay-event="upload"><i class="fa fa-upload text-success upladimp" data-toggle="tooltip" title="导入"></i></a>
+						</div>
+					{{#}else{ }}
+						<div>
+							<a lay-event="btnunpub"><i class="fa fa-ban fa-fw text-danger" data-toggle="tooltip" title="取消发布"></i></a>
+							<a lay-event="download" ><i class="fa fa-download text-success" data-toggle="tooltip" title="导出"></i></a>
+							<a lay-event="upload"><i class="fa fa-upload text-success upladimp" data-toggle="tooltip" title="导入"></i></a>
+						</div>
+					{{# }}}
+				</script>
+            </div>
+			<div class="layui-table-page" id="vppagebar">
+			  
+			</div>
+        </div> 
+    </div>
+<div class="vp-pr vp-height-35 m-b-sm" style="display:none" ><a id="test" class="btn btn-white1"><i class="fa fa-cloud-upload" aria-hidden="true"></i>添加附件</a></div> 
+<iframe id="dowloadFrame" style="width: 0px; height: 0px;"></iframe>
+	<!-- drawer 侧滑DIV -->
+    <div class="hide drawer-fixed vp-studio vp-t" style="margin-top: 40px;" id="vpeditform">
+        
+    </div>
+
+    <!-- 全局js -->
+    <script src="../../js/jquery-1.11.3.min.js"></script>
+	<!--[if IE 8]>
+	<script type="text/javascript" src="../../js/jquery-1.9.1.min.js"></script>
+	<![endif]-->
+    <script src="../../js/bootstrap.min.js?v=3.3.6"></script>
+    <!-- 自定义js -->
+    <script src="../../js/content.js?v=1.0.0"></script>
+    <!-- 日期控件 -->
+    <script src="../../js/plugins/datapicker/bootstrap-datepicker.js"></script>
+    <!-- layer弹出层 -->
+    <script src="../../js/plugins/layer/layer.min.js"></script>
+    <script src="../../js/plugins/layui/layui.js"></script>
+    <!-- 下拉选择列表 -->
+    <script src="../../js/plugins/chosen/chosen.jquery.js"></script>
+    <!-- zTree模拟树表 -->
+    <script src="../../js/plugins/zTree/jquery.ztree.all.min.js"></script>
+    <script src="../../js/vpsoft/TreeTable.js"></script>
+    <script src="../../js/vpsoft/common.js"></script>
+    <script src="../../js/vpsoft/form.js"></script>
+    <script src="../../js/plugins/iCheck/icheck.min.js"></script>
+
+
+	<!--选择用户-->
+	<script src="../../js/vpsoft/chosenEntity.js?v=1.0.0" charset="utf-8"></script>
+</body>
+<script>
+//dialog.openQuery('', '/vpweb/loading.html');
+var osearch = Search({ el: 'vpsearch', id: 'quicksearch' });
+osearch.parseEl();
+
+var olisttool = ListTool({ el: 'vptoolbar', primary:'vpadd', data: [ 
+			//{ id: 'down', faclass: 'fa fa-cloud-download fa-fw text-success', title: '下载'}
+	] });
+olisttool.parseEl();
+
+
+if (decodeURI(getParameter("quicksearch")) != 'null') {
+	$("#quicksearch").val(decodeURI(getParameter("quicksearch")));
+}
+if (getParameter("vpfilter") != 'null') {
+}
+var olisttable = ListTable({ el: 'vptreetable', vpurl: '/syslog/opr', 
+		checkbox: false, toolbar: false, toolbarevent: 'doTestFunc',
+		param:  { filtervalue: $("#vpfilter").find(".active").attr("value"), 
+		quickvalue: $("#quicksearch").val() }
+	});
+olisttable.parseEl();
+
+var oformview = FormView({ el: 'vpeditform', title: '实体->xxx对象', data:  [ 
+			{ text: '实体', url: 'entity_form.html', toolbar: true }
+
+	]});
+
+
+function doTestFunc(obj) {
+	
+}
+
+//dialog.close();
+</script>
+</html>

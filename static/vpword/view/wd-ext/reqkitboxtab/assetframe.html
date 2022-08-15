@@ -1,0 +1,37 @@
+<div class="reqkitbox-assetframe">
+    <div class="layui-row">
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="请输入名称...">
+            <span class="input-group-btn">
+                <button type="button" class="btn btn-default"><i class="fa fa-search"></i></button>
+            </span>
+        </div>
+    </div>
+    <div class="layui-row">
+        <ul id="assetFrameTree" class="ztree"></ul>
+    </div>
+    <script type="text/javascript">
+      layui.use(['jquery', 'assetframe'], function(){
+          var assetframe = layui.assetframe,
+              $ = layui.jquery;
+              $container = $('.reqkitbox-assetframe'),
+              $input = $container.find('input');
+
+          //初始化资产结构    
+          assetframe.init('assetFrameTree');
+
+          //绑定搜索框
+          $('body').on('keyup', $input, function (e) {
+              var keyCode = e.keyCode ? e.keyCode : e.which ? e.which : e.charCode;
+              if (keyCode == 13) {
+                  assetframe.search($input.val());
+              }
+              return false;
+          })
+
+          $container.find('button').click(function () {
+              assetframe.search($input.val());
+          })
+      })
+    </script>
+</div>

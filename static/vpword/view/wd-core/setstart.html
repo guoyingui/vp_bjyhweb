@@ -1,0 +1,88 @@
+<script type="text/javascript" src="static/plugins/bootstrap-validator/0.5.3/bootstrapValidator.js"></script>
+<script type="text/javascript" src="static/plugins/bootstrap-validator/0.5.3/bootstrapValidator.patch.js"></script>
+<script type="text/javascript" src="static/plugins/bootstrap-validator/i18n/zh_CN.js"></script>
+<script type="text/javascript" src="static/plugins/jquery-form/3.51.0/jquery.form.js"></script>
+<link rel="stylesheet" href="static/plugins/bootstrap-validator/0.5.3/bootstrapValidator.css" />
+
+<form id="startNumForm" method="post"  role="form" class="form-horizontal" action="">
+    <div class="row">
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><span style="color: #dd5a43;">*</span>起始章节号：</label>
+            <div class="col-sm-8">
+                <input class="form-control input-plain-text" type="text" id="startNum" name="startNum" placeholder="请输入章节号">
+            </div>
+        </div>
+    </div>
+</form>
+<script>
+    $(document).ready(function() {
+        vpUtils.formvalidation('#startNumForm', {
+            submitHandler: function(form, _bootstrapValidator, e) {
+                vpUtils.formSubmit(form, {
+                    url : config.setStart(),
+                    mask : $(".modal-content"),
+                    maskinfo: '正在提交请稍等...',
+                    method:'put',
+                }, function (json) {
+                    startNumForm.dialogClose();
+                    _bootstrapValidator.disableSubmitButtons(false);
+                })
+            },
+            fields : {
+                startNum : {
+                    verbose: false,
+                    validators:{
+                        regexp: {/* 只需加此键值对，包含正则表达式，和提示 */
+                            regexp: /^(\d+)(\.(\d+))*$/,
+                            message: '请输入正确的起始章节号,格式(数字.数字.数字)'
+                        },
+                        callback : {
+                            message: '请输入正确的起始章节号,格式(数字（1~32767）.数字.数字)，最多9层',
+                            callback: function (value, validator) {
+                                var _r = true;
+                                if ($.trim(value)) {
+                                    var nmbs = value.split(".");
+                                    if(nmbs.length>9){
+                                        _r = false;
+                                    }else{
+                                        $.each(nmbs,function (i,data) {
+                                            if(data<=0 || data> 32767){
+                                                _r = false;
+                                            }
+                                        })
+                                    }
+                                    if (_r) {
+                                        WD_URL.rest.ajax({
+                                            url: config.vaidLevel(),
+                                            data: {levelNum:nmbs.length},
+                                            type:'GET',
+                                            async: false
+                                        }, function (json) {
+                                            _r = json.checkResult
+                                        })
+                                    }
+                                }
+                                return _r;
+                            }
+                        }
+                    }
+                }
+            },
+            excluded: [':disabled']
+        });
+    });
+    var startNumForm = {
+        dialog : null,
+        loadData :function(dialog,data){
+           this.dialog = dialog;
+           this.dialog.tree = data.tree || {}; 
+        },
+        save : function (dialog) {
+            this.dialog = dialog;
+            $('#startNumForm').submit();
+        },
+        dialogClose : function () {
+            startNumForm.dialog.close();
+        }
+    }
+</script>

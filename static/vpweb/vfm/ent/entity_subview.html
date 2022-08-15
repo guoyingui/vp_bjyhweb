@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>任务看板 - VP应用全生命周期管理系统</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
+    <link rel="shortcut icon" href="img/favicon.ico">
+    <link href="../../css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="../../css/font-awesome.min.css?v=4.7.0" rel="stylesheet">
+    <link href="../../css/animate.css" rel="stylesheet">
+    <link href="../../css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+    <link href="../../css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+    <link href="../../css/plugins/zTree/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+	<link href="../../js/plugins/layui/css/layui.css" rel="stylesheet" media="all">
+    <!-- 自定义css -->
+    <link href="../../css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="../../css/common.css" rel="stylesheet">
+    <link href="../../css/vp.css" rel="stylesheet">
+    <script src="../../../vpcommon/config.js"></script>
+    <script src="../../../vpcommon/vputils.min.js"></script>
+
+    <!--[if lte IE 9]>
+        <script src="../../js/html5shiv.min.js"></script>
+        <script src="../../js/respond.js"></script>
+    <![endif]-->
+	<style> 
+
+	</style>
+</head>
+
+<body class="wight-bg">
+    <div class="">
+		<div class="col-sm-12">
+			<div class="ibox">
+				<div class="ibox-title p-l-none">					
+					<div class="ibox-tools" id="vptoolbar">
+					
+					</div>
+				</div>
+				<div class="ibox-content p-n m-t-sm vp-overflow-x" style="display: block;">
+					 <div class="vp-overflow-x vpcontent">
+						<ul id="vptreetable" class="ztree" lay-filter="vpclick"></ul>
+						<script type="text/html" id="vpbar">
+							{{# if(d.itype!="0" && $('#vpeditform', parent.document).attr("accesslevel")==1){ }}
+								<a lay-event="btnunpub"><i class="fa fa-times fa-fw text-danger" data-toggle="tooltip" title="删除"></i></a>
+							{{#}else{ }}
+							
+							{{# }}}
+						</script>
+					</div>
+					<div class="layui-table-page" id="vppagebar">
+					  
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+    <!-- 全局js -->
+    <script src="../../js/jquery-1.11.3.min.js"></script>
+	<!--[if IE 8]>
+	<script type="text/javascript" src="../../js/jquery-1.9.1.min.js"></script>
+	<![endif]-->
+    <script src="../../js/bootstrap.min.js?v=3.3.6"></script>
+    <!-- 自定义js -->
+    <script src="../../js/content.js?v=1.0.0"></script>
+    <!-- 日期控件 -->
+    <script src="../../js/plugins/datapicker/bootstrap-datepicker.js"></script>
+    <!-- layer弹出层 -->
+    <script src="../../js/plugins/layer/layer.min.js"></script>
+    <script src="../../js/plugins/layui/layui.js"></script>
+    <!-- 下拉选择列表 -->
+    <script src="../../js/plugins/chosen/chosen.jquery.js"></script>
+    <!-- zTree模拟树表 -->
+    <script src="../../js/plugins/zTree/jquery.ztree.all.min.js"></script>
+    <script src="../../js/vpsoft/TreeTable.js"></script>
+    <script src="../../js/vpsoft/common.js"></script>
+    <script src="../../js/vpsoft/form.js"></script>
+    <script src="../../js/plugins/iCheck/icheck.min.js"></script>
+    <script src="../../js/vpsoft/getUrlParam.js"></script>
+
+</body>
+<script>
+/*
+var otool = RelationTool({ el: 'vptoolbar', primary:'vpadd', data: [ 
+			{ id: 'vpadd', faclass: 'fa-plus', title: '新增' },
+			{ id: 'vprel', faclass: 'fa-link', title: '关联已有' },
+			{ id: 'vpdel', faclass: 'fa-times fa-fw text-danger', title: '删除' }
+	] });
+otool.parseEl();
+*/
+
+var entityid=$('#vpeditform', parent.document).attr("iid");
+
+
+if($('#vpeditform', parent.document).attr("ientityid")!=undefined){
+	entityid=$('#vpeditform', parent.document).attr("ientityid");
+}
+
+var olisttable = ListTable({ el: 'vptreetable', vpurl: '/cfgentview/subpage', checkbox: true, toolbar: true, toolbarwidth: 60, toolbarevent: 'viewEdit',
+	param:  { ientityid: entityid,iviewtype:UrlParm.parm("iviewtype") }
+});
+olisttable.parseEl();
+
+if ($('#vpeditform', parent.document).attr("accesslevel")==1) {
+	if(UrlParm.parm("iviewtype")==0){
+		var olisttool = RelationTool({ el: 'vptoolbar', primary:'vpadd', data: [ 
+			{ id: 'vpadd', faclass: 'fa-plus', title: '新建视图' }
+
+			] });
+			olisttool.parseEl();
+	}
+	else if(UrlParm.parm("iviewtype")==3||UrlParm.parm("iviewtype")==7){
+		var olisttool = RelationTool({ el: 'vptoolbar', primary:'vpaddform', data: [ 
+			{ id: 'vpaddform', faclass: 'fa-plus', title: '新建表单' },
+			{ id: 'vpeditform', faclass: 'fa-pencil', title: '编辑表单' },
+			{ id: 'vpcopyform', faclass: 'fa-file-zip-o', title: '复制表单' }
+			] });
+			olisttool.parseEl();
+		
+	}else if(UrlParm.parm("iviewtype")==4){
+		var olisttool = RelationTool({ el: 'vptoolbar', primary:'vpadd', data: [ 
+			{ id: 'vpadd', faclass: 'fa-plus', title: '新建过滤器' }
+
+			] });
+			olisttool.parseEl();
+		
+	}
+}
+else {
+	if(UrlParm.parm("iviewtype")==7){
+		var olisttool = RelationTool({ el: 'vptoolbar', primary:'vpaddform', data: [ 
+			{ id: 'vpviewform', faclass: 'fa-eye', title: '查看表单' }
+			] });
+			olisttool.parseEl();
+	}
+}
+
+
+
+function viewEdit(obj) {
+var iid=0;
+var title = '新建';
+if (obj) {
+	if(obj.data.iviewtype==3||obj.data.iviewtype==7){
+		formEdit(obj);
+		return;
+	}
+		
+	title = obj.data.sname;
+	iid= obj.data.iid;
+	if(obj.event=='btnunpub'){
+		var param = {iid:iid,iviewtype:obj.data.iviewtype};
+		   vpPostAjax('/cfgentview/del', param, 'POST', function(rst) {
+			   if(rst.success){  
+					//parent.layer.close(index);
+					parent.layer.msg('删除成功！', { icon: 1, time: 2000 });
+					olisttable.parseEl();
+					//$(".tooltip.fade.top.in").remove();
+				}else{
+					parent.layer.msg('删除失败，！'+rst.msg, { icon: 2, time: 2000 });
+				}
+		   });
+	}else{
+		openview(iid,title,UrlParm.parm("iviewtype"));
+	}
+}else{
+	openview(iid,title,UrlParm.parm("iviewtype"));
+}
+}
+
+function formEdit(obj) {debugger;
+var iid=0;
+var title = '新建';
+if (obj) {
+	title = obj.data.sname;
+	iid= obj.data.iid;
+	if(obj.event=='btnunpub'){
+		var param = {iid:iid,iviewtype:obj.data.iviewtype};
+		   vpPostAjax('/cfgentview/del', param, 'POST', function(rst) {
+			   if(rst.success){  
+					//parent.layer.close(index);
+					parent.layer.msg('删除成功！', { icon: 1, time: 2000 });
+					olisttable.parseEl();
+					//$(".tooltip.fade.top.in").remove();
+				}else{
+					parent.layer.msg('删除失败，！'+rst.msg, { icon: 2, time: 2000 });
+				}
+		   });
+	}else{
+		//openform(iid,title);
+		openformfield(iid,title);
+	}
+}else{
+	openform(iid,title);
+}
+}
+$("#vpadd").on('click',function(event) {
+viewEdit();
+});
+$("#vpaddform").on('click',function(event) {
+formEdit();
+});
+$("#vpeditform").on('click',function(event) {
+	var checkStatus = olisttable.getTable().checkStatus("vptable"), idlist = "";
+	if(checkStatus.data.length==0){
+		layer.msg('请先选择要编辑的数据！', { icon: 2, time: 2000 });
+		return false;
+	}
+	
+	if(checkStatus.data.length>1){
+		layer.msg('请先选择一条要编辑的数据！', { icon: 2, time: 2000 });
+		return false;
+	}
+	
+	openform(checkStatus.data[0].iid,checkStatus.data[0].sname);
+});
+$("#vpviewform").on('click',function(event) {
+	var checkStatus = olisttable.getTable().checkStatus("vptable"), idlist = "";
+	if(checkStatus.data.length==0){
+		layer.msg('请先选择要编辑的数据！', { icon: 2, time: 2000 });
+		return false;
+	}
+	
+	if(checkStatus.data.length>1){
+		layer.msg('请先选择一条要编辑的数据！', { icon: 2, time: 2000 });
+		return false;
+	}
+	
+	openform(checkStatus.data[0].iid,checkStatus.data[0].sname);
+});
+$("#vpcopyform").on('click',function(event) {
+	var checkStatus = olisttable.getTable().checkStatus("vptable"), idlist = "";
+	if(checkStatus.data.length==0){
+		layer.msg('请先选择要复制的数据！', { icon: 2, time: 2000 });
+		return false;
+	}
+	
+	if(checkStatus.data.length>1){
+		layer.msg('请先选择一条要复制的数据！', { icon: 2, time: 2000 });
+		return false;
+	}
+	
+	copyform(checkStatus.data[0].iid);
+	olisttable.parseEl();
+});
+
+function copyform(iid){
+	var dataObj=new Object();
+	dataObj.copyiid=iid;
+	var action='/cfgentview/copy';
+	vpPostAjax(action, dataObj, 'POST', function(rst) {
+		   if(rst.success){   
+			parent.layer.msg('保存成功！', { icon: 1, time: 2000 });
+		}else{
+			parent.layer.msg('保存失败，！'+rst.message, { icon: 2, time: 2000 });
+		}
+	   });
+}
+
+function openview(iid,title,iviewtype){
+
+	var param = {};
+	if ($('#vpeditform', parent.document).attr("accesslevel") == 1)	{
+		param["btn"] = new Array("添加","删除","全部删除","保存");
+	}
+
+	parent.openWindow('../ent/entity_subviewform.html?iid='+iid+'&ientityid='+entityid+'&iviewtype='+iviewtype, title, param, function(layerindex,layero,index) {
+		//var resData = $(layero).find("iframe")[0].contentWindow.returnData();
+		if(index==1){
+			$(layero).find("iframe")[0].contentWindow.doNewAddRow();			
+		}
+		else if(index==2){
+			$(layero).find("iframe")[0].contentWindow.doDelRow();			
+		}
+		else if(index==3){
+			$(layero).find("iframe")[0].contentWindow.doDelAllRow();			
+		}
+		else if(index==4){
+		 var resData = $(layero).find("iframe")[0].contentWindow.saveViewInfo();
+		   if(resData!=false){
+			if(iid==0){
+				parent.layer.close(layerindex);
+				olisttable.parseEl();
+			}else{
+				olisttable.parseEl();
+			}
+		   }
+		}
+	});
+}
+
+function openform(iid,title){
+
+var param = {};
+if ($('#vpeditform', parent.document).attr("accesslevel")==1) {
+	param["btn"] = new Array("保存");
+}
+
+parent.openWindow('../ent/entity_subforminfo.html?iid='+iid+'&ientityid='+entityid, title, param, function(layerindex,layero,index) {
+	    //var resData = $(layero).find("iframe")[0].contentWindow.returnData();
+	    if(index==1){
+	    	 var resData = $(layero).find("iframe")[0].contentWindow.saveViewInfo();
+	    	 if(resData!=false){
+			    if(iid==0){
+			    	parent.layer.close(layerindex);
+			    	
+			    }
+			    olisttable.parseEl();
+	    	 }
+	    }
+	   
+	    
+});
+
+
+}
+function openformfield(iid,title){
+
+	var param = {};
+	if ($('#vpeditform', parent.document).attr("accesslevel") == 1)	{
+		param["btn"] = new Array("新建节","添加字段","删除","编辑","保存");
+	}
+
+	parent.openWindow('../ent/entity_subforminfofield.html?iid='+iid+'&ientityid='+entityid, title, param, function(layerindex,layero,index) {
+		//var resData = $(layero).find("iframe")[0].contentWindow.returnData();
+		if(index==1){
+			var resData = $(layero).find("iframe")[0].contentWindow.addSection(0);		 
+			if(iid==0){
+				parent.layer.close(layerindex);
+				olisttable.parseEl();
+			}		
+		}else if(index==2){
+			$(layero).find("iframe")[0].contentWindow.addFields();
+			
+		}else if(index==3){
+			$(layero).find("iframe")[0].contentWindow.delFormInfo();
+			
+		}else if(index==4){
+			 $(layero).find("iframe")[0].contentWindow.editFormInfo();
+		}else if(index==5){
+			 $(layero).find("iframe")[0].contentWindow.saveformInfo();
+			  
+		}
+	});
+}
+</script>
+</html>

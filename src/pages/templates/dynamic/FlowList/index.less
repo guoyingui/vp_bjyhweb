@@ -1,0 +1,64 @@
+
+.business-container {
+    padding-top: 30px;
+    .business-wrapper {
+        margin: 0 -10px;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+}
+
+// .drawer-fixed {
+//     position: absolute;
+//     right: -10px;
+//     left: -10px;
+//     top: 30px;
+//     bottom: -10px;
+//     z-index: 9;
+//     min-width: 500px;
+//     background: #fff;
+// }
+
+// .ant-dropdown{
+//     z-index: 1000 !important;
+// }
+ 
+// .shrink{
+//     position: absolute;
+//     left: -8px;
+//     top: 45%;
+// }
+.hidden {display: none}
+
+.workflow{
+    .menuleft{
+        //padding-top: 38px;
+        padding-bottom: 30px;
+        .search{
+            position: absolute;
+            top: 0;
+            left: 8px;
+            right: 8px;
+        }
+    }
+    .navswitch{
+        position: absolute;
+        bottom: 0;
+        left: 10px;
+        right: 10px;
+    }
+    .ant-menu-inline .ant-menu-selected, .ant-menu-inline .ant-menu-item-selected{
+        background-color: #eaf8fe;
+    }
+    .ant-menu-vertical > .ant-menu-item, .ant-menu-inline > .ant-menu-item, .ant-menu-item-group-list > .ant-menu-item, .ant-menu-vertical > .ant-menu-submenu > .ant-menu-submenu-title, .ant-menu-inline > .ant-menu-submenu > .ant-menu-submenu-title, .ant-menu-item-group-list > .ant-menu-submenu > .ant-menu-submenu-title{
+        font-size: 14px;
+    }
+    .ant-table-scroll{
+        .ant-table-body{
+            overflow: hidden !important;
+            &:hover{
+                overflow: auto !important;
+            }
+        }
+    }
+}

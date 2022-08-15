@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>状态</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
+    <link rel="shortcut icon" href="img/favicon.ico">
+    <link href="../../css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="../../css/font-awesome.min.css?v=4.7.0" rel="stylesheet">
+    <link href="../../css/animate.css" rel="stylesheet">
+    <link href="../../css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+    <link href="../../css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+    <!-- zTree树表 -->
+    <link href="../../css/plugins/zTree/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+    <!-- layUI表格 -->
+    <link href="../../css/plugins/chosen/chosen.css" rel="stylesheet">
+    <link href="../../css/plugins/iCheck/custom.css" rel="stylesheet">
+    <link href="../../js/plugins/layui/css/layui.css"  rel="stylesheet" media="all">
+    <link href="../../css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="../../css/common.css" rel="stylesheet">
+    <link href="../../css/vp.css" rel="stylesheet">
+    <script src="../../../vpcommon/config.js"></script>
+    <script src="../../../vpcommon/vputils.min.js"></script>
+	<style>
+	.step-box .valid {
+		color: #000000;
+	}
+	</style>
+    <!--[if lte IE 9]>
+        <script src="../../js/html5shiv.min.js"></script>
+        <script src="../../js/respond.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+	<div class="step-box-pan display-inline">
+		<div class="step-box m-t-md">
+			<div class="part1">
+				<div class="ibox">
+				    <form class="form-horizontal m-t" id="oForm">
+				    <input type="hidden" id="iid" name="iid">
+				    <input type="hidden" id="parentid" name="parentid">
+					<div class="ibox-content2 p-n clearfix">
+						    <input type="hidden" id="entityStatusId"/>
+							<div class="form-group">
+								<div class="col-xs-12">
+									<label class="col-xs-3 control-label text-ellipsis">编号：</label>
+									<div class="col-xs-9">
+									    <input id="scode" name="scode" placeholder="编号" type="text" maxlength="60" class="form-control">
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="col-xs-12">
+									<label class="col-xs-3 control-label text-ellipsis">名称：</label>
+									<div class="col-xs-9">
+									    <input id="sname" name="sname" placeholder="名称" type="text" maxlength="60" class="form-control">
+									</div>
+								</div>
+							</div>
+							
+							<div class="form-group layui-form" lay-filter="status">
+								<div class="col-xs-12">
+									<label class="col-xs-3 control-label">选项：</label>
+									<div class="col-xs-9" id="status">
+									    <div class="radio radio-info radio-inline">
+											<input type="radio" id="istatusRadio1" value="0" name="istatus">
+											<label for="istatusRadio1">初始</label>
+										</div>
+										<div class="radio radio-info radio-inline">
+											<input type="radio" id="istatusRadio2" value="1" name="istatus" checked="true">
+											<label for="istatusRadio2">正常</label>
+										</div>
+										<div class="radio radio-info radio-inline">
+											<input type="radio" id="istatusRadio3" value="2" name="istatus">
+											<label for="istatusRadio3">关闭</label>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<div class="col-xs-12">
+									<label class="col-xs-3 control-label">关联表单：</label>
+									<div class="col-xs-9">
+									    <select id="entityviewid" name="irefview" class="form-control">
+									    </select>
+									</div>
+								</div>
+							</div>
+					</div>
+				
+				    
+					<div class="ibox-title border-bottom p-l-none " style="display: none;">
+						<h5>处理人</h5>
+						<div class="ibox-tools">
+							<a class="collapse-link" data-toggle="tooltip" data-placement="top" title="收起">
+								<i class="fa fa-caret-up"></i>
+							</a>
+						</div>
+					</div>
+					<div class="ibox-content p-n clearfix" style="display: none;">
+						<div class="form-horizontal m-t" id="oForm">
+							<div class="form-group layui-form" lay-filter="defaulttype">
+								<div class="col-xs-12">
+									<label class="col-xs-3 control-label">初始处理人：</label>
+									<div class="col-xs-9" id="status">
+									    <div class="radio radio-info radio-inline">
+											<input type="radio" id="idefaulttype1" value="0" name="idefaulttype" checked="true">
+											<label for="idefaulttype1">不限定</label>
+										</div>
+										<div class="radio radio-info radio-inline">
+											<input type="radio" id="idefaulttype2" value="1" name="idefaulttype">
+											<label for="idefaulttype2">特定人员</label>
+										</div>
+										<div class="radio radio-info radio-inline">
+											<input type="radio" id="idefaulttype3" value="2" name="idefaulttype">
+											<label for="idefaulttype3">特定组</label>
+										</div>
+									</div>
+								</div>
+							</div>
+							<input type="hidden" id="idefaultvalueid" name="idefaultvalueid">
+							<div class="form-group  hidegroup group1">
+								<div class="col-xs-12">
+									<label class="col-xs-3 control-label">处理人：</label>
+									<div class="col-xs-9">
+									    <input id="idefaultvalue" name="idefaultvalue" placeholder="处理人" type="text" class="form-control padding-left-30 vp-radius" required="" aria-required="true" onclick="toSearchUserForNamerole('idefaultvalue');">
+									</div>
+								</div>
+							</div>
+							<div class="form-group  hidegroup group1">
+								<div class="col-xs-12">
+									<label class="col-xs-3 control-label">处理人选项：</label>
+									<div class="col-xs-9">
+									    <div class="checkbox vp-m-t-no vp-m-b-no">
+											<input type="checkbox" id="idefaultlevel" name="idefaultlevel" value="1">
+	                                        <label for="idefaultlevel" id="idefaultlevelfix">固定处理人</label>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="form-group  hidegroup group2">
+								<div class="col-xs-12">
+									<label class="col-xs-3 control-label">处理人所属组：</label>
+									<div class="col-xs-9">
+									    <input id="idefaultvaluegroup" name="idefaultvaluegroup" placeholder="处理人所属组" type="text" class="form-control padding-left-30 vp-radius" required="" aria-required="true">
+									</div>
+								</div>
+							</div>
+							<div class="form-group layui-form" lay-filter="currentlevel">
+								<div class="col-xs-12">
+									<label class="col-xs-3 control-label">最近处理人：</label>
+									<div class="col-xs-9" id="status">
+									    <div class="radio radio-info radio-inline">
+											<input type="radio" id="icurrentlevel1" value="0" name="icurrentlevel" checked="true">
+											<label for="icurrentlevel1"  id="icurrentlevellabel">允许修改</label>
+										</div>
+										<div class="radio radio-info radio-inline">
+											<input type="radio" id="icurrentlevel2" value="1" name="icurrentlevel">
+											<label for="icurrentlevel2">禁止修改</label>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="form-group layui-form" lay-filter="newlevel">
+								<div class="col-xs-12">
+									<label class="col-xs-3 control-label">新建时是否设置：</label>
+									<div class="col-xs-9" id="status">
+									    <div class="radio radio-info radio-inline">
+											<input type="radio" id="inewlevel1" value="0" name="inewlevel" checked="true">
+											<label for="inewlevel1" id="inewlevelLabel">允许修改</label>
+										</div>
+										<div class="radio radio-info radio-inline">
+											<input type="radio" id="inewlevel2" value="1" name="inewlevel">
+											<label for="inewlevel2">禁止修改</label>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				    </form>
+				</div>
+				
+				<!-- <div class="text-center">
+					<button class="btn btn-sm btn-primary" id="btnSaveEntityStatus">保存</button>
+				</div> -->
+			</div>
+		</div>
+	</div>
+
+</body>
+    <!-- 全局js -->
+    <script src="../../js/jquery-1.11.3.min.js"></script>
+	<!--[if IE 8]>
+	<script type="text/javascript" src="../../js/jquery-1.9.1.min.js"></script>
+	<![endif]-->
+    <script src="../../js/bootstrap.min.js?v=3.3.6"></script>
+    <!-- 自定义js -->
+    <script src="../../js/content.js?v=1.0.0"></script>
+    <!-- 日期控件 -->
+    <script src="../../js/plugins/datapicker/bootstrap-datepicker.js"></script>
+    <!-- layer弹出层 -->
+    <script src="../../js/plugins/layer/layer.min.js"></script>
+    <!-- 下拉选择列表 -->
+    <script src="../../js/plugins/chosen/chosen.jquery.js"></script>
+    <!-- jQuery 表单验证-->
+    <script src="../../js/plugins/validate/jquery.validate.min.js"></script>
+    <script src="../../js/plugins/validate/messages_zh.min.js"></script>
+    <!-- zTree模拟树表 -->
+    <script src="../../js/plugins/zTree/jquery.ztree.all.min.js"></script>
+    <script src="../../js/vpsoft/TreeTable.js"></script>
+    <script src="../../js/vpsoft/common.js"></script>
+    <script src="../../js/vpsoft/form.js"></script>
+    <script src="../../js/plugins/iCheck/icheck.min.js"></script>
+    <script src="../../js/vpsoft/getUrlParam.js"></script>
+</html>
+
+<script>
+var iid = parent.document.getElementById("frminfo").contentWindow.iid_;
+var parentid = parent.document.getElementById("frminfo").contentWindow.parentid_;
+$("#iid").val(iid);
+$("#parentid").val(parentid);
+
+$(document).ready(function () {
+	$('.i-checks').iCheck({
+		checkboxClass: 'text-primary fa fa-fw fa-square-o'
+	});
+
+	if (iid != null && iid != '' && iid != undefined && iid != 0){
+		initEditData(iid, parentid);
+	}else{
+		initData(parentid);
+		$(".group1").hide();
+		$(".group2").hide();
+	}
+	
+	$(":radio[name='idefaulttype']").click(function(){
+		var index = $(":radio[name='idefaulttype']").index($(this));
+		if(index == 0){
+			$(".group1").hide();
+			$(".group2").hide();
+		}else if(index == 1){
+			$(".group1").show();
+			$(".group2").hide();
+		}else if(index == 2){
+			$(".group1").hide();
+			$(".group2").show();
+		}
+		
+		$("#icurrentlevel1").removeAttr("disabled");
+		$("#icurrentlevellabel").attr("disabled", false);
+
+		$("#inewlevel1").removeAttr("disabled");
+		$("#inewlevelLabel").attr("disabled", false);
+	});
+	
+
+	$(":checkbox[name='idefaultlevel']").click(function(){
+		if ($(this).is(':checked')) {
+			$("#icurrentlevel1").removeAttr("checked");
+			$("#icurrentlevel2").attr("checked","checked");
+			$("#icurrentlevel1").attr("disabled", "disabled");
+			$("#icurrentlevellabel").attr("disabled", true);
+
+			$("#inewlevel1").removeAttr("checked");
+			$("#inewlevel2").attr("checked","checked");
+			$("#inewlevel1").attr("disabled", "disabled");
+			$("#inewlevelLabel").attr("disabled", true);
+		}else{
+			$("#icurrentlevel1").removeAttr("disabled");
+			$("#icurrentlevellabel").attr("disabled", false);
+
+			$("#inewlevel1").removeAttr("disabled");
+			$("#inewlevelLabel").attr("disabled", false);
+		}
+	});
+});
+
+//新增功能初始化
+function initData(parentid){
+	var sparam = {'parentid': parentid};
+	vpPostAjax("/cfgentstatus/entityviewlist", sparam, "POST", function(rst){
+		if(rst.success){
+			$("#entityviewid").append("<option ></option>");
+			$.each(rst.list, function(i, data) {
+				$("#entityviewid").append("<option value='" + data.iid + "'>" + data.sname + "</option>");
+			});
+		}else{
+			layer.msg("初始化下拉框数据失败！");
+		}
+	});
+}
+
+//编辑功能初始化
+function initEditData(iid, parentid){
+	var sparam = {'parentid': parentid,'iid': iid};
+	vpPostAjax("/cfgentstatus/get", sparam, "POST", function(rst){
+		var obj = rst;
+		if(obj.success){
+			$("#entityviewid").append("<option ></option>");
+			$.each(obj.viewlist, function(i, data) {
+				$("#entityviewid").append("<option value='" + data.iid + "'>" + data.sname + "</option>");
+			});
+			
+			//初始化数据
+			$("#scode").val(obj.data.scode);
+			$("#sname").val(obj.data.sname);
+			$("input:radio[name=istatus][value=" + obj.data.istatus + "]").attr("checked",true); 
+			$("#entityviewid").val(obj.data.irefview); 
+			
+			$("input:radio[name=idefaulttype][value=" + obj.data.idefaulttype + "]").attr("checked",true);
+			if(obj.data.idefaulttype=='0'){
+				$(".group1").hide();
+				$(".group2").hide();
+			}else if(obj.data.idefaulttype=='1'){
+				$(".group1").show();
+				$(".group2").hide();
+			}else if(obj.data.idefaulttype=='2'){
+				$(".group1").hide();
+				$(".group2").show();
+			}
+			$("#idefaultvalueid").val(obj.data.userid);
+			$("#idefaultvalue").val(obj.data.username);
+			if(obj.data.idefaultlevel == '1'){
+				$("input:checkbox").eq(0).attr('checked','checked');
+				$("#icurrentlevel1").removeAttr("checked");
+				$("#icurrentlevel2").attr("checked","checked");
+				$("#icurrentlevel1").attr("disabled", "disabled");
+				$("#icurrentlevellabel").attr("disabled", true);
+
+				$("#inewlevel1").removeAttr("checked");
+				$("#inewlevel2").attr("checked","checked");
+				$("#inewlevel1").attr("disabled", "disabled");
+				$("#inewlevelLabel").attr("disabled", true);
+			}else{
+				$("input:checkbox").eq(0).removeAttr("checked");
+			}
+			$("input:radio[name=icurrentlevel][value=" + obj.data.icurrentlevle + "]").attr("checked",true); 
+			$("input:radio[name=inewlevel][value=" + obj.data.inewlevel + "]").attr("checked",true); 
+		}else{
+			layer.msg("初始化编辑数据失败！");
+		}
+	});
+}
+
+var callbackfunc = "";
+function saveForm(callback) {
+	callbackfunc = callback;
+	/* if (iid != null && iid != '' && iid != undefined && iid != 0){
+		editEntityStatusInfo(iid, parentid);
+	}else{
+		saveEntityStatusInfo(parentid);
+	} */
+	if(document.getElementById("scode").value==""){
+		parent.layer.msg('请填写编号！', { icon: 5, time: 2000 });
+		return false;
+	}
+	if(document.getElementById("sname").value==""){
+		parent.layer.msg('请填写名称！', { icon: 5, time: 2000 });
+		return false;
+	}
+	var isUnique = true;
+	vpPostAjax('/vfmcheck/isUnique', { code: 'cfg_entity_status', iid: $("#iid").val(), data: [ 
+			{ field: 'scode', fieldvalue: document.getElementById("scode").value }
+			, { field: 'iparentid', fieldvalue: $("#parentid").val() } ] }, 'POST', function(rst) {
+		isUnique = !rst;
+	});
+	if(!isUnique){
+		parent.layer.msg("编号已经存在，请重新输入!", {icon: 5,time: 2000});
+		return false;
+	}
+	if(document.getElementById("entityviewid").value==""){
+		parent.layer.msg('请选择状态所关联的表单！', { icon: 5, time: 2000 });
+		return false;
+	}
+
+	$("#oForm").submit();
+}
+
+$("#oForm").validate({
+	submitHandler : function(form) {
+		try
+		{
+			vpPostAjax('/cfgentstatus/save', $('#oForm').serializeJSON(), "POST", function(rst) {
+				try {
+					$("#iid").val(rst.iid);
+					eval(callbackfunc)();
+				}
+				catch(exception) {
+					layer.msg(msg004 + callback, { icon: 2, time: 2000 });
+				}	
+			});
+		}
+		catch (e)
+		{
+			layer.msg('取表单数据失败', { icon: 2, time: 2000 });
+		}
+		return false;
+	}
+});
+
+//保存实体状态信息(未使用)
+function saveEntityStatusInfo(parentid){
+	var parentid = parentid;
+	var istatus = $("input[name='istatus']:checked").val();
+	var entityviewid = $("#entityviewid option:selected").val();
+	
+	var idefaulttype = $("input[name='idefaulttype']:checked").val();
+	var idefaultvalue;
+	var idefaultlevel;
+	if($("#entityviewid option:selected").val()=='1'){
+		idefaultvalue = $("#idefaultvalue").attr("userid");
+		if($("#idefaultlevel").is(':checked')){
+			idefaultlevel = '1';
+		}else{
+			idefaultlevel = '0';
+		}
+	}else if($("#entityviewid option:selected").val()=='2'){
+		idefaultvalue = $("#idefaultvaluegroup").attr("usergroupid");
+	}
+	var icurrentlevel = $("input[name='icurrentlevel']:checked").val();	
+	var inewlevel = $("input[name='inewlevel']:checked").val();	
+	
+	var sname = $("#sname").val().replace(/\s/g, "");
+	if(sname == null || sname == ''){
+		layer.msg("名称不能为空!", {icon: 2,time: 2000});
+		return;
+	}
+	
+	var sparam = {'parentid': parentid, 'sname':sname, 'istatus': istatus, 'irefview':entityviewid ,'idefaulttype': idefaulttype,'idefaultvalue':idefaultvalue,'idefaultlevel':idefaultlevel,'icurrentlevel':icurrentlevel,'inewlevel':inewlevel };
+	vpPostAjax("/cfgentstatus/add", sparam, "POST", function(rst){
+		if(rst.success){
+			layer.msg("添加成功!", {icon: 1, time: 2000});
+			//parent.layer.close(0);
+		}else{
+			layer.msg("保存数据失败！");
+			return ;
+		}
+		parent.layer.closeAll();
+	});
+}
+
+//修改实体状态信息(未使用)
+function editEntityStatusInfo(iid){
+	if (iid != '' && iid != null && iid != undefined){
+		var istatus = $("input[name='istatus']:checked").val();	
+		var entityviewid = $("#entityviewid option:selected").val();
+		var idefaulttype = $("input[name='idefaulttype']:checked").val();
+		var idefaultvalue;
+		var idefaultlevel;
+		if($("#entityviewid option:selected").val()=='1'){
+			idefaultvalue = $("#idefaultvalue");
+			if($("#idefaultlevel").is(':checked')){
+				idefaultlevel = '1';
+			}else{
+				idefaultlevel = '0';
+			}
+		}else if($("#entityviewid option:selected").val()=='2'){
+			idefaultvalue = $("#idefaultvaluegroup");
+		}
+		var icurrentlevel = $("input[name='icurrentlevel']:checked").val();	
+		var inewlevel = $("input[name='inewlevel']:checked").val();	
+		
+		
+		var sname = $("#sname").val().replace(/\s/g, "");
+		if(sname == null || sname == ''){
+			layer.msg("名称不能为空!", {icon: 2,time: 2000});
+			return;
+		}
+		
+		var sparam = {'iid':iid,'sname':sname, 'istatus': istatus,'irefview':entityviewid,'idefaulttype': idefaulttype,'idefaultvalue':idefaultvalue,'idefaultlevel':idefaultlevel,'icurrentlevel':icurrentlevel,'inewlevel':inewlevel};
+		vpPostAjax("/cfgentstatus/update", sparam, "POST", function(rst){
+			if(rst.success){
+				layer.msg("修改成功!", {icon: 1, time: 2000});
+			}else{
+				layer.msg("修改数据失败！");
+				return ;
+			}
+			parent.layer.closeAll();
+		});
+	}
+}
+
+function doSelectUser() {
+	var param = {};
+	param["btn"] = new Array([ "确定" ], [ "取消" ]);
+	parent.openWindow('../sys/chooseUser.html', '用户选择器', param, function(data, index) {
+		try {
+			if (index == 1) {
+				if (data.length > 0) {
+					var arr = new Array();
+					arr = data[0].split(',');
+					$("#idefaultvalue").attr("userid", arr[3]);
+					$("#idefaultvalue").val(arr[2]);
+				}
+			}
+		} catch (exception) {
+
+		}
+	});
+}
+
+//调用
+function toSearchUserForNamerole(objid){
+	toSearch(objid, 2, false);
+}
+
+//选择框
+function toSearch(objid, entityID, ff) {
+	var cfg = new Object();
+	cfg.entityID = entityID;
+	cfg.multiple = ff;
+	var array = new Array();
+	try {
+		var uname = $('#' + objid).val();
+		var uid = $('#' + objid).attr('hidID');
+		if (null != uid && '' != uid) {
+			var uids = uid.split(',');
+			var unames = uname.split(',');
+			for (var i = 0, len = uids.length; i < len; i++) {
+				var map = {};
+				map['id'] = uids[i];
+				map['name'] = unames[i];
+				array.push(map);
+			}
+		}
+		cfg.checkedObj = array;
+	} catch (e) {
+	}
+	
+	if (objid.indexOf("roleID") != -1) {// 根据角色选择用户
+		cfg.condition = "id in (select userid from org_userroleinfo where roleid=" + objid.replace("roleID", "") + ")";
+	} else {
+		cfg.condition = "";
+	}
+	// cfg.width = "90%";//设置弹框宽度
+	// cfg.height = "70%";//设置弹框高度
+	parent.Chosen.chosenEntity(cfg, function(data) {
+		var ids = "";
+		var names = "";
+		if (data.length > 0) {
+			for (var i = 0; i < data.length; i++) {
+				if (i == 0) {
+					ids = data[0].iid;
+					names = data[0].sname;
+				} else {
+					ids = ids + "," + data[i].iid;
+					names = names + "," + data[i].sname;
+				}
+			}
+			$('#' + objid).val(names);
+			//$('#' + objid).attr("hidID", ids);
+			$('#idefaultvalueid').val(ids);
+		} else {
+			$('#' + objid).val('');
+		}
+	});
+}
+</script>

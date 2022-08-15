@@ -1,0 +1,160 @@
+.gantt-save-bt{
+	 background-image: url( ../../../../vpm/images/wbstask/btn_icon_save.gif ) !important;
+}
+.gantt-saveAndClose-bt{
+	 background-image: url( ../../../../vpm/images/wbstask/btn_icon_save_close.gif ) !important;
+}
+.gantt-close-bt{
+	 background-image: url( ../../../../vpm/images/wbstask/btn_icon_cancel.gif ) !important;
+}
+.gantt-new-bt{
+	 background-image: url( ../../../../vpm/images/wbstask/btn_icon_xzrw.gif) !important;
+}
+.gantt-newsome-bt{
+	 background-image: url( ../../../../vpm/images/wbstask/btn_icon_plxj.gif ) !important;
+}
+
+.gantt-import-bt{
+	 background-image: url( ../../../../vpm/images/wbstask/btn_icon_project.gif ) !important;
+}
+
+.gantt-schedule-bt{
+	 background-image: url( ../../../../vpm/images/wbstask/btn_icon_pc.gif ) !important;
+}
+
+.gantt-genplan-bt{
+	 background-image: url( ../../../../vpm/images/wbstask/btn_icon_pljh.gif ) !important;
+}
+.gantt-zoom-bt{
+	 background-image: url( ../../../../vpm/images/wbstask/btn_zoom_in.gif ) !important;
+}
+.gantt-shrink-bt{
+	 background-image: url( ../../../../vpm/images/wbstask/btn_zoom_out.gif ) !important;
+}
+.gantt-addres-bt{
+	 background-image: url( ../../../../vpm/images/wbstask/btn_icon_ziyuan.gif ) !important;
+}
+.gantt-pjcal-bt{
+	 background-image: url( ../../../../vpm/images/wbstask/btn_icon_date.gif ) !important;
+}
+.gantt-importtp-bt{
+	 background-image: url( ../../../../vpm/images/wbstask/btn_icon_import_tempalte.gif ) !important;
+}
+.gantt-replaceres-bt{
+	 background-image: url( ../../../../vpm/images/wbstask/btn_zy_change.gif ) !important;
+}
+.gantt-mgvirres-bt{
+	 background-image: url( ../../../../vpm/images/wbstask/btn_xnzygl.gif ) !important;
+	background-positionX:left!important;
+}
+.gantt-viewchange-bt{
+	background-image: url( ../../../../vpm/vframe/images/btnIcon/btn_icon_shuaxin.gif ) !important;
+}
+
+.task .x-tree-icon
+{
+	width: 16px;
+    background: url(../../../../vpm/images/wbstask/icon_taskgz.gif);
+}
+.milestone .x-tree-icon
+{
+    width: 16px;
+    background: url(../../../../vpm/images/wbstask/icon_task_milestone.gif);
+}
+.abstract-task .x-tree-icon
+{	position:relative;
+	top:2px;
+	border:0px solid #000;
+    font-weight:bold;
+    font-size:12px;
+    background: url(../../../../vpm/images/wbstask/icon_taskzy.gif);
+}
+.project .x-tree-icon
+{	position:relative;
+	top:2px;
+	border:0px solid #000;
+    font-weight:bold;
+    font-size:12px;
+    background: url(../../../../vpm/images/icon/icon09.gif);
+}
+.no-icon .x-tree-icon
+{	position:relative;
+	top:2px;
+    background: url(../../../../vpm/ext4/s.gif);
+}
+.x-menu-item-texta{
+	text-align:left!important;
+	border:0px solid #000!important;
+}
+.x-menu-item{
+	text-align:left!important;
+
+}
+.x-menu-item-separator{
+	border-top:1px solid #ddd!important;
+}
+
+
+
+#error-detail-tab td{
+	height:15px;
+	font-size:12px;
+	border: 1px solid #bbb;
+}
+#error-detail-tab .first-tr td{
+	font-size:14px;
+	font-weight:bold;
+}
+#error-div{
+	width:100%;
+	height:35px;
+	
+	background-color:#ddd;
+	text-align:left;
+}
+.sch-gantt-task-bar{
+	font-size:0px;
+}
+.sch-gantt-keytask-bar{
+	font-size:0px;
+}
+.x-grid-cell{
+	border-right:0px  solid #fff!important;
+	
+}
+.x-grid-cell-inner {
+	border-right:0px  solid #fff!important;
+}
+
+.x-grid-table td{
+	border-right:0px  solid #fff!important;
+	border-left:0px  solid #fff!important;
+}
+.x-grid-header-ct{
+	border-bottom:0px  solid #fff!important;
+}
+.x-grid-inner-locked .x-column-header{
+
+	border-left:1px solid #fff!important;
+	border-right:1px solid #ccc!important;
+	border-bottom:1px solid #ccc!important;
+}
+.x-panel-body {
+	border-top:1px solid #fff !important;
+}
+.x-grid-body{
+	border-top:1px solid #fff !important;
+}
+.x-toolbar-docked-top{
+	border-bottom:1px solid ccc!important;
+}
+.arrow2r{
+	background-image:url(../../../../vpm/vframe/images/menuItem.gif)!important;
+}
+.x-menu-item-active .x-menu-item-link span{
+	color:#990000!important;
+}
+
+.x-window-header-text{
+	text-align:left;
+}

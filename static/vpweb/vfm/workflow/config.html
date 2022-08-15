@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>工作流配置- VP应用全生命周期管理系统</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
+    <link rel="shortcut icon" href="img/favicon.ico">
+    <link href="../../css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="../../css/font-awesome.min.css?v=4.7.0" rel="stylesheet">
+    <link href="../../css/animate.css" rel="stylesheet">
+    <link href="../../css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+    <link href="../../css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+    <link href="../../css/plugins/zTree/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+	<link href="../../js/plugins/layui/css/layui.css" rel="stylesheet" media="all">
+    <!-- 自定义css -->
+    <link href="../../css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="../../css/common.css" rel="stylesheet">
+    <link href="../../css/vp.css" rel="stylesheet">
+    <script src="../../../vpcommon/config.js"></script>
+    <script src="../../../vpcommon/vputils.min.js"></script>
+    
+    
+    <!--[if lte IE 9]>
+    <script src="../../js/html5shiv.min.js"></script>
+    <script src="../../js/respond.js"></script>
+    <![endif]-->
+	<style>
+		.ztree div.divTd {
+			min-width: 70px;
+		}
+		.nav-tabs li.active>a {
+			border: 0px;
+			color: #1890ff;
+		}
+
+	</style>
+</head>
+
+<body class="gray-bg">
+    <div class="sub-navigator clearfix">
+        <div class="col-sm-2 sub-head" id="vpsearch">           
+        </div>
+        <div class="col-sm-4 subnav">
+            <div data-toggle="buttons" class="btn-group" id="vpfilter">
+                
+            </div>
+        </div>
+        <div class="col-sm-3 subnav">
+            <!-- 放其他栏目或工具按钮 -->
+        </div>
+        <div class="col-sm-3 subnav tabs-container">
+            <ul class="toolicon clearfix" id="vptoolbar">
+                
+            </ul>
+        </div>
+    </div>
+    <div class="padding-10 m-t-xl">
+        <div class="clearfix white-bg padding-10 animated fadeInRight">
+      		<script type="text/html" id="vpbar">
+					{{# if(d.iflag==1){ }}
+						<a lay-event="flag"><i class="fa fa-check-circle fa-fw text-success" data-toggle="tooltip" title="启用"></i></a>
+					{{#}else{ }}
+						<a lay-event="flag"><i class="fa fa-ban fa-fw text-danger" data-toggle="tooltip" title="禁用"></i></a>
+					{{# }}}
+					<a lay-event='import'><i class='fa fa-file-zip-o fa-fw text-success' data-toggle='tooltip' title='导入'></i></a>
+					<a lay-event='edit'><i class='fa fa-edit fa-fw text-success' data-toggle='tooltip' title='编辑'></i></a>
+					<a lay-event='deploy'><i class='fa fa-list-ol fa-fw text-success' data-toggle='tooltip' title='发布'></i></a>
+					{{# if(d.processCount==0){ }}
+					<a lay-event='delete'><i class='fa fa-times fa-fw text-danger' data-toggle='tooltip' title='删除'></i></a>
+					{{# }}}
+					{{# if(d.iversion>0){ }}
+					<a lay-event='exportsign'><i class='fa fa-download fa-fw text-success' data-toggle='tooltip' title='导出(从配置环境往开发/测试/发布环境)'></i></a>
+					<a lay-event='export'><i class='fa fa-save fa-fw text-success' data-toggle='tooltip' title='导出为模板(跨项目导出,从A配置环境往B配置环境)'></i></a>
+					<!--<a lay-event='exportflow'><i class='fa fa-download fa-fw text-success' data-toggle='tooltip' title='导出流程'></i></a>-->
+					{{# }}}
+			</script>
+            <table lay-size="sm" class="layui-hide" id="tableSort" lay-filter="vpclick"></table>
+            <div class="layui-table-page" id="vppagebar">
+			</div>
+        </div>
+    </div>
+    <div class="hide drawer-fixed vp-studio" id="vpeditform">
+	
+	</div>
+    <!-- 全局js -->
+    <script src="../../js/jquery-1.11.3.min.js"></script>
+	<!--[if IE 8]>
+	<script type="text/javascript" src="../../js/jquery-1.9.1.min.js"></script>
+	<![endif]-->
+    <script src="../../js/bootstrap.min.js?v=3.3.6"></script>
+    <!-- 自定义js -->
+    <script src="../../js/content.js?v=1.0.0"></script>
+    <!-- 日期控件 -->
+    <script src="../../js/plugins/datapicker/bootstrap-datepicker.js"></script>
+    <!-- layer弹出层 -->
+    <script src="../../js/plugins/layer/layer.min.js"></script>
+    <script src="../../js/plugins/layui/layui.js"></script>
+    <!-- 下拉选择列表 -->
+    <script src="../../js/plugins/chosen/chosen.jquery.js"></script>
+    <!-- zTree模拟树表 -->
+    <script src="../../js/plugins/zTree/jquery.ztree.all.min.js"></script>
+    <script src="../../js/plugins/validate/jquery.validate.min.js"></script>
+    <script src="../../js/vpsoft/TreeTable.js"></script>
+    <script src="../../js/vpsoft/common.js"></script>
+    <script src="../../js/vpsoft/form.js"></script>
+    <script src="../../js/plugins/iCheck/icheck.min.js"></script>
+	<script src="../../js/vue.js"></script>
+	<script src="../../js/vpsoft/chosenEntity.js?v=1.0.0" charset="utf-8"></script>
+</body>
+<script>
+
+    var vobj = new Object();
+	function reloadPage(param) {
+        for(var key in param) {
+            vobj[key] = param[key];
+        }
+		vppage(param);
+	};
+
+	var osearch = Search({ el: 'vpsearch', id: 'quicksearch' });
+	osearch.parseEl();
+	var ofilter = Filter({ el: 'vpfilter', data: [  
+				{ value: '0', text: '启用' },
+				{ value: '1', text: '禁用' },
+				{ value: '', text: '全部' , iscurrent: true }
+		] });
+	ofilter.parseEl();
+	
+	var olisttool = ListTool({ el: 'vptoolbar', primary:'vpadd', data: [ 
+				{ id: 'vpimport', faclass: 'fa-file-zip-o', title: '导入流程和实体' },
+				//{ id: 'vpformseach', faclass: 'fa-filter', title: '查找' },
+				{ id: 'vpadd', faclass: 'fa-plus', title: '新建' }
+		] });
+	olisttool.parseEl();
+	var oformview = FormView({ el: 'vpeditform', title: '流程实体->xxx对象', data:  [ 
+		{ text: '属性', url: '../ent/entity_attribute.html' },
+		{ text: '表单', url: '../ent/entity_view.html?iviewtype=3' },
+		{ text: '关联实体', url: '../ent/entity_flowlink.html' },
+		{ text: '自定义动作', url: 'flowaction.html' },
+		{ text: '发布', url: "workflowversion.html" }
+	]});	
+	
+	vppage();
+	function vpclick(obj){
+		
+		var data = obj.data; 
+		var layEvent = obj.event; 
+
+		if (layEvent == 'delete') {
+			layer.confirm('确认删除？', function(index){
+				//alert(data.iid);
+				obj.del(); 
+				vpAjax(getWorkflowPath()+"/rest/workflow/" + data.iid, {}, "DELETE", function(result) {
+					layer.msg('删除成功！', { icon: 1, time: 2000 });
+				});
+				layer.close(index);
+			});
+		} 
+		else if (layEvent == 'deploy'){
+			layer.confirm('确认发布？', function(index){
+				//layer.close(index);
+				if(!$(".layui-layer-btn0").hasClass("layui-btn-disabled")){
+					$(".layui-layer-btn0").addClass("layui-btn-disabled");
+					vpAjax(getWorkflowPath()+"/rest/workflow/deploy",{iid:data.iid}, "POST", function(result) {
+						vppage();
+						layer.msg('发布成功！', { icon: 1, time: 2000 });
+					});
+				}
+				//$(".layui-layer-btn0").attr('disabled', "true");
+				
+				//alert(data.iflowentityid);
+				/*
+				vpPostAjax(getVfmRootPath()+'/cfgent/publish',{iid:data.iflowentityid}, 'POST', function(rst) {
+				    if(!rst.success){
+                        layer.msg('流程实体发布失败！', { icon: 1, time: 2000 });
+                    }
+				});
+				*/
+				
+			});
+		}
+		else if (layEvent == 'flag'){
+			// layer.confirm('确认操作么', function(index){
+			// 	vpAjax(getWorkflowPath()+"/rest/workflow/flag"  , {iid:data.iid}, "GET", function(result) {
+			// 		//console.log("flag result:" + result);
+			// 		vppage();
+			// 		layer.msg('操作成功！', { icon: 1, time: 2000 });
+			// 	});
+			// 	layer.close(index);
+			// });
+			vpAjax(getWorkflowPath()+"/rest/workflow/flag"  , {iid:data.iid}, "GET", function(result) {
+				//console.log("flag result:" + result);
+				vppage();
+				$(".tooltip.fade.top.in").remove();
+			});
+		}
+		else if(layEvent=='import'){
+			layer.open({
+                type: 2,
+                shade: false,
+                title: '流程导入',
+                area: ['50%', '360px'], //宽高
+                content: ['workflowfile.html?iid='+ data.iid]
+				/*,
+                success: function (layero, index) { 
+                	//layero.find("iframe")[0].contentWindow.iid = data.iid;
+                	var iid = $("#iid", layero.find("iframe")[0].contentWindow.document); 
+                	iid.val(data.iid);
+                }*/
+            });
+		}
+		else if(layEvent=='edit'){
+			/*
+			layer.open({
+				type: 2,
+				shade: false,
+				title: '流程编辑',
+				area: ['100%', '100%'], //宽高
+				content: ['workflow.html?modelId='+data.smodelid]					
+			});
+			*/
+			window.open('workflow.html?modelId='+data.smodelid);
+		}
+		else if(layEvent=='exportflow'){
+			//window.location.href= getWorkflowPath()+ '/rest/workflow/export?iid='+data.iid;
+			window.location.href= getWorkflowPath()+ '/rest/file/exportz?isflow=true&iid='+data.iid+"&access_token="+token+ "&gatewayUrl="+getVfmRootPath();
+		}
+		else if(layEvent=='exportsign'){
+			//window.location.href= getWorkflowPath()+ '/rest/workflow/export?iid='+data.iid;
+			window.location.href= getWorkflowPath()+ '/rest/file/exportz?model=1&iid='+data.iid+"&access_token="+token+ "&gatewayUrl="+getVfmRootPath();
+		}
+		else if(layEvent=='export'){
+			//window.location.href= getWorkflowPath()+ '/rest/workflow/export?iid='+data.iid;
+			window.location.href= getWorkflowPath()+ '/rest/file/exportz?iid='+data.iid+"&access_token="+token+ "&gatewayUrl="+getVfmRootPath();
+		}else{
+			/*
+			$.ajaxSettings.async = false;
+			vpAjax("/rest/workflow/"+ data.iid, {}, "GET", function(result) {
+				workflow = result.data;
+				newadd("#vpeditform","right");
+			});
+			*/
+			//iid = data.iid;
+			//alert(data.iid);
+			data.accesslevel = "1";
+			formview(data);
+			$('#vpeditform').css({ "position": "fixed", "margin-top": "-40px","z-index": "115" });
+			newadd("#vpeditform","right");
+		}
+	}
+	
+	$("#vpadd").click(function(){
+		layer.open({
+            type: 2,
+            shade: false,
+            title: '新建流程',
+            area: ['60%', '400px'], //宽高
+            content: ["workflowform.html"]
+			/*,
+            success: function (layero, index) { 
+            	//layero.find("iframe")[0].contentWindow.iid = data.iid;
+            	var iid = $("#iid", layero.find("iframe")[0].contentWindow.document); 
+            	iid.val(data.iid);
+            }*/
+        });
+
+	});
+
+  $("#vpimport").click(function(){
+    layer.open({
+      type: 2,
+      shade: false,
+      title: '新建流程',
+      area: ['60%', '400px'], //宽高
+      content: ["workflowimport.html"]
+      /*,
+       success: function (layero, index) {
+       //layero.find("iframe")[0].contentWindow.iid = data.iid;
+       var iid = $("#iid", layero.find("iframe")[0].contentWindow.document);
+       iid.val(data.iid);
+       }*/
+    });
+
+  });
+	
+	function vppage(param){
+		vpAjax(getWorkflowPath() +'/rest/workflow', param, "GET", function(data) {
+    		//console.log("------------------"+JSON.stringify(data));
+    		layui.use(['laypage','table'], function(){
+   	       	  var laypage = layui.laypage;
+   	       	  
+   	       	  laypage.render({
+   	       	    elem: 'vppagebar', 
+   		       	count: data.count,
+   				limit: data.limit,
+   				curr: data.curr,
+   				limits: [10,20, 30, 50],
+   				layout: ['count', 'first', 'prev', 'page', 'next', 'last', 'limit', 'skip'],
+   				jump: function(obj, first) {
+   					if (!first) {
+//    						curnum = obj.curr;  
+//                     	limitcount = obj.limit;
+                        vobj['limit'] = obj.limit;
+                        vobj['curr'] = obj.curr;
+                        vppage(vobj);
+   					}
+   				}
+   	       	  });
+   	       	  
+   	       	 var table = layui.table;
+   	         table.render({
+   	            elem: '#tableSort'
+   	           ,page: false
+   	           ,data:data.result
+   	           ,limit: data.limit
+			   ,height: 'full-110'
+   	           ,cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+   	           ,cols: [[
+   	              // {type:'checkbox'},
+   	              // {field:'iid', title: 'id', sort: true,event:"click"},
+   	               {field:'sname', title: '流程名称', sort: true,event:"click"}
+   	               ,{field:'skey', title: '流程ID',event:"click"}
+   	               ,{field:'iversion', title: 'version',event:"click", width:80}
+   	               ,{field:'sflag', title: '标示',event:"click", width:80}
+   	               ,{field:'sdescription', title: '描述', event:"click",width:300}
+   	               ,{fixed: 'right', title: '操作', width:220, align:'center', toolbar: '#vpbar'} 
+   	           ]]
+   	         });
+   	         
+	   	     table.on('tool(vpclick)',function(obj){
+	      	 	vpclick(obj);
+       		 });
+    		});
+         
+       	});
+	}
+		
+		
+    </script>
+
+</html>

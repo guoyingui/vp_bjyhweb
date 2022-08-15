@@ -1,0 +1,766 @@
+/*
+ * vpsoft v1.0
+ * author jiangsw
+ * date 2017-12-12
+ * description '页面自定义CSS，格式 vp-组件名 eg: vp-tabel'
+*/
+input.error { border: 1px solid red; }
+label.error {
+    /*background:url("./demo/images/unchecked.gif") no-repeat 0px 0px;*/
+    padding-left: 16px;
+    padding-bottom: 2px;
+    font-weight: bold;
+    color: #EA5200;
+}
+label.checked {
+    /*background:url("./demo/images/checked.gif") no-repeat 0px 0px;*/
+}
+
+textarea.form-control{
+	resize: vertical;
+}
+.form-control[disabled], .form-control[readonly], fieldset[disabled] .form-control{
+	background-color: #f8f8f8;
+}
+/*index search*/
+#top-search{
+	padding: 0 30px 0 0;
+}
+.navbar-form-custom .form-control-inputIcon{
+	background: #fff;
+}
+.navbar-form-custom.vp-open .form-control-inputIcon{
+	right: 0;
+}
+/*step*/
+.step{ margin:0 auto; display:block; height:60px;}
+.step li{ position:relative; text-align:center;}
+.step .line_bg{ height:3px; background:#d9eaf3; display:inline-block; width:50%; top:13px; position:absolute; z-index:1;}
+.step .lbg-l{left:0;}
+.step .lbg-r{right:0;}
+.step .num{ position:relative; z-index:2; background:#fff;width:54px; height:30px;text-align:center; display:inline-block;}
+.step .num em,.num i{width:24px; height:24px; display:inline-block; left:15px; top:2px;position:absolute;}
+.step .num em{ background:#d9eaf3;transform:rotate(45deg);-webkit-transform:rotate(45deg);-moz-transform:rotate(45deg);-ms-transform:rotate(45deg);-o-transform:rotate(45deg);z-index:2;}
+.step .num i{  z-index:3; color:#fff; font-style:normal; font-weight:700; top:4px;}
+.step .lbg-txt{ position:relative; color:#b6c6ce;}
+.step .on .lbg-txt{color:#1a97d7;}
+.step .on .line_bg,.step .on .num em{ background:#1a97d7}
+.step-box-pan{ padding:40px 40px 50px; width:100%;}
+.txt03{width:270px;line-height: 16px;padding:9px 10px;border: 1px solid #cccccc;float: none;font-size: 14px;font-family: arial,"宋体";color: #999;overflow: hidden;}
+.step-box .item {height:68px;line-height:34px;position: relative;z-index:5;}
+.step-box .intelligent-label {width:100px;text-align: right;font-size: 14px;color: #666;padding-right: 10px;}
+.step-box .intelligent-label b{font-family: "????";margin-right: 5px;font-weight: normal; color:red;}
+.step-box .item .item-ifo{position: relative;width: 270px;}
+.step-box .txt02{width:270px;line-height: 16px;padding:9px 10px;border: 1px solid #cccccc;float: none;font-size: 14px;font-family: arial,"宋体";color: #999;overflow: hidden;}
+.step-box .txt03.v_error{border-color:#FF0000;}
+.step-box .txt03:focus{border-color:#1a97d7;}
+.step-box .blank {width:16px;height:16px; font-size:16px;position: absolute;left:280px;top:11px;float: none; color:#7abd54}
+.step-box .close{position: absolute;top:5px;right:25px;font-size: 24px;}
+.step-box .focus,.step-box .focusa,.step-box .error{line-height:34px;height:34px;position: absolute;top: 0px;left:280px;width:270px;padding: 0 5px;z-index:3; font-weight:normal; font-size:12px; color:#999}
+.step-box .focus span,.step-box .error span{ line-height:16px; display:block; padding:3px 0;}
+.step-box .focus{color: #999;}
+.step-box .valid{color: #f00;}
+.step-box .strength {color: #999;line-height: 22px;padding-right: 10px;clear: both;float: none;position: absolute;top:39px;right: -9px; display:none}
+.step-box .strength b {float: left;width: 108px;height:16px;overflow: hidden;margin-top: 5px; font-weight:400;}
+.step-box .strength b i{ font-style:normal; font-size:10px; width:34px; height:16px;line-height:16px; display:inline-block; float:left; background:#dbdbdb; text-align:center; margin-left:1px; color:#fff;}
+.step-box .strength b i.on{ background:#ff6160}
+.step-box .btn-blue{ font-size:18px; height:44px; line-height:44px; padding:0; width:270px;}
+.step-box .btn-gray{ height:34px; line-height:34px; padding:0 12px;}
+/*.ztree * {
+	font-family: "FontAwesome";
+}*/
+
+.ztree {
+    padding: 0;
+    width: 100%;
+    display: grid;
+}
+.ztree >li:last-child {
+    border-bottom: 1px solid #E3E3E3;
+}
+.ztree li a {
+    vertical-align: middle;
+    height: 36px;
+    padding: 0px;
+}
+.ztree li.head a{
+	cursor: default;
+}
+.ztree li>a {
+    width: 100%;
+}
+.ztree li:not(.head) a:hover,.ztree li:not(.head) a:hover div.fixTd_r{
+	background: #FFE6B0
+}
+.ztree li a.curSelectedNode {
+	border: none;
+    height: 36px;
+    opacity: 1;
+}
+.ztree li a.curSelectedNode div.fixTd_r{
+	background-color: #FFE6B0;
+}
+.ztree li ul {
+    padding-left: 0px
+}
+
+.ztree div.divTd {
+	position: relative;
+    height: 100%;
+    min-width: 100px;
+    line-height: 24px;
+    border-top: 1px solid #E3E3E3;
+    border-right: 1px solid #E3E3E3;
+    text-align: center;
+    display: inline-block;
+    overflow: hidden;
+    padding: 5px;
+    text-overflow: ellipsis;
+}
+.ztree div.divTd .fa{
+	margin: 0 3px;
+}
+.ztree div.divTd .progress-num{
+	margin-top: -2px;
+}
+.ztree div.divTd .progress{
+	margin-top: 0
+}
+.ztree div.divTd:first-child {
+    text-align: left;
+    text-indent: 10px;
+    border-left: 1px solid #E3E3E3;
+}
+.ztree div.fixTd_r{
+	position: absolute;
+    right: 10px;
+    height: 36px;
+    background: #fff;
+    border-left: 1px solid #E3E3E3; */
+}
+.treeIcon{
+	width: 10px;
+	height: 10px;
+	border-radius: 50%;
+	margin-right: 5px;
+	display: inline-block;
+}
+
+.ztree .head {
+    background-color: #f2f2f2;
+}
+
+.ztree .head div.divTd {
+    color: #393939;
+    font-weight: bold;
+}
+.ztree .head div.fixTd_r{
+	background-color: #f2f2f2;
+}
+.ztree .ck {
+    padding: 0 5px;
+    margin: 2px 3px 7px 3px;
+}
+
+/*.ztree li:nth-child(odd) {
+    background-color: #f2f2f2;
+}
+
+.ztree li:nth-child(even) {
+    background-color: #FFFFFF;
+}*/
+.treeSelect .ztree li:nth-child(odd) {
+    background-color: #fff;
+}
+.layui-table, .layui-table-view{
+	margin: 0 ;
+}
+.liItem {
+	border-bottom: 1px solid #e5e6e7;
+	height: 35px;
+	line-height: 35px;
+}
+.ztree div.divTd span{
+	line-height: 18px;
+	width: 18px;
+	height: 18px;
+	background: transparent;
+	font:normal normal normal 14px/1 FontAwesome;
+}
+.ztree li span.button.ico_docu{
+	display: none;
+}
+.ztree li span.button.noline_close:before{
+	content: "\f0da";
+}
+.ztree li span.button.noline_open:before{
+	content: "\f0d7";
+}
+.ztree li span.button.ico_close,.ztree li span.button.ico_open{
+	display: none;
+}
+
+/* 树表中的类形 */
+.ztree li span.nameType{
+	display: inline-block;
+	width: auto;
+	height: 25px;
+	line-height: 25px;
+	text-indent: 2px;
+}
+.ztree li span.nameType .fa{
+	margin-right: 8px;
+	color: #999;
+}
+.label-blueviolet{
+	background-color: blueviolet;
+    color: #FFFFFF;
+}
+/*.ztree li span.xq{
+	background: url('../img/ztree-xq.png');
+}
+.ztree li span.tx{
+	background: url('../img/ztree-xq.png');
+}
+.ztree li span.rw{
+	background: url('../img/ztree-rw.png');
+}
+.ztree li span.qx{
+	background: url('../img/ztree-qx.png');
+}
+.ztree li span.gs{
+	background: url('../img/ztree-gs.png');
+}*/
+
+/* 树表中的下拉 */
+.vp-select {
+	width: 100%;
+	height: 100%;
+}
+.divSert {
+	background:#fff;
+	padding:10px;
+	z-index: 1;
+	position:absolute;
+	box-shadow: 2px 2px 3px #888;
+}
+.divSert li {
+	height: 30px;
+	line-height: 30px;
+}
+.divSert li a{
+	height: auto;
+}
+.ztree li:not(.head) .divSert li a:hover{
+	background: transparent;
+	text-decoration: none;
+	color: #1c84c6;
+}
+/* 需求条目化 */
+.itemized{
+	max-height: 500px;
+	overflow-y: scroll;
+}
+
+/* 右侧滑出窗口底部按钮显示位置 */ 
+.dragBtn{
+	position: absolute;
+	right: 0px;
+	top: 50px;
+}
+/* 关闭左边列 */ 
+.toggle-icon{
+	position: absolute;
+    left: -15px;
+    width: 20px;
+    height: 34px;
+    line-height: 34px;
+    cursor: pointer;
+    text-align: center;
+    z-index: 101;
+}
+/* 头部菜单右键菜单 */
+.tabs-contextmenu{
+	background-color: #fff;
+	position:absolute;
+	-webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175);
+    box-shadow: 0 6px 12px rgba(0,0,0,.175);
+}
+.tabs-contextmenu li{
+	height: 30px;
+	line-height: 30px;
+}
+/* 需要layui table 中单元格高度自适应 */
+.vp-layui-table .layui-table-cell{
+	height: auto;
+	line-height: inherit;
+	overflow:inherit;
+	white-space: inherit;
+	/*padding: 0 14px;*/
+	width: 100% !important;
+}
+.vp-layui-table .layui-table-cell .layui-form-checkbox[lay-skin=primary]{
+	margin: 3px 0;
+}
+/* 大纲视图列宽拉伸 */
+.drag-handle
+{
+    width: 5px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    cursor: e-resize;
+}
+.col-resizer
+{
+    position: absolute;
+    background-color: #428bca;
+    filter: alpha(opacity=1);
+    opacity: 0;
+    width: 1px;
+    height: 100%;
+    top: 0px;
+    right: 0;
+}
+.drag-handle:hover .col-resizer
+{
+    filter: alpha(opacity=100);
+    opacity: 1;
+}
+/*
+*
+* by lijh
+*
+*/
+.vp-approve .right-btn{
+	text-align: right;
+}
+.vp-approve .i-checks{
+	position: absolute; 
+	opacity: 0;
+}
+.vp-col-2{
+	width: 12.41%;
+}
+.vp-col-3{
+	width: 20%;
+}
+.vp-col-10{
+	width: 87.59%;
+}
+.vp-width-per-45{
+	width: 45% !important;
+}
+.vp-width-96{
+	width: 96%;
+}
+.vp-width-98{
+	width: 98%;
+}
+.vp-width-255{
+	width: 255px;
+}
+.vp-width-255 .ibox-title h5{
+	width: 175px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+.nav.nav-tabs li.active{
+    border-bottom: 1px solid #1890ff;
+}
+.vp-studio .tabs-container .nav-tabs > li.active > a{
+	border: 0;
+	color: #1890ff;
+}
+.vp-t.drawer-fixed{
+	top: 0;
+}
+.tabs-container .panel-body{
+	border: 0;
+}
+table.treetable tbody tr td{
+	padding: 8px;
+}
+.radio-inline input[type=radio]{
+	margin-top: 4px;
+}
+.up-file input[type=file]{
+	height:35px;
+	opacity: 0;
+	width: 110px;
+	position: absolute;
+	z-index: 1;
+}
+.up-file .btn{
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+.upload-list>a{
+	display: block;
+}
+.upload-list>a:hover{
+	background: #ecf6fd;
+}
+.upload-list>a em.fa{
+	display: none;
+	position: absolute;
+	right: 5px;
+	top: 5px;
+}
+.upload-list>a:hover em.fa{
+	display: inline;
+}
+.ibox-title{
+	border-bottom: 1px solid #ddd;
+}
+.checkbox{
+	display: inline-block;
+}
+.checkbox input[type=checkbox]{
+	margin: 3px;
+}
+.indenter a{
+	display: inline-block;
+    width: 20px;
+    height: 20px;
+}
+.branch{
+	background: #fff;
+}
+
+.table thead tr th{
+	border: 1px solid #ddd !important;
+	line-height: 30px;
+    font-weight: bold;
+}
+.vp-burn{
+	width: 100%;
+	height:100%;
+	padding: 20px 0;
+	position: relative;
+}
+.vp-burn #burn{
+	width: 92%;
+	height:100%;
+}
+.vp-burn .button{
+	width: 11%;
+	position: absolute;
+	right: 20px;
+	top: 20px;
+}
+.vp-burn .button .btn{
+	min-width: 94px;
+	margin:0 0 5px;
+}
+.vp-pie{
+	width: 100%;
+	height:100%;
+	padding-right: 15%;
+}
+.vp-pie #pie{
+	width: 100%;
+	height: 100%;
+}
+.vp-project-board-nothing .box .img{
+	margin: 15% 0 20px 0;
+}
+.vp-project-board{
+	position: absolute;
+	left: 0;
+	width: 19%;
+}
+.vp-project-board + .tab-content{
+	width: 81%;
+	height: 100%;
+	overflow-y: scroll;
+}
+.vp-project-board .vp-board-i{
+	position: absolute;
+	top: 35%;
+	right: -10px;
+	cursor: pointer;
+	font-size: 16px;
+	padding: 25px 2px;
+}
+.vp-project-board .vp-board-select{
+	overflow: hidden;
+}
+.vp-project-board .vp-board-select .ibox{
+	height: 80%;
+    width: 109%;
+    overflow-y: scroll;
+}
+.vp-project-board .vertical-timeline-content{
+	margin-left: 50px;
+}
+.vp-project-board h4{
+	line-height: 30px;
+	font-weight: 500;
+}
+.vp-project-board .new-add{
+	cursor: pointer;
+}
+.vp-project-board .vertical-timeline-content{
+	cursor: pointer;
+}
+.vp-project-board .vertical-date{
+	width: 100%;
+    line-height: 20px;
+}
+.vp-project-board .vertical-timeline-icon i{
+	margin-top: -8px;
+}
+.vp-project-board p{
+	white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    font-size: 12px;
+    color: #9A9791;
+}
+.vp-project-board-nothing{
+	height: 90%;
+}
+.vp-project-board-nothing .box{
+	width: 50%;
+	margin: auto;
+	text-align: center;
+}
+
+.vp-project-board-nothing > .chose-modal{
+	display: none;
+}
+.vp-project-board-nothing .chose-modal-show .chose-modal{
+	display: block;
+	padding: 10px;
+}
+.vp-project-board-nothing .chose-modal-show .chose-modal .chosen-container{
+	width: 100% !important;
+}
+.vp-project-board-nothing .chosen-single{
+	border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    border: 1px solid #aaa;
+}
+.vp-project-board-nothing .chosen-drop{
+	border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    overflow: hidden;
+    border: 1px solid #aaa;
+}
+.vp-project-board-nothing .chosen-drop .chosen-results{
+	max-height: 165px;
+	/*width: 103%;*/
+}
+.tabs-container .title{
+	padding: 10px 0;
+}
+.tabs-container .member-tabs{
+	border-bottom: 0;
+	border: 1px solid #ccc;
+	margin: 10px 0;
+	padding-bottom: 5px;
+}
+.tabs-container .member-tabs li{
+	text-align: left;
+	width: 100%;
+}
+.tabs-container .member-tabs li a{
+	padding:5px 8px;
+	font-weight: normal;
+    color: #333;
+}
+.tabs-container .member-tabs li:hover{
+	background: #F6F5F5;
+}
+.tabs-container .member-tabs li.active{
+	border: 0;
+}
+.tabs-container .member-tabs.nav-tabs > li.active > a{
+	color: #1890ff;
+	border: 0;
+	width: 100%
+}
+
+.vp-small-die{
+	margin: 20px 0 0 -6px;
+    width: 35px;
+}
+.vp-small-die .vertical-timeline-block{
+	height: 40px;
+}
+.warning-element .agile-tools{
+	position: relative;
+}
+.agile-list .dropdown-menu{
+	height: 250px;
+    overflow: hidden;
+    border: 1px solid #e7eaec
+}
+.agile-list .dropdown-menu > ul{
+	width: 104%;
+	height: 100%;
+    overflow-y: scroll;
+}
+.agile-list .dropdown-menu li{
+	border: 0;
+	border-bottom: 1px solid #e7eaec;
+}
+
+
+.vp-delAdd{
+	position: absolute;
+	left: -10px;
+	top: 5px;
+}
+.version-icon{
+	left: 0;
+}
+.mini-left .toggle-icon{
+	left: 15px;
+}
+.mini-left .toggle-left{
+	width: 60px;
+	left: 0px;
+	position: absolute;
+}
+.mini-left .chosen-container,.mini-left .vertical-timeline-content,#newFlag .fa,.mini-left #newFlag span{
+	display: none;
+} 
+.mini-left .vertical-timeline-block{
+	height: 50px;
+}
+.mini-left .toggle-right{
+	width: calc(100% - 50px);
+	margin-left: 50px;
+}
+.mini-left #newFlag{
+	width: 35px;
+	height: 35px;
+	border-radius: 50%;
+}
+.mini-left #newFlag .fa{
+	display: block;
+}
+.mini-left .iteration-list{
+	margin-top: 30px;
+}
+.iteration-list #vertical-timeline{
+	margin-top: 0;
+}
+.iteration-list .vertical-timeline-block:first-child{
+	margin-top: 15px;
+}
+#tabList .input-group{
+	padding-top: 10px;
+}
+
+.processcontainer{
+   float:left;
+   left: 30px; 
+   background-color: #E8E8E8;
+   border:1px solid #d9d9d9;
+   height:14px; 
+   width:80px; 
+   margin-left:5px;
+   position: absolute; top: 2px; 
+ } 
+.processbar{  
+   float:left;
+   background:transparent url(../vframe/images/other/jdt_bg.gif) repeat-x 0 0;
+   border-style:1px solid #3b90ad;
+   height:100%;  
+   text-align:center;  
+   line-height:100%; 
+ }  
+ .vp-title{
+ 	font-size: 18px;
+ }
+ .fz-24{
+ 	font-size: 24px;
+ }
+ .b-lr {
+ 	border-left: 1px dotted #ddd;
+ 	border-right: 1px dotted #ddd;
+ }
+ /* 报表中的饼图进度条 */
+ .chart-title{
+ 	position: absolute;
+ 	top: 60%;
+ 	right: 20px;
+ 	color: #888;
+ }
+ .chart-txt{
+ 	border-top: 1px #ddd dotted;
+ }
+ .border-b{
+ 	border-bottom: 1px solid #ddd;
+ }
+ /* 报工 */
+ .timesheet .layui-table-cell{
+ 	height: auto;
+ 	padding: 0 5px;
+ }
+ .timesheet .layui-table-cell .form-control{
+ 	height: 28px;
+ }
+ /* 自定义进度条滑块 */
+
+.noUiSlider {
+	position: relative;
+	border-radius: 3px;
+	background-color: #1890ff;
+	height: 6px;
+	margin-top: 11px;
+	min-width: 100px;
+}
+.noUiSlider a {
+	position: absolute;
+	z-index: 1;
+	height: 100%;
+	right: 0;
+	background: #ccc;
+	border-radius: 3px;
+}
+
+.noUiSlider div {
+	height: 18px;
+	width: 18px;
+	border-radius: 50%;
+	background: #fff;
+	margin: -6px 0 0 -9px;
+	position: absolute;
+	border: 1px solid #1890fe;
+}
+/* 审批报工日期选择上下翻页 */
+.anglebox a{
+	height: 15px;
+	line-height: 15px;
+	width: 20px;
+    margin-left: -5px;
+}
+/* 审批报工表中下拉框 */
+.layui-vpheight .layui-form-select dl{
+	width: 100%;
+	top: 32px;
+}
+.layui-vpheight .layui-input{
+	height: 28px;
+}
+
+
+.hidegroup {
+	display: none;
+}
+.ztree div.divTd {
+	min-width: 70px;
+}
+.nav-tabs li.active>a {
+	border: 0px;
+	color: #1890ff;
+}
+#vppagebar {
+	border-top: 0px;
+}

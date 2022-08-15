@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WBS镜像管理 - VP应用全生命周期管理系统</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
+    <link rel="shortcut icon" href="img/favicon.ico">
+    <link href="../../css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="../../css/font-awesome.min.css?v=4.7.0" rel="stylesheet">
+    <link href="../../css/animate.css" rel="stylesheet">
+    <link href="../../css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+    <link href="../../css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+    <link href="../../css/plugins/zTree/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+	<link href="../../js/plugins/layui/css/layui.css" rel="stylesheet" media="all">
+    <!-- 自定义css -->
+    <link href="../../css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="../../css/common.css" rel="stylesheet">
+    <link href="../../css/vp.css" rel="stylesheet">
+
+	<!-- 全局js -->
+    <script src="../../js/jquery-1.11.3.min.js"></script>
+    <script src="../../../vpcommon/config.js"></script>
+    <script src="../../../vpcommon/vputils.min.js"></script>
+	<!--[if IE 8]>
+	<script type="text/javascript" src="../../js/jquery-1.9.1.min.js"></script>
+	<![endif]-->
+    <script src="../../js/bootstrap.min.js?v=3.3.6"></script>
+    <!-- 自定义js -->
+    <script src="../../js/content.js?v=1.0.0"></script>
+    <!-- 日期控件 -->
+    <script src="../../js/plugins/datapicker/bootstrap-datepicker.js"></script>
+    <!-- layer弹出层 -->
+    <script src="../../js/plugins/layer/layer.min.js"></script>
+    <script src="../../js/plugins/layui/layui.js"></script>
+    <!-- 下拉选择列表 -->
+    <script src="../../js/plugins/chosen/chosen.jquery.js"></script>
+    <!-- zTree模拟树表 -->
+    <script src="../../js/plugins/zTree/jquery.ztree.all.min.js"></script>
+    <script src="../../js/vpsoft/WBSTreeTable.js"></script>
+    <!-- <script src="../../vpm/js/common.js"></script> -->
+    <script src="../../js/vpsoft/common.js"></script>
+    <script src="../../js/vpsoft/form.js"></script>
+    <script src="../../js/plugins/iCheck/icheck.min.js"></script>
+</head>
+
+<body class="wight-bg">
+	<div class="sub-navigator clearfix">
+		<div class="vpcontent">
+           	<div class="form-horizontal">
+				<table index="0" width="100%" class="normal_list" border="0" cellspacing="0" height="30px">
+					<tr class="normal_list_tdtitle" style="table-layout: fixed;border-top: solid white 0px;cursor:default;">
+						<td width="2%" align="left">
+							<a class="text-primary" onclick="addItem()"><i class="fa fa-plus fa-fw"></i></a>
+						</td>
+						<td width="49%" align="left">镜像任务(本项目)</td>
+						<td width="49%" align="left">被镜像任务(源项目)</td>
+					</tr>
+				</table>
+			</div>
+			<div class="form-horizontal" id="valueListform" style="overflow:auto; ">
+				
+			</div>
+        </div>
+        <div id="btnbutton" class="btnFixed text-center" style="bottom: 10px;">
+			<button id="saveBtn"   class="btn btn-sm btn-primary" >保存</button>
+			<button id="clearBtn" class="btn btn-sm " >清空</button>
+		</div>
+	</div>
+</body>
+<script>
+$(".vpcontent").height(document.body.clientHeight - 67);
+$("#valueListform").height(document.body.clientHeight - 97);
+var entityid = getParameter("ientityid");
+var projectid = getParameter("projectid");
+
+function addItem(item){
+	var index = 1;
+	var len = $('#valueListform').find('table').length;
+	if(len > 0){
+		index = len + 1;
+	}
+	var iid = "";
+	if(item){
+		iid = item.iid;
+		item.predisplayname = item.prename;
+		item.postdisplayname = item.postname;
+	}else{
+		iid = "0";
+		item = new Object();
+		item.predisplayname = "请选择镜像任务";
+		item.ipretaskid = "";
+		item.ipretasktype = "";
+		item.postdisplayname = "请选择被镜像任务";
+		item.iposttaskid = "";
+		item.iposttasktype = "";
+		item.ipostprojectid = "";
+		item.ipostentityid = "";
+	}
+	item.ipreprojectid = projectid;
+	item.ipreentityid = entityid;
+	var appendStr = "";
+	appendStr ='<table iid="'+iid+'" index="'+index+'" class="normal_list" height="30px" width="100%" border="0" cellspacing="0" >';
+    appendStr+='	<tr class="normal_list_tdtitle" style="table-layout: fixed;border-top: solid white 0px;cursor:default;">';
+    appendStr+='		<td width="2%" align="left">';
+    appendStr+='			<a class="text-danger" onclick="delItem(this)"><i class="fa fa-times fa-fw"></i></a>';
+    appendStr+='		</td>';
+    appendStr+='		<td width="49%" align="left">';
+    appendStr+='			<input id="thisTask'+index+'"  name="thisTask'+index+'" flag="dest" index="'+index+'" type="'+item.iprewbstype+'" ';
+    appendStr+='			       readonly taskid="'+item.iprewbsid+'" projectid="'+item.ipreprojectid+'" entityid="'+item.ipreentityid+'" ';	
+    appendStr+='			       class="form-control input-sm" type="text" placeholder="'+ item.predisplayname+'" onclick="selectItem(this)">';	
+    appendStr+='		</td>';
+    appendStr+='		<td width="49%" align="left">';
+	appendStr+='			<input id="otherTask'+index+'" name="otherTask'+index+'" flag="src" index="'+index+'" type="'+item.ipostwbstype+'" ';
+	appendStr+='			       readonly taskid="'+item.ipostwbsid+'" projectid="'+item.ipostprojectid+'" entityid="'+item.ipostentityid+'" ';	
+	appendStr+='			       class="form-control input-sm" type="text" placeholder="'+item.postdisplayname+'" onclick="selectItem(this)">';
+	appendStr+='		</td>';
+    appendStr+='	</tr>';
+    appendStr+='</table>';
+    $(appendStr).appendTo("#valueListform");
+}
+
+function delItem(obj){
+	var delindex =$(obj).closest('table').attr('index');
+	$(obj).closest('table').remove();
+	$('#valueListform').find('table').each(function(i, item){
+		var index = $(item).find('input[flag="dest"]').attr('index');
+		if(parseInt(index) > parseInt(delindex)){
+			index = parseInt(index) - 1;
+			$(item).attr({'index':index});
+			$(item).find('input[flag="dest"]').attr({'id':'thisTask'+index,'name':'thisTask'+index,'index':index});
+			$(item).find('input[flag="src"]').attr({'id':'otherTask'+index,'name':'otherTask'+index,'index':index});
+		}
+	});
+}
+
+function selectItem(obj){
+	var flag = $(obj).attr("flag");
+	var title = "";
+	if (flag=='dest') {
+		title = "选择镜像任务";
+	} else {
+		title = "选择被镜像任务";
+	}
+
+	var openurl = getPagePath() + '/vpm/wbs/chosenWBSTask.html?entityid='+entityid+'&projectid='+projectid+'&flag='+flag;
+	layer.open({
+        type: 2, 
+        maxmin: true,
+		title: title,
+        btn: ['确定', '取消'],
+        btnAlign:'c',
+        area: ['100%', '100%'],
+        resize: false,
+        shift: 2,
+        shade: 0.3,
+        content: [openurl], //iframe的url，no代表不显示滚动条
+        success: function(layero, index){
+    		$(layero.find('.layui-layer-btn')).show();
+    		layero.find('.layui-layer-btn').css('text-align', 'center');
+        },
+        yes: function(index, layero){
+        	var frame = $(layero).find("iframe")[0].contentWindow.document;
+        	var checkData = $(layero).find("iframe")[0].contentWindow.getData();
+        	if(checkData.length>0){
+        		var entid = $(frame).find('#entityid').val();
+        		var proid = $(frame).find('#projectid').val();
+        		var proname = $(frame).find('#projectname').val();
+        		var taskid  = checkData[0].iid;
+        		var taskname  = checkData[0].sname;
+        		var tasktype  = checkData[0].iclassid;
+        		$(obj).val(proname+'/../'+taskname);
+        		$(obj).attr('taskid',taskid);
+        		$(obj).attr('type',tasktype);
+        		$(obj).attr('projectid',proid);
+        		$(obj).attr('entityid',entid);
+        		layer.close(index);
+        	}else{
+        		layer.msg("请选择一条数据！", { icon: 2, time: 2000 });
+        	}
+        },
+        end: function(){ //此处用于演示
+            
+        }
+    });
+}
+
+$('#saveBtn').click(function() {	
+	var resList = [];
+	var isSave = true;
+	var rowObj ;
+	$('#valueListform').find('table').each(function(i, item){
+		var index = $(item).find('input[flag="dest"]').attr('index');
+		rowObj = new Object();
+		rowObj.iid = $(item).attr('iid');
+		
+		rowObj.iprewbstype = $(item).find('input[flag="dest"]').attr('type');
+		rowObj.iprewbsid = $(item).find('input[flag="dest"]').attr('taskid');
+		rowObj.ipreprojectid = $(item).find('input[flag="dest"]').attr('projectid');
+		rowObj.ipreentityid = $(item).find('input[flag="dest"]').attr('entityid');
+
+		rowObj.ipostwbstype = $(item).find('input[flag="src"]').attr('type');
+		rowObj.ipostwbsid = $(item).find('input[flag="src"]').attr('taskid');
+		rowObj.ipostprojectid = $(item).find('input[flag="src"]').attr('projectid');
+		rowObj.ipostentityid = $(item).find('input[flag="src"]').attr('entityid');
+		
+		if ((rowObj.iprewbsid!=''&&rowObj.ipostwbsid=='')){
+			isSave = false;
+			layer.msg("第"+index+"行数据，请选择被镜像任务！", { icon: 2, time: 2000 });
+			return false;
+		} else if (rowObj.iprewbsid==''&&rowObj.ipostwbsid!=''){
+			isSave = false;
+			layer.msg("第"+index+"行数据，请选择镜像任务！", { icon: 2, time: 2000 });
+			return false;
+		} else {
+			if (rowObj.iprewbsid!=''&&rowObj.ipostwbsid!=''){
+				resList.push(rowObj);
+			}
+		}
+	});
+	
+	if (isSave){
+		vpPostAjax(getVpmPath() + '/vpm/wbsmirror/save', { formType : 'mirror',list: resList,projectid: projectid, entityid: entityid}, "POST", function(rst) {	
+			if (rst.success){
+				layer.msg("保存镜像关系成功！", { icon: 1, time: 2000 });
+				//window.location.reload();
+				parent.window.appdoclist.openIframeRightWindow();   //react方法调用
+			}
+		});
+	}
+});
+
+$('#clearBtn').click(function() {	
+	$('#valueListform').find('table').remove();
+	addItem();
+});
+
+$(document).ready(function () {
+	var accesslevel = -1;
+	if(parseInt(entityid) > 0 && parseInt(projectid) > 0){
+		vpPostAjax(getVpmPath() + '/vpm/wbsmirror/getMirrorWbs', { projectid: projectid, entityid: entityid }, "POST", function(rst) {	
+			accesslevel = rst.accesslevel;
+			var list = rst.list;
+			if (list.length > 0){
+				$.each(list,function(i,item){
+					addItem(item);
+				});
+			} else {
+				addItem();
+			}
+		});
+	}
+	
+	accesslevel = "1";
+	if(accesslevel=="1"){
+		$('#btnbutton').show();
+	} else {
+		$('#btnbutton').hide();
+	}
+});
+</script>
+</html>

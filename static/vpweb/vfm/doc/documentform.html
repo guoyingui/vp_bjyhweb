@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>任务看板 - VP应用全生命周期管理系统</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
+    <link rel="shortcut icon" href="img/favicon.ico">
+    <link href="../../css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="../../css/font-awesome.min.css?v=4.7.0" rel="stylesheet">
+    <link href="../../css/animate.css" rel="stylesheet">
+    <link href="../../css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+    <link href="../../css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+    <!-- zTree树表 -->
+    <link href="../../css/plugins/zTree/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+    <!-- layUI表格 -->
+    <link href="../../css/plugins/chosen/chosen.css" rel="stylesheet">
+    <link href="../../css/plugins/iCheck/custom.css" rel="stylesheet">
+    <link href="../../js/plugins/layui/css/layui.css"  rel="stylesheet" media="all">
+    <link href="../../css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="../../css/common.css" rel="stylesheet">
+    <link href="../../css/vp.css" rel="stylesheet">
+    <script src="../../../vpcommon/config.js"></script>
+    <script src="../../../vpcommon/vputils.min.js"></script>
+    <!--[if lte IE 9]>
+        <script src="../../js/html5shiv.min.js"></script>
+        <script src="../../js/respond.js"></script>
+    <![endif]-->
+</head>
+<style>
+	.fa-fw {
+		font-size: 24px;
+	}
+	.text-fail {
+		color: #bbb;
+	}
+</style>
+<body class="white-bg" style="width:99%">	
+	<div class="ibox-content p-n clearfix">
+		<form class="form-horizontal m-t" id="oForm"> 
+			<input type="hidden" id="iid" name="iid">
+			<div class="form-group">
+				<div class="ibox-title clearfix">
+					<h5>基本信息</h5>
+				</div>
+			</div>
+			<div class="hide form-group">
+				<div class="col-sm-6">
+					<label class="col-sm-4 col-md-3 control-label text-ellipsis">文档名称：</label>
+					<div class="col-sm-8 col-md-9">
+						<input id="sname" name="sname" class="form-control" type="text" readonly="readonly">
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<label class="col-sm-3 col-md-2 control-label text-ellipsis">文档版本号：</label>
+					<div class="col-sm-9 col-md-10">
+						<input id="iversion" name="iversion" class="form-control" type="text" readonly="readonly">
+					</div>
+				</div>
+			</div>
+			<!-- <div class="form-group">
+				<div class="col-sm-6">
+					<label class="col-sm-4 col-md-3 control-label text-ellipsis">文档类型：</label>
+					<div class="col-sm-8 col-md-9">
+						<div class="input-group vp-width-100">
+		                    <select data-placeholder="" id="iclassid" hidid="" class="chosen-select vp-width-100" >
+		                        
+		                    </select>
+		                </div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<label class="col-sm-3 col-md-2 control-label text-ellipsis">文档状态：</label>
+					<div class="col-sm-9 col-md-10">
+						<div class="input-group vp-width-100">
+		                    <select data-placeholder="" id="istatusid" hidid="" class="chosen-select vp-width-100" >
+		                        
+		                    </select>
+		                </div>
+					</div>
+				</div>
+			</div> -->
+			<!-- <div class="form-group">
+				<div class="col-sm-6">
+					<label class="col-sm-4 col-md-3 control-label text-ellipsis">描述：</label>
+					<div class="col-sm-8 col-md-9">
+						<div class="input-group vp-width-100">
+		                    <textarea id="sdescription" name="sdescription" class="form-control" ></textarea>
+		                </div>
+					</div>
+				</div>
+				<div class="col-sm-6 ">
+					<label class="col-sm-3 col-md-2 control-label text-ellipsis">存储路径：</label>
+					<div class="col-sm-9 col-md-10">
+						<div class="input-group vp-width-100">
+						    <input type="hidden" id="ifolderid" name="ifolderid">
+		                    <textarea id="sfoldername" name="sfoldername" class="form-control" ></textarea>
+		                </div>
+					</div>
+				</div>
+			</div> -->
+			<div class="form-group">
+				<input type="hidden" id="ifolderid" name="ifolderid">
+				<div class="col-sm-12">
+					<label class="col-sm-2 col-md-1 control-label text-ellipsis">描述：</label>
+					<div class="col-sm-10 col-md-11">
+						<div class="input-group vp-width-100">
+		                    <textarea id="sdescription" name="sdescription" class="form-control" ></textarea>
+		                </div>
+					</div>
+				</div>
+			</div>
+			<div class="hide form-group">
+				<label class="col-sm-2 col-md-1 control-label text-ellipsis">上传文档：</label>
+				<div class="col-sm-10 col-md-11">
+					<div class="vp-pr vp-height-35 m-b-sm">
+						<a class="btn btn-white" id="uploadfile">
+							<i class="fa fa-cloud-upload" aria-hidden="true"></i>添加附件
+						</a>
+					</div>
+					<div class="upload-list" id="uploadfile_list"></div>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div class="hide btnFixed text-center" id="formBtn">
+	
+	</div>
+</body>
+    <!-- 全局js -->
+    <script src="../../js/jquery-1.11.3.min.js"></script>
+	<!--[if IE 8]>
+	<script type="text/javascript" src="../../js/jquery-1.9.1.min.js"></script>
+	<![endif]-->
+    <script src="../../js/bootstrap.min.js?v=3.3.6"></script>
+    <!-- 自定义js -->
+    <script src="../../js/content.js?v=1.0.0"></script>
+    <!-- 日期控件 -->
+    <script src="../../js/plugins/datapicker/bootstrap-datepicker.js"></script>
+     <!-- layer弹出层 -->
+    <script src="../../js/plugins/layer/layer.min.js"></script>
+    <script src="../../js/plugins/layui/layui.js"></script>
+    <!-- 下拉选择列表 -->
+    <script src="../../js/plugins/chosen/chosen.jquery.js"></script>
+    <!-- jQuery 表单验证-->
+    <script src="../../js/plugins/validate/jquery.validate.min.js"></script>
+    <script src="../../js/plugins/validate/messages_zh.min.js"></script>
+    <!-- zTree模拟树表 -->
+    <script src="../../js/plugins/zTree/jquery.ztree.all.min.js"></script>
+    <script src="../../js/vpsoft/TreeTable.js"></script>
+    <script src="../../js/vpsoft/common.js"></script>
+    <script src="../../js/vpsoft/form.js"></script>
+    <script src="../../js/plugins/iCheck/icheck.min.js"></script>
+</html>
+<script>
+	
+	var documentid = $('#vpeditform', parent.document).attr('documentid');
+	var ientityid  = $('#ientityid', parent.document).val();
+	var ifolderid  = $('#ifolderid', parent.document).val();
+	var iclassid = $('#vpeditform', parent.document).attr('iclassid');
+	var istatusid = $('#vpeditform', parent.document).attr('istatusid');
+	if(parent.window.appdoclist){ //
+		documentid = getParameter("documentid");
+		ientityid = getParameter("ientityid");
+		ifolderid = getParameter("ifolderid");
+		iclassid = getParameter("iclassid");
+		istatusid = getParameter("istatusid");
+	}
+	console.log(documentid,ientityid,ifolderid,iclassid,istatusid);
+	$('#ifolderid').val(ifolderid);
+	var config = {'.chosen-select': {} }
+	//选择类别下拉框数据填充
+    vpPostAjax('/document/geDataList', {scode:'iclassid',ientityid:'36'}, 'POST', function(rst) {
+    	if(rst.success){
+    		var html = '<option value="0" hassubinfo="true" >请选择...</option>';
+    		var list = rst.data;
+    		var idefaultstatusid = "";
+    		$.each(list, function(i, item) {
+    			idefaultstatusid = item.idefaultstatusid;
+				if(idefaultstatusid==''||idefaultstatusid==null||idefaultstatusid==undefined){
+					idefaultstatusid = "0";
+				}
+    			if(i==0&&documentid=='0'){
+    				iclassid = item.iid;
+    			}
+    			if(item.iid==iclassid){
+    				if(istatusid=='0'){
+    					istatusid = idefaultstatusid;
+    				}
+    				html+= '<option value="'+item.iid+'" idefaultstatusid="'+idefaultstatusid+'" hassubinfo="true" selected>'+item.sname+'</option>';
+    			}else{
+    				html+= '<option value="'+item.iid+'" idefaultstatusid="'+idefaultstatusid+'" hassubinfo="true">'+item.sname+'</option>';
+    			}
+    		});
+    		$('#iclassid').append(html);
+    		$("#iclassid").attr('hidid',iclassid);
+    		if(documentid=='0'){
+    			$('#iclassid').removeAttr('disabled');
+    		}else{
+    			$('#iclassid').attr('disabled','disabled');
+    		}
+    	}else{
+    		layer.msg("加载类别下拉框数据异常", {icon: 2,time: 2000});
+    	}
+    });	
+	//选择状态下拉框数据填充
+    vpPostAjax('/document/geDataList', {scode:'istatusid',ientityid:'36'}, 'POST', function(rst) {
+    	if(rst.success){
+    		var html = '<option value="0" hassubinfo="true" >请选择...</option>';
+    		var list = rst.data;
+    		$.each(list, function(i, item) {
+    			if(i==0&&documentid=='0'&&istatusid=='0'){
+    				istatusid = item.iid;
+    			}
+    			if(item.iid==istatusid){
+    				html+= '<option value="'+item.iid+'" hassubinfo="true" selected>'+item.sname+'</option>';
+    			}else{
+    				html+= '<option value="'+item.iid+'" hassubinfo="true">'+item.sname+'</option>';
+    			}
+    		});
+    		$('#istatusid').append(html);
+    		$("#istatusid").attr('hidid',istatusid);
+    	}else{
+    		layer.msg("加载状态下拉框数据异常", {icon: 2,time: 2000});
+    	}
+    });	
+	for (var selector in config) {
+        $(selector).chosen(config[selector]);
+	}
+	$('#iclassid_chosen').find('.chosen-results').height('200px');
+    $('#iclassid_chosen').removeAttr('style');
+	$('#iclassid_chosen').addClass('vp-width-100');
+	$('#istatusid_chosen').find('.chosen-results').height('200px');
+    $('#istatusid_chosen').removeAttr('style');
+	$('#istatusid_chosen').addClass('vp-width-100');
+	//筛选数据类型
+	$(document).on('click','.active-result',function(){
+	 	var index=$(this).attr("data-option-array-index");
+	 	if($(this).closest("#iclassid_chosen").attr("id")=="iclassid_chosen"){
+	 		iclassid=$("#iclassid>option:eq("+index+")").val();
+	 		$("#iclassid").attr('hidid',iclassid);
+	 		var idefaultstatusid = $("#iclassid>option:eq("+index+")").attr('idefaultstatusid');
+	 		updateDefaultstatus(idefaultstatusid);
+	 	}
+	 	
+	 	if($(this).closest("#istatusid_chosen").attr("id")=="istatusid_chosen"){
+	 		istatusid=$("#istatusid>option:eq("+index+")").val();
+	 		$("#istatusid").attr('hidid',istatusid);
+	 	}
+	});
+	function updateDefaultstatus(idefaultstatusid){
+		$('#istatusid>option').each(function(i){
+			$(this).removeAttr('selected');
+			if($(this).val()==idefaultstatusid){
+				var val = $(this).val();
+				var text = $(this).text();
+				var htmlstr = '<option value="'+val+'" hassubinfo="true" selected>'+text+'</option>';
+				$(this).after(htmlstr);
+				$(this).remove();
+			}
+		});
+		$("#istatusid").trigger("chosen:updated");
+	}
+	function saveForm(){
+		var resObj = new Object();
+		resObj.iid = documentid;
+		resObj.ientityid = ientityid;
+		resObj.ifolderid = $('#ifolderid').val().replace(/\s/g, "");
+		resObj.sname = $('#sname').val().replace(/\s/g, "");
+		resObj.iversion = $('#iversion').val().replace(/\s/g, "");
+		/* resObj.istatusid = $('#istatusid').attr('hidid').replace(/\s/g, "");
+		resObj.iclassid = $('#iclassid').attr('hidid').replace(/\s/g, ""); */
+		resObj.sdescription = $('#sdescription').val();
+		resObj.saveType = 'document';
+		/* if(resObj.sname==''){
+			layer.msg("文档名称不能为空!", {icon: 2,time: 2000});
+			return false;
+		}
+		if(resObj.iversion==''){
+			layer.msg("文档版本号不能为空!", {icon: 2,time: 2000});
+			return false;
+		} */
+		/* if(resObj.iclassid=='0'){
+			layer.msg("请选择文档类别!", {icon: 2,time: 2000});
+			return false;
+		}
+		if(resObj.istatusid=='0'){
+			layer.msg("请选择文档状态!", {icon: 2,time: 2000});
+			return false;
+		} */
+		resObj.iclassid = 0;
+		resObj.istatusid = 0;
+		var list = [];
+		var items = $('#uploadfile_list').find('.vp-pr.p-xxs');
+		if(items && items.length > 0){
+			var file = '';
+			$.each(items, function(i, item) {
+				file = new Object();
+				file.fileid = $(this).attr('fileid');
+				file.filename = $(this).attr('filename');
+				list.push(file);
+			});
+		}else{
+			if(resObj.iid > 0){
+				console.log(resObj.iid);
+			} else {
+				layer.msg("请先上传文档!", {icon: 2,time: 2000});
+				return false;
+			}
+		}
+		resObj.filelist = list;
+		var relentityid = $('#vpeditform', parent.document).attr('relentityid');
+		if(relentityid!=null && parseInt(relentityid) > 0){
+			resObj.relentityid = relentityid;
+			resObj.reliid = $('#vpeditform', parent.document).attr('reliid');
+			resObj.mainentityid = $('#vpeditform', parent.document).attr('mainentityid');
+			resObj.mainiid = $('#vpeditform', parent.document).attr('mainiid');
+		}
+		vpPostAjax('/document/save', resObj , "POST", function(rst) {
+			try {
+				if(parent.window.appdoclist){ //
+					parent.window.appdoclist.closeRightBox();
+				} else {
+					var param = new Object();
+					param['ifolderid']=ifolderid;
+					parent.reload(param);
+					if(resObj.iid=='0'){
+						parent.closeDrawer('#vpeditform');
+					}
+				}
+			}
+			catch(exception) {
+				layer.msg(msg004 + callback, { icon: 2, time: 2000 });
+			}	
+		}); 
+	}
+	$("#sfoldername").click(function() {
+		if(parent.window.appdoclist){ //
+			parent.window.appdoclist.openChosenWindow("chosenFolder",documentid);
+		} else {
+    		openChosenWindow();
+    	}
+	});
+	function openChosenWindow(){
+		var openurl = "librarytree.html?treeType=chosenFolder";
+		parent.layer.open({
+	        type: 2, 
+	        maxmin: true,
+			title: '选择存储库',
+	        btn: ['确定', '取消'],
+	        btnAlign:'c',
+	        area: ['90%', '90%'],
+	        resize: false,
+	        shift: 2,
+	        shade: 0.3,
+	        content: [openurl], //iframe的url，no代表不显示滚动条
+	        success: function(layero, index){
+        		$(layero.find('.layui-layer-btn')).show();
+        		layero.find('.layui-layer-btn').css('text-align', 'center');
+	        },
+	        yes: function(index, layero){
+	        	var frame = $(layero).find("iframe")[0].contentWindow.document;
+	        	$("#sfoldername").val($('#sfoldername', parent.document).val());
+	        	$("#ifolderid").val($('#ifolderid', parent.document).val());
+	        	$('#ifolderid', parent.document).val(ifolderid);
+	        	parent.layer.close(index);
+	        },
+	        end: function(){ //此处用于演示
+	            
+	        }
+	    });
+	}
+	//上传附件
+	layui.use('upload', function(){
+		  var upload = layui.upload;
+		  //执行实例
+		  var uploadInst = upload.render({
+		    elem: '.btn-white' //绑定元素
+		    ,url: getUploadPath() + '/file/uploadfile?access_token='+token //上传接口
+		    ,accept: 'file'
+		    ,done: function(res){
+		        //上传完毕回调
+		        var item = this.item;
+		        console.log(item);
+		    	console.log(res);
+		    	var html = '<div class="vp-pr p-xxs text-primary" fileid='+res.data.fileid+' filename='+res.data.filename+' >'
+		    	         + '   <div class="col-xs-12"  >'
+		    	         + '	  <div class="col-xs-9">'
+		    	         + '         <a><i class="text-info fa fa-check-circle" data-toggle="tooltip" title="上传成功"></i></a> '
+		    	         + '         <a><i class="text-primary" data-toggle="tooltip" title="'+res.data.filename+'">'+res.data.filename+'</i></a> &nbsp;&nbsp;'
+		    	         + '         <a><i class="text-danger" data-toggle="tooltip" title="删除">删除</i></a> '
+		    	         + '      </div> '
+		    	         + '   </div>'
+		    	         + '   <div class="col-xs-12"  >'
+		    	         + '      <div class="col-xs-4">文件大小：'+res.data.size+'</div>'
+		    	         + '      <div class="col-xs-4">上传人：'+res.data.creator+'</div>'
+		    	         + '      <div class="col-xs-4">上传时间：'+res.data.createtime+'</div>'
+		    	         + '   </div>'
+		    	         + '</div>'
+		    	$("#"+item.context.id+"_list").append(html);
+		    	console.log($("#"+item.context.id));
+		    }
+		    ,error: function(){
+		      //请求异常回调
+		    }
+		  });
+	});	
+	
+	function loadDocumentInfo(){
+		if (documentid != '0') {
+			vpPostAjax('/document/get', { iid: documentid }, "POST", function(rst) {			
+				var json = rst.data;
+				for (var key in json) {
+					$('#'+key).val(json[key]);	
+				}
+			});
+			$('#sname').closest(".form-group").removeClass('hide');
+		} else {
+			$('#iid').val('0');
+			$('#uploadfile').closest(".form-group").removeClass('hide');
+		}
+		var btnHtml = '<button class="btn btn-sm btn-primary" disabled id="saveBtn">保存</button>&nbsp;';
+		if(parent.window.appdoclist){ //
+			$('#formBtn').removeClass('hide');
+			$('#formBtn').html(btnHtml);
+			if (getParameter("entityrole")=='true') {
+				$('#formBtn button').removeAttr('disabled');
+			} 
+			$('#formBtn').attr('style','bottom: 0px; display: block;');
+			$('#saveBtn').click(function() {	
+			 	saveForm();
+			});
+		} else {
+			$('#btnbutton', parent.document).html(btnHtml);
+			if (getParameter("entityrole")=='true') {
+				$('#btnbutton button', parent.document).removeAttr('disabled');
+			} 
+			$('#btnbutton', parent.document).attr('style','bottom: 0px; display: block;');
+			$('#saveBtn', parent.document).click(function() {	
+			 	saveForm();
+			});
+		}
+	}
+	
+	$(document).ready(function () {	
+		loadDocumentInfo();
+	});
+</script>

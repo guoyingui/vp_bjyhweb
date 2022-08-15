@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>工作流</title>
+<meta name="keywords" content="">
+<meta name="description" content="">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Cache-control" content="no-cache">
+<meta http-equiv="Cache" content="no-cache">
+<link rel="shortcut icon" href="img/favicon.ico">
+<link href="../../css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+<link href="../../css/font-awesome.min.css?v=4.7.0" rel="stylesheet">
+<link href="../../css/animate.css" rel="stylesheet">
+<link href="../../css/plugins/datapicker/datepicker3.css"	rel="stylesheet">
+<link href="../../css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+<link href="../../css/plugins/chosen/chosen.css" rel="stylesheet">	
+<!-- zTree树表 -->
+<link href="../../css/plugins/zTree/zTreeStyle/zTreeStyle.css"	rel="stylesheet">
+<!-- layUI表格 -->
+<link rel="stylesheet" href="../../js/plugins/layui/css/layui.css"	media="all">
+<link href="../../css/style.css?v=4.1.0" rel="stylesheet">
+<link href="../../css/common.css" rel="stylesheet">
+<link href="../../css/vp.css" rel="stylesheet">
+    <script src="../../../vpcommon/config.js"></script>
+    <script src="../../../vpcommon/vputils.min.js"></script>
+<!--[if lte IE 9]>
+        <script src="../../js/html5shiv.min.js"></script>
+        <script src="../../js/respond.js"></script>
+    <![endif]-->
+</head>
+<body>
+	<div class="ibox" id="app">
+		<div class="ibox-content newverison padding-10">
+			<form class="form-horizontal m-t" id="oForm" novalidate="novalidate">
+				<div class="form-group">
+					<label class="col-xs-3  text-right  control-label">分支结果：</label>
+					<div class="col-xs-8">
+						<select id="branchtype" name="branchtype" class="chosen-select vp-width-100">
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-xs-3  text-right  control-label">分支条件：</label>
+					<div class="col-xs-8">
+						<input id="flag" name="flag" placeholder="输入分支条件值" type="text"
+							   class="form-control vp-radius">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-xs-3  text-right  control-label">默认分支：</label>
+					<div class="col-xs-8 ">
+						<div class="checkbox checkbox-info checkbox-inline">
+							<input type="checkbox" id="defaultflow" value="true" name="defaultflow">
+							<label for="defaultflow"></label>
+						</div>
+					</div>
+				</div>
+				<!-- <div class="form-group">
+					<label class="col-xs-3 text-right control-label">类型：</label>
+					<div class="col-xs-8">
+						<div class="radio radio-info radio-inline">
+							<input type="radio" id="type1" value="action" name="type">
+							<label for="type1">动作</label>
+						</div>
+						<div class="radio radio-info radio-inline">
+							<input type="radio" id="type0" value="state" name="type">
+							<label for="type0">状态</label>
+						</div>
+					</div>
+				</div> -->
+				<div class="form-group group1">
+					<label class="col-xs-3  text-right control-label">状态：</label>
+					<div class="col-xs-8">
+						<table lay-size="sm" class="layui-hide" id="tableSort1" lay-filter="vpclick"></table>
+
+					</div>
+				</div>
+				<div class="form-group group2">
+					<label class="col-xs-3  text-right control-label">动作：</label>
+					<div class="col-xs-8">
+						<table lay-size="sm" class="layui-hide" id="tableSort2" lay-filter="vpclick"></table>
+					</div>
+				</div>
+			</form>
+		</div>
+		<div class="text-center">
+			<button type="button" class="btn btn-sm btn-outline btn-primary" id="saveBtn">保存</button>
+		</div>
+	</div>
+</body>
+<!-- 全局js -->
+<script src="../../js/jquery-1.11.3.min.js"></script>
+<!--[if IE 8]>
+<script type="text/javascript" src="../../js/jquery-1.9.1.min.js"></script>
+<![endif]-->
+<script src="../../js/bootstrap.min.js?v=3.3.6"></script>
+<!-- 自定义js -->
+<script src="../../js/content.js?v=1.0.0"></script>
+<!-- 日期控件 -->
+<script src="../../js/plugins/datapicker/bootstrap-datepicker.js"></script>
+<!-- layer弹出层 -->
+<script src="../../js/plugins/layer/layer.min.js"></script>
+<script src="../../js/plugins/layui/layui.js"></script>
+<!-- 下拉选择列表 -->
+<script src="../../js/plugins/chosen/chosen.jquery.js"></script>
+<!-- jQuery 表单验证-->
+<script src="../../js/plugins/validate/jquery.validate.min.js"></script>
+<script src="../../js/plugins/validate/messages_zh.min.js"></script>
+<!-- zTree模拟树表 -->
+<script src="../../js/plugins/zTree/jquery.ztree.all.min.js"></script>
+<script src="../../js/vpsoft/TreeTable.js"></script>
+<script src="../../js/vpsoft/common.js"></script>
+<script src="../../js/vpsoft/form.js"></script>
+<script src="../../js/plugins/iCheck/icheck.min.js"></script>
+<script src="../../js/vpsoft/getUrlParam.js"></script>
+<script type="text/html" id="radiobar">
+	{{# if(d.checked){ }}
+	<a lay-event="select" ondblclick ="
+		$(this).find('input[type=radio]').removeAttr('checked');
+		$(this).find('.layui-form-radioed').removeClass('layui-form-radioed');
+		$(this).find('.layui-anim-scaleSpring').removeClass('layui-anim-scaleSpring');
+		" style="margin-left:25px">
+		<input type="radio" name="stateids" value="{{d.iid}}"  title=" "  checked></a>
+	{{#}else{ }}
+	<a lay-event="select" ondblclick ="
+		$(this).find('input[type=radio]').removeAttr('checked');
+		$(this).find('.layui-form-radioed').removeClass('layui-form-radioed');
+		$(this).find('.layui-anim-scaleSpring').removeClass('layui-anim-scaleSpring');
+		" style="margin-left:25px">
+		<input type="radio" name="stateids" value="{{d.iid}}"  title=" " ></a>
+	{{# }}}
+</script>
+<script>
+var flowkey = UrlParm.parm("flowkey");
+var stepkey = UrlParm.parm("stepkey");
+var modelid = UrlParm.parm("modelid");
+
+jQuery("input[name=type]").click(function () {
+	var val =$(this).val();
+	//actiontypeclick(val);
+});
+
+// function actiontypeclick(val){
+// 	$("input[name=type][value='" + val + "']").attr("checked", true);
+// 	if(val == 'state'){
+// 		$(".group1").show();
+// 		$(".group2").hide();
+// 	}else if(val == 'action'){
+// 		$(".group1").hide();
+// 		$(".group2").show();
+// 	}
+// }
+function initBranchType(typeid){
+	jQuery.getJSON(getWorkflowPath()+"/rest/flowentity/getBranchTypeList",{},function(rst){
+		console.log(rst)
+		var data = rst.data;
+    	if(data){
+    		var html = '';
+    		var list = data;
+    		$.each(list, function(i, item) {
+    			if(i==0 && (typeid==undefined || typeid=='' || typeid=='0')){
+    				typeid = item.value;
+    			}
+    			if(item.value==typeid){
+    				html+= '<option value="'+item.value+'" hassubinfo="true" selected>'+item.label+'</option>';
+    			}else{
+    				html+= '<option value="'+item.value+'" hassubinfo="true">'+item.label+'</option>';
+    			}
+    		});
+    		$('#branchtype').append(html);
+    		$('#branchtype').val(typeid);
+    		var config = {'.chosen-select': {} }
+    		for (var selector in config) {
+    	        $(selector).chosen(config[selector]);
+    	    }
+    		$('#branchtype_chosen').find('.chosen-results').height('130px');
+    	}else{
+    		layer.msg("加载分支结果下拉框数据异常", {icon: 2,time: 2000});
+    	}
+    });	
+}
+//筛选数据类型
+$(document).on('click','.active-result',function(){
+ 	var index=$(this).attr("data-option-array-index");
+ 	if($(this).closest("#branchtype_chosen").attr("id")=="branchtype_chosen"){
+ 		var val =$("#branchtype>option:eq("+index+")").val();
+ 		$('#branchtype').val(val);
+ 	}
+});
+jQuery.getJSON(getWorkflowPath()+"/rest/editor/action",{"flowkey":flowkey,"stepkey":stepkey},function(result){
+	var states = result.data.states;
+	var actions = result.data.actions;
+	
+	if(result.data.stepaction!=undefined &&result.data.stepaction!=null)
+	{
+		$("#flag").val(result.data.stepaction.flag);
+		initBranchType(result.data.stepaction.branchtype);//流程分支结果
+		//actiontypeclick(result.data.stepaction.type);
+		var defaultflow = result.data.stepaction.defaultflow;
+		$("input[name=defaultflow][value='" + defaultflow + "']").attr("checked", true);
+		for (var i = 0; i < states.length; i++) {
+			states[i].checked = false;
+			if(result.data.stepaction.stateids==states[i].iid){
+				states[i].checked = true;
+			}
+		}
+
+		for (var i = 0; i < actions.length; i++) {
+			actions[i].LAY_CHECKED = false;
+			//alert(actions[i].iid)
+			var ccc = ","+result.data.stepaction.actionids+",";
+			var cc  = ","+actions[i].iid+",";
+			if(ccc.indexOf(cc)>=0){
+				actions[i].LAY_CHECKED = true;
+			}
+		}
+
+	} else {
+		initBranchType('0');//流程分支结果
+	}
+
+	layui.use(['laypage', 'table'], function () {
+		var table = layui.table;
+		table.render({
+			elem: '#tableSort1'
+			, data : states
+			, page: false
+			, limit: 100
+			, cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+			, cols: [[
+				{field:'left', title: '', width:60,toolbar:'#radiobar',width:100},
+				{field: 'sname', title: '状态', event: "click", width: 350}
+			]]
+			,done: function(res, curr, count){
+
+			}
+		});
+	});
+
+	layui.use(['laypage', 'table'], function () {
+		var table = layui.table;
+		table.render({
+			elem: '#tableSort2'
+			, data : result.data.actions
+			, page: false
+			, limit: 100
+			, cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+			, cols: [[
+				{type:'checkbox',field:'iid',width:100},
+				{field: 'sname', title: '动作', event: "click", width: 350}
+			]]
+		});
+	});
+});
+	
+$("#saveBtn").click(function(){
+	var form = $("#oForm");
+	var validator = form.validate();
+	if (!validator.form()) {
+		return;
+	}
+	var arr = [];
+	var checkStatus = layui.table.checkStatus("tableSort2");
+	for(var i=0;i<checkStatus.data.length;i++){
+		arr.push(checkStatus.data[i].iid);
+	}
+
+//	if($("input[name=type][value='action']").is(':checked')){
+//		if(checkStatus.data.length>0){
+//
+//		}else{
+//			layer.msg("请至少选择一条数据！", { icon: 2, time: 2000 });
+//			return;
+//		}
+//	}
+
+	$("#saveBtn").attr('disabled', "true");
+	var param = form.serializeJSON();
+	param['actionids'] = arr.join();
+	param['flowkey']= flowkey;
+	param['stepkey']= stepkey;
+	param['modelid']= modelid;
+	param['flag']= param['flag'].replace(/\s/g, "");
+	param['branchtype']= $('#branchtype').val();
+	$.ajax({
+		type : 'POST',
+		cache : false,
+		async : true,
+		url : getWorkflowPath()+"/rest/editor/action",
+		dataType : "json",
+		data : param ,
+		success : function(result) {
+			//alert(result.msg)
+			if (result.data == undefined)
+				layer.msg(result.msg, { icon: 2, time: 3000 });
+			$("#saveBtn").removeAttr('disabled');
+		},
+		error : function(xhr, ajaxOptions, thrownError) {
+		}
+	});
+});
+
+
+
+</script>
+</html>

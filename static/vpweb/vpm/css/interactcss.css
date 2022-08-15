@@ -1,0 +1,364 @@
+body {
+   height:100%;
+   font-size:12px;
+   color:#353c44;
+}
+img{
+   border:0;
+   vertical-align:top;
+ }
+a:link,a:visited{
+    color:#353c44;
+	text-decoration:none;
+}
+a:hover{
+   color:#990000;
+   text-decoration:none;
+}
+.task_right{
+   width:100%;
+   height:100%;
+   background:#f6f6f6;
+   border-left:1px #616a71 solid;
+   border-top:1px #616a71 solid;
+}
+.task_title{
+   height:20px;
+   font-size:13px;
+   font-weight:bold;
+   padding:6px 0 0 10px;
+}
+.task_info_nr{
+   padding:10px;
+}
+.task_info_one{
+   margin-bottom:10px;
+}
+.task_info_one th{
+   height:28px;
+   width:60px;
+   font-weight:bold;
+   padding-right:5px;
+   text-align:left;
+}
+.task_info_onetd{
+   height:26px;
+}
+.task_info_line{
+   height:1px;
+   background:#9aa0ac;
+}
+.task_yctime{
+   color:#b47c0f;
+}
+.task_fontblod{
+   font-weight:bold;
+}
+.task_info_twotd{
+   height:24px;
+}
+
+
+.task_jzgz_track{
+   padding:10px 10px 0px 10px;
+}
+
+.task_jzgz{
+   padding:5px 10px 5px 10px;
+}
+.task_jzgz_tab{
+   height:13px;
+   font-weight:bold;
+   font-size:13px;
+}
+.task_jzgz_tab_visited{
+   color:#990000;
+}
+.task_jzgz_tab_visited a:link,.task_jzgz_tab_visited a:visited{
+   color:#990000;
+   text-decoration:none;
+}
+.task_jzgz_tab_visited{
+   color:#990000;
+}
+.task_jzgz_tab_link a:link,.task_jzgz_tab_link a:visited{
+   color:#353c44;
+   text-decoration:none;
+}
+.task_corner_gz{
+   width:13px;
+   height:7px;
+   background:url(/project/images/interact/gzbg_corner.gif) no-repeat;
+   margin:10px 0 0 20px;
+   position:relative;
+   bottom:-1px;
+   font-size:0px;
+   overflow:hidden;
+}
+.task_corner_timesheet{
+   width:13px;
+   height:7px;
+   background:url(/project/images/interact/gzbg_corner.gif) no-repeat;
+   margin:10px 0 0 70px;
+   position:relative;
+   bottom:-1px;
+   font-size:0px;
+   overflow:hidden;
+}
+.timesheet_box{
+   border:1px #cccccc solid;
+   border-collapse:collapse;
+}
+.timesheet_box_firsttd{
+   background:url(/project/images/interact/timesheet_firsttd_bg.gif);
+   height:25px;
+ }
+.timesheet_box th{
+   height:25px;
+   border-right:1px #cccccc solid;
+   border-collapse:collapse;
+   font-style:normal;
+   font-weight:normal;
+   text-align:center;
+}
+.timesheet_box_sectd{
+   height:23px;
+   border-right:1px #cccccc solid;
+   border-collapse:collapse;
+   background:url(/project/images/interact/timesheet_sectd_bg.gif);
+   text-align:center;
+}
+.timesheet_box_tr_other{
+   background:#eef3f6;
+}
+.timesheet_box_tr_other td{
+	height:20px;
+	text-align:center;
+}
+.timesheet_box_tr_other .statusIcon{
+   border-right:1px #cccccc solid;
+   border-bottom:1px #cccccc solid;
+   border-collapse:collapse;
+}
+.timesheet_box_tr_other .master{
+   border-right:1px #cccccc solid;
+   border-bottom:1px #cccccc solid;
+   border-collapse:collapse;
+}
+.timesheet_box_tr_other .normal{
+   border-bottom:1px #cccccc solid;
+   border-collapse:collapse;
+}
+.timesheet_box_tr_other .over{
+   border-right:1px #cccccc solid;
+   border-bottom:1px #cccccc solid;
+   border-collapse:collapse;
+}
+.timesheet_box_tr_curr{
+   background:#fff;
+}
+.timesheet_box_tr_curr td{
+   height:20px;
+   text-align:center;
+}
+.timesheet_box_tr_curr .statusIcon{
+   border-right:1px #cccccc solid;
+   border-bottom:1px #cccccc solid;
+   border-collapse:collapse;
+}
+.timesheet_box_tr_curr .master{
+   border-right:1px #cccccc solid;
+   border-bottom:1px #cccccc solid;
+   border-collapse:collapse;
+}	
+.timesheet_box_tr_curr .normal{
+   border-bottom:1px #cccccc solid;
+   border-collapse:collapse;
+}	
+.timesheet_box_tr_curr .over{
+   border-right:1px #cccccc solid;
+   border-bottom:1px #cccccc solid;
+   border-collapse:collapse;
+}	
+.task_gzbg{
+  border:1px #a6b8c4 solid;
+  padding:5px 10px;
+  background:url(/project/images/interact/gzbg_bg.gif);
+  margin-bottom:10px;
+}
+.task_gzbg_textbox{
+  width:100%;
+  height:35px;
+  border:1px #bababa solid;
+  overflow:auto;
+  color:#999999;
+}
+.task_gzbg_textbox_input{
+  width:100%;
+  height:35px;
+  border:1px #bababa solid;
+  overflow:auto;
+}
+.task_gzbg_extbtn{
+  padding-top:10px;
+}
+.task_gzbg_line_gray{
+  height:1px;
+  overflow:hidden;
+  font-size:0;
+  background:#c6c6c6;
+  margin-top:10px;
+}
+.task_gzbg_line_white{
+  height:1px;
+  overflow:hidden;
+  font-size:0;
+  background:#fff;
+}
+.task_gzbg_btn{
+  padding:10px 0;
+}
+.task_peoplefont{
+   color:#1964ab;
+   font-weight:bold;
+}
+.task_hffont{
+   color:#1964ab;
+}
+.task_hffont a:link,.task_hffont a:visited{
+   color:#1964ab;
+   text-decoration:none;
+}
+.task_hfboxcorner{
+   width:16px;
+   height:7px;
+   background:url(/project/images/interact/gzbg_hfcorner.gif) no-repeat;
+   margin:0px 0 0 20px;
+   position:relative;
+   bottom:-1px;
+   font-size:0px;
+   overflow:hidden;
+}
+.task_hfbox{
+   background:#f6f7fd;
+   border:1px #cacaec solid;
+   padding:5px 10px 0 10px;
+   margin-bottom:8px;
+}
+.task_hf_line{
+   height:1px;
+   background:#dfe0f4;
+}
+.task_hftextcorner{
+   width:16px;
+   height:7px;
+   background:url(/project/images/interact/gzbg_hftextcorner.gif) no-repeat;
+   margin:0px 0 0 20px;
+   position:relative;
+   bottom:-1px;
+   font-size:0px;
+   overflow:hidden;
+   margin-top:5px;
+}
+.task_hftext{
+   background:#f4f4f4;
+   border:1px #9aa0ac solid;
+   padding:5px 10px 10px 10px;
+   margin-bottom:8px;
+}
+.task_zy_info{
+   border:1px #e1e1e1 solid;
+   background:#fbfbfb;
+   border-collapse:collapse;
+   padding:10px;
+}
+.task_zy_info th{
+   height:30px;
+   width:60px;
+   text-align:left;
+}
+
+.task_zy_info_rightshadow{
+   width:1px;
+   background:#eee;
+}
+.task_zy_info_bottomshadow{
+   height:1px;
+   background:#eee;
+   overflow:hidden;
+   font-size:0;
+}
+.task_zy_textarea{
+  height:81px;
+  border:1px #a6b8c4 solid;
+  padding:5px 10px;
+  background:url(/project/images/interact/task_zy_textarea_bg.gif);
+  margin:10px 0;
+}
+.input_edit_saved{
+	margin: 0px;
+	width: 98%;
+	height: 18px;
+	border: 1px #008800 solid;
+	background: #fff;
+	text-align: right;
+}
+
+/***任务跟踪-工时报告start***/
+.input_edit_refused{
+	margin: 0px;
+	width: 98%;
+	height: 18px;
+	border: 1px #FF0000 solid;
+	background: #fff;
+	text-align: right;
+}
+.timesheet_box_saved{
+   color : #353c44;
+}
+.timesheet_box_submited{
+   color:#dd7901;
+}
+.timesheet_box_approved{
+   color:#017f01;
+   font-weight:bold;
+}
+.timesheet_box_refused{
+   color:#fe0002;
+   font-weight:bold;
+}
+/***任务跟踪-工时报告end***/
+.task_track_progress_workstat0
+{
+	background:url(/project/images/wbstask/icon_successful.gif) no-repeat left center !important;
+}
+.task_track_progress_workstat1
+{
+	background:url(/project/images/wbstask/icon_trouble.gif) no-repeat left center !important;
+}
+.task_track_progress_workstat2
+{
+	background:url(/project/images/wbstask/icon_problem.gif) no-repeat left center !important;
+}
+.project_track_flag_green
+{
+	background:url(/project/images/flag/greenPoint.gif) no-repeat left center !important;
+}
+.project_track_flag_red
+{
+	background:url(/project/images/flag/redPoint.gif) no-repeat left center !important;
+}
+.project_track_flag_yellow
+{
+	background:url(/project/images/flag/yellowPoint.gif) no-repeat left center !important;
+}
+.track_track_top_title{
+   height:20px;
+   background:url(/project/images/interact/gjt_bg.gif);
+   font-size:13px;
+   font-weight:bold;
+   padding:6px 0 0 10px;
+}
+.gray{
+	color: #bbbbbb;	
+}

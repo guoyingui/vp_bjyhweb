@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>工作流</title>
+<meta name="keywords" content="">
+<meta name="description" content="">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Cache-control" content="no-cache">
+<meta http-equiv="Cache" content="no-cache">
+<link rel="shortcut icon" href="img/favicon.ico">
+<link href="../../css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+<link href="../../css/font-awesome.min.css?v=4.7.0" rel="stylesheet">
+<link href="../../css/animate.css" rel="stylesheet">
+<link href="../../css/plugins/datapicker/datepicker3.css"	rel="stylesheet">
+<link href="../../css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+	
+<!-- zTree树表 -->
+<link href="../../css/plugins/zTree/zTreeStyle/zTreeStyle.css"	rel="stylesheet">
+<!-- layUI表格 -->
+<link rel="stylesheet" href="../../js/plugins/layui/css/layui.css"	media="all">
+<link href="../../css/style.css?v=4.1.0" rel="stylesheet">
+<link href="../../css/common.css" rel="stylesheet">
+<link href="../../css/vp.css" rel="stylesheet">
+    <script src="../../../vpcommon/config.js"></script>
+    <script src="../../../vpcommon/vputils.min.js"></script>
+<!--[if lte IE 9]>
+        <script src="../../js/html5shiv.min.js"></script>
+        <script src="../../js/respond.js"></script>
+    <![endif]-->
+</head>
+<body>
+	<div class="ibox" id="app">
+		<div class="ibox-content newverison" >
+			 <form class="form-horizontal m-t" id="oForm" novalidate="novalidate">
+	            <div class="form-group">
+	                <label class="col-xs-3 text-right control-label">设定模式：</label>
+	                <div class="col-xs-8">
+	                	<div class="radio radio-info radio-inline">
+							<input type="radio" id="isetmodel3" value="2" name="isetmode" checked="true">
+							<label for="isetmodel3">运行时指定</label>
+						</div>
+						<div class="radio radio-info radio-inline">
+							<input type="radio" id="isetmodel2" value="1" name="isetmode">
+							<label for="isetmodel2">发起人指定</label>
+						</div>
+						<div class="radio radio-info radio-inline">
+							<input type="radio" id="isetmodel1" value="0" name="isetmode">
+							<label for="isetmodel1">配置时指定</label>
+						</div>
+	                </div>
+	            </div>
+	            <div class="form-group">
+	                <label class="col-xs-3 text-right control-label">设定范围：</label>
+	                <div class="col-xs-8">
+	                    <div class="radio radio-info radio-inline">
+							<input type="radio" id="iusermode1" value="0" name="iusermode" checked="true">
+							<label for="iusermode1">不限定</label>
+						</div>
+						<div class="radio radio-info radio-inline">
+							<input type="radio" id="iusermode2" value="1" name="iusermode">
+							<label for="iusermode2">特定人员</label>
+						</div>
+						<div class="radio radio-info radio-inline">
+							<input type="radio" id="iusermode3" value="2" name="iusermode">
+							<label for="iusermode3">特定组</label>
+						</div>
+						<div class="radio radio-info radio-inline">
+							<input type="radio" id="iusermode4" value="3" name="iusermode">
+							<label for="iusermode4">特定步骤</label>
+						</div>
+	                </div>
+	            </div>
+	            <div class="form-group hidegroup group1">
+					<label class="col-xs-3 text-right control-label">处理人：</label>
+					<div class="col-xs-8">
+						<input id="suserid" name="suserid" type="hidden"/>
+					    <input id="usernames" name="usernames" placeholder="处理人" type="text" class="form-control padding-left-30 vp-radius" required="" aria-required="true" onclick="toSearchFlowuser();">
+					</div>
+				</div>
+	            <div class="form-group hidegroup group2">
+					<label class="col-xs-3 text-right control-label">处理组：</label>
+					<div class="col-xs-8">
+						<input id="sgroupid" name="sgroupid" type="hidden"/>
+					    <input id="groupnames" name="groupnames" placeholder="处理组" type="text" class="form-control padding-left-30 vp-radius" required="" aria-required="true" onclick="toSearchFlowgroup();">
+					</div>
+				</div>
+				<div class="form-group hidegroup groupstep">
+					<label class="col-xs-3 text-right control-label">指定节点：</label>
+					<div class="col-xs-8">
+						<!-- <input id="sstepid" name="sstepid" type="hidden"/>
+						<input id="stepnames" name="stepnames" placeholder="指定节点：" type="text" 
+							class="form-control padding-left-30 vp-radius" required="" aria-required="true" 
+							onclick="toSearchlinkstep();"> -->
+						<select name="linkstep" id="linkstep" class="form-control padding-left-30 vp-radius" aria-required="true">
+							<option class="form-control " value="0">选择步骤</option>
+						</select>
+					</div>
+				</div>
+
+	            <div class="form-group">
+	                <label class="col-xs-3 text-right control-label">处理模式：</label>
+	                <div class="col-xs-8">
+	                    <div class="radio radio-info radio-inline">
+							<input type="radio" id="iprocessmode1" value="0" name="iprocessmode" checked="true">
+							<label for="iprocessmode1">抢占</label>
+						</div>
+						<div class="radio radio-info radio-inline">
+							<input type="radio" id="iprocessmode2" value="1" name="iprocessmode">
+							<label for="iprocessmode2">顺序</label>
+						</div>
+						<div class="radio radio-info radio-inline">
+							<input type="radio" id="iprocessmode3" value="2" name="iprocessmode">
+							<label for="iprocessmode3">会签</label>
+						</div>
+	                </div>
+	            </div>
+	            <div class="form-group hidegroup group3">
+					<label class="col-xs-3 text-right control-label">会签规则：</label>
+					<div class="col-xs-8 sub-head">
+					    <input id="ssignrule" name="ssignrule" placeholder="会签通过的百分比" type="text" class="form-control padding-left-30 padding-right-30 vp-radius" required="" aria-required="true">
+						<i class="fa">%</i>
+					</div>
+				</div>
+	            <div class="form-group">
+	                <label class="col-xs-3 text-right control-label">最近处理者：</label>
+	                <div class="col-xs-8">
+	                    <div class="radio radio-info radio-inline">
+							<input type="radio" id="ilastuserflag1" value="0" name="ilastuserflag" checked="true">
+							<label for="ilastuserflag1">允许修改</label>
+						</div>
+						<div class="radio radio-info radio-inline">
+							<input type="radio" id="ilastuserflag2" value="1" name="ilastuserflag">
+							<label for="ilastuserflag2">禁止修改</label>
+						</div>
+	                </div>
+	            </div>
+	            <div class="form-group">
+	                <label class="col-xs-3 text-right control-label">流转模式：</label>
+	                <div class="col-xs-8">
+	                    <div class="radio radio-info radio-inline">
+							<input type="radio" id="ijump1" value="0" name="ijump" >
+							<label for="ijump1">自由流程</label>
+						</div>
+						<div class="radio radio-info radio-inline">
+							<input type="radio" id="ijump2" value="1" name="ijump" checked="true">
+							<label for="ijump2">按流程定义流转</label>
+						</div>
+						<div class="radio radio-info radio-inline" title="">
+							<input type="radio" id="ijump3" value="2" name="ijump">
+							<label for="ijump3">自动完成(只适合第一个节点)</label>
+						</div>
+	                </div>
+	            </div>
+	        </form>
+		</div>
+		<div class="text-center">
+			<button type="button" class="btn btn-sm btn-outline btn-primary" id="saveBtn">保存</button>
+		</div>
+	</div>
+</body>
+<!-- 全局js -->
+<script src="../../js/jquery-1.11.3.min.js"></script>
+<!--[if IE 8]>
+	<script type="text/javascript" src="../../js/jquery-1.9.1.min.js"></script>
+	<![endif]-->
+<script src="../../js/bootstrap.min.js?v=3.3.6"></script>
+<!-- 自定义js -->
+<script src="../../js/content.js?v=1.0.0"></script>
+<!-- 日期控件 -->
+<script src="../../js/plugins/datapicker/bootstrap-datepicker.js"></script>
+<!-- layer弹出层 -->
+<script src="../../js/plugins/layer/layer.min.js"></script>
+<script src="../../js/plugins/layui/layui.js"></script>
+<!-- 下拉选择列表 -->
+<script src="../../js/plugins/chosen/chosen.jquery.js"></script>
+<!-- jQuery 表单验证-->
+<script src="../../js/plugins/validate/jquery.validate.min.js"></script>
+<script src="../../js/plugins/validate/messages_zh.min.js"></script>
+<!-- zTree模拟树表 -->
+<script src="../../js/plugins/zTree/jquery.ztree.all.min.js"></script>
+<script src="../../js/vpsoft/TreeTable.js"></script>
+<script src="../../js/vpsoft/common.js"></script>
+<script src="../../js/vpsoft/form.js"></script>
+<script src="../../js/plugins/iCheck/icheck.min.js"></script>
+<script src="../../js/vue.js"></script>
+<script src="../../js/vpsoft/getUrlParam.js"></script>
+<script>
+function toSearchFlowgroup(){
+    /*
+	parent.parent.parent.layer.open({
+		type: 2,
+		shade: false,
+		title: '流程用户组',
+		area: ['60%', '420px'], //宽高
+		btn: ['确定', '取消'],
+		btnAlign:'c',
+		content: ['editor-taskusergroup.html?groupids='+$("#sgroupid").val()],
+		success: function(layero, index){
+			layero.find('.layui-layer-btn').css('text-align', 'center');
+		},
+		yes: function(index, layero){
+			//var resData = $(layero).find("iframe")[0].contentWindow.returnData();
+            var arr = $("#outlist>option", layero.find("iframe")[0].contentWindow.document);
+            var groupids = arr.map(function () {
+                return this.value;
+            }).get().join(",");
+            var groupnames = arr.map(function () {
+                return this.text;
+            }).get().join(",");
+            $("#sgroupid").val(groupids);
+            $("#groupnames").val(groupnames);
+            parent.parent.parent.layer.close(index);
+		}
+	});
+	*/
+
+    toSearch('groupnames', "flowgroup", function (data) {
+		$('#sgroupid').val(data);
+	});
+}
+
+//调用
+function toSearchFlowuser(){
+	toSearch('usernames', 2, function (data) {
+		$('#suserid').val(data);
+	});
+}
+
+//选择框
+function toSearch(objid, entityID, callback) {
+	var cfg = new Object();
+	cfg.entityID = entityID;
+	cfg.multiple = true;
+	var array = new Array();
+	try {
+		// var uname = $('#' + objid).val();
+		// var uid = $('#' + objid).attr('hidID');
+		// if (null != uid && '' != uid) {
+		// 	var uids = uid.split(',');
+		// 	var unames = uname.split(',');
+		// 	for (var i = 0, len = uids.length; i < len; i++) {
+		// 		var map = {};
+		// 		map['id'] = uids[i];
+		// 		map['sname'] = unames[i];
+		// 		array.push(map);
+		// 	}
+		// }
+		cfg.checkedObj = array;
+	} catch (e) {
+	}
+	
+	cfg.condition = "";
+	cfg.width = "70%";//设置弹框宽度
+	cfg.height = "70%";//设置弹框高度
+	parent.parent.parent.Chosen.chosenEntity(cfg, function(data) {
+		var ids = "";
+		var names = "";
+		if (data.length > 0) {
+			for (var i = 0; i < data.length; i++) {
+				if (i == 0) {
+					ids = data[0].id;
+					names = data[0].sname;
+				} else {
+					ids = ids + "," + data[i].id;
+					names = names + "," + data[i].sname;
+				}
+			}
+			$('#' + objid).val(names);
+			$('#' + objid).attr("hidID", ids);
+			callback(ids);
+		} else {
+			$('#' + objid).val('');
+			callback('');
+		}
+	});
+}
+
+var flowkey = UrlParm.parm("flowkey");
+var stepkey = UrlParm.parm("stepkey");
+var steptype = UrlParm.parm("steptype");
+var stepname = UrlParm.parm("stepname");
+$.ajaxSettings.async = false;
+jQuery.getJSON(getWorkflowPath() + "/rest/editor/user", {"flowkey": flowkey, "stepkey": stepkey}, function (result) {
+	//console.log(JSON.stringify(result));
+	if (result.data != null) {
+		$('#suserid').val(result.data.suserid);
+		$('#usernames').val(result.data.usernames);
+		$('#usernames').attr("hidID", result.data.suserid);
+        $('#groupnames').val(result.data.groupnames);
+        $('#groupnames').attr("hidID", result.data.sgroupid);
+		$('#sgroupid').val(result.data.sgroupid);
+		$('#ssignrule').val(result.data.ssignrule);
+
+		$("input[name=ijump][value='" + result.data.ijump + "']").attr("checked", true);
+		$("input[name=ilastuserflag][value='" + result.data.ilastuserflag + "']").attr("checked", true);
+		$("input[name=isetmode][value='" + result.data.isetmode + "']").attr("checked", true);
+		//alert(result.data.iusermode);
+		$("input[name=iusermode][value='" + result.data.iusermode + "']").attr("checked", true);
+		$("input[name=iprocessmode][value='" + result.data.iprocessmode + "']").attr("checked", true);
+		usermodeclick(result.data.iusermode);
+		processmodeclick(result.data.iprocessmode);
+	}
+});
+$("#saveBtn").click(function(){
+	var form = $("#oForm");
+	var validator = form.validate({
+		rules: {
+			ssignrule: {
+				number: true
+			}
+		}
+	});
+	if (!validator.form()) {
+		return;
+	}
+	$("#saveBtn").attr('disabled', "true");
+	var param = form.serializeJSON();
+	param['flowkey'] = flowkey;
+	param['stepkey'] = stepkey;
+
+	//czccb 增加选择节点校验
+	if(param.iusermode==3&&param.linkstep==0){
+		parent.parent.parent.layer.alert('请选择节点',{
+			icon:5,
+			title:'提示'
+		})
+		return
+	}else{
+		param['stepname']=stepname
+		param['linkstepcode']=$('#linkstep').find('option:selected').text()
+	}
+		
+	/*
+	jQuery.post(getWorkflowPath()+"/rest/flowuser",param,function(result){
+	});
+	*/
+	$.ajax({
+		type : 'POST',
+		cache : false,
+		async : true,
+		url : getWorkflowPath()+"/rest/editor/user",
+		dataType : "json",
+		data : param ,
+		success : function(result) {
+			$("#saveBtn").removeAttr('disabled');
+		},
+		error : function(xhr, ajaxOptions, thrownError) {
+		}
+	});
+	
+	//czccb 保存指定节点配置
+	console.log('param',param);
+	if(param.iusermode==3){
+		vpPostAjax(vp.gateway.handleGateWay('czccbprovider')+"/flowConf/saveStepOption", param, 'POST', function(rst){
+			//TODO
+		})
+	}
+});
+
+function usermodeclick(index){
+	if(index == 0){
+		$(".group1").hide();
+		$(".group2").hide();
+		$(".groupstep").hide();
+	}else if(index == 1){
+		$(".group1").show();
+		$(".group2").hide();
+		$(".groupstep").hide();
+	}else if(index == 2){
+		$(".group1").hide();
+		$(".group2").show();
+		$(".groupstep").hide();
+	}else if(index == 3){
+		$(".group1").hide();
+		$(".group2").hide();
+		$(".groupstep").show();
+	}
+}
+
+function processmodeclick(index){
+	if(index == 2){
+		$(".group3").show();
+	}else{
+		$(".group3").hide();
+	}
+}
+
+jQuery("input[name=iusermode]").click(function () {
+	var index = $(":radio[name='iusermode']").index($(this));
+	usermodeclick(index);
+});
+
+jQuery("input[name=iprocessmode]").click(function(){
+	var index = $(":radio[name='iprocessmode']").index($(this));
+	processmodeclick(index);
+});
+
+/**
+ * czccb By SL. 指定节点处理人，查询所有节点名称 
+ **/
+//console.log('flowkey:',flowkey,'stepkey:',stepkey,'steptype:',steptype,'stepname',stepname);
+// const main =  window.parent.parent.angular.element('#main').scope().editor.getJSON();
+// console.log(main.childShapes);
+// let optionArrays='';
+// main.childShapes.map((item,i) =>{
+// 	if(item.properties.formkeydefinition){
+// 		optionArrays+="<option value='" +item.resourceId+ "'>" + item.properties.name + "</option>";
+// 	}
+// })
+// $("#linkstep").append(optionArrays);
+
+// $.ajax({
+// 		type : 'POST',
+// 		cache : false,
+// 		async : true,
+// 		url : vp.gateway.handleGateWay('czccbprovider')+'/flowConf/getFlowTaskInfo',
+// 		dataType : "json",
+// 		data : {'flowkey':flowkey,'stepkey':stepkey} ,
+// 		headers: {Authorization: "Bearer "+token},
+// 		success : function(result) {
+// 			console.log('查询出来的步骤信息：',result);
+// 			if(result.data){
+// 				$("#linkstep").val(result.data.linkstepkey);
+// 			}
+// 		}
+// 	});
+
+</script>
+</html>

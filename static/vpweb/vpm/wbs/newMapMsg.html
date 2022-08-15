@@ -1,0 +1,498 @@
+<html>
+<head>
+<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache">
+<title></title>
+<link href="../../vpm/css/style.css" rel="stylesheet" type="text/css">
+
+<style type="text/css">
+#main-table{
+	border:0px solid #ccc; 
+	border-collapse:collapse;
+}
+
+.title-td{
+	font-size:13px;
+	
+	background:url(../../vpm/ext-gantt-new/resources/images/column-header-bg.gif) repeat-x 0px top;
+	background-color: #d7d2d2;
+	background-image: -webkit-gradient(linear,50% 0,50% 100%,color-stop(0%,#f0f0f0),color-stop(100%,#d7d7d7));
+	background-image: -webkit-linear-gradient(top,#f0f0f0,#d7d7d7);
+	background-image: -moz-linear-gradient(top,#f0f0f0,#d7d7d7);
+	background-image: -o-linear-gradient(top,#f0f0f0,#d7d7d7);
+	background-image: linear-gradient(top,#f0f0f0,#d7d7d7);
+	
+	text-align:center;
+	font-weight:bold;
+	height:28px;
+	border-top:1px solid #E1E1E1!important;
+	border-bottom:1px solid #d1d1d1!important;
+	border-right:1px solid #cbcbcb;
+}
+.lst-td{
+	
+}
+
+#main-lst{
+	overflow-y:scroll;
+	
+	border-collapse:collapse;
+	top:1px;
+	position:relative;
+}
+#main-lst td{
+	height:24px;
+	border:1px solid #EDEDED;
+	
+}
+#lst-body td{
+	text-align:center;
+	border:0px;
+	/*border-right:1px solid #ACB5C5;*/
+	border-bottom:1px solid #EDEDED;
+}
+#lst-body .row_0 td{
+	
+	border-right:1px solid #fff;
+	border-top:1px solid #EDEDED;
+}
+
+ #lst-body .row_1 td{
+	
+	border-right:1px solid #FAFAFA;
+	background-color:#F2F2F2;
+	border-top:1px solid #EDEDED;
+}
+.save_icons,.right_toolbar {
+
+ width:99.6%;
+
+ height:32px;
+
+ background:#f7f7f7;
+
+ margin:0px 0px 0px 0px;
+
+ font-family:'宋体';
+
+ line-height:32px;
+
+ color:#4c4c4c;
+
+ border: 0px;
+
+}
+
+.x-toolbar,.x-small-editor,.x-toolbar-layout-ct {
+
+ border: 0px;
+
+ margin: 4px 0px 0px 0px;
+
+}
+</style>
+  <jsp:include flush="true" page="/include.jsp?file=ext"></jsp:include>
+  <script type="text/javascript" src="../../vpm/vpJS/jquery-1.7.2.min.js"></script>
+  <link type="text/css" rel="stylesheet" href="../../vpm/vpCss/dialog.css">
+  <script type="text/javascript" src="../../vpm/vpJS/dialog.js"></script>
+  <script type="text/javascript" src="../../vpm/vpJS/webUtil.js"></script>
+</head>
+<body style="overflow:hidden;">
+<div id="titleDiv" style="background:url(../../vpm/vframe/images/ntab/ul_bg.png) repeat-x;">
+ <span id="titleSpan"></span>
+ <span id="titleClose" title="关闭" onclick="doClose();">
+ <img src="../../vpm/vpImages/dialog/close.dft.png">
+ </span>
+</div>
+<div id="mainDiv">
+ <div id="boxDiv"><div id="form" class="formborder">
+ 
+<div id="toolbar" style="width:1310px"></div>
+<div style="height:35px;line-height:35px;color:#990000;padding-left:6px;font-size:13px;">以下镜像任务发生改变，请选择接受的改变。</div>
+<table id="main-table" width="1200" style="border-top:1px solid #ccc;" height="24" cellspacing="0" cellpadding="0">
+   <tbody>
+
+   <tr height="24"> 
+   <td  class="title-td" style="width:20px;">
+   	<input id="m-check" sel='0' type="checkbox" />
+   </td> 
+   <td  class="title-td" style="width:300px;">
+   	任务
+   </td> 
+   <td  class="title-td" style="width:145px;">
+   	预测开始
+   </td> 
+   <td  class="title-td" style="width:145px;">
+   	预测完成
+   </td> 
+   <td  class="title-td" style="width:145px;">
+   	计划开始
+   </td> 
+   <td  class="title-td" style="width:145px;">
+   	计划完成
+   </td> 
+   <td  class="title-td" style="width:145px;">
+   	实际开始
+   </td> 
+   <td  class="title-td" style="width:145px;">
+   	实际完成
+   </td> 
+    </tr>
+   <tr style="background-color:#fefefe;">
+   <td class="lst-td" colspan=16 style="border-bottom:0px;">
+   <div style="height:485px;width:100%;overflow-y:scroll;">
+   
+   <table id="main-lst" >
+   <tbody id="lst-body">
+	  
+	</tbody>
+   </table>
+   </div>
+   </td>
+ 
+</tbody></table>
+</div></div>
+</div>
+</body>
+<script type="text/javascript" src="../../vpm/vframe/js/search.js?maxage=6000001"></script>
+<script language="javascript" src="../../vpm/js/siftButton.js"></script>
+<script src="../../vpm/report/selfDsReport/src/zs.js"></script>
+<script>
+$('#titleSpan').html($('#LayerContainer', parent.document).attr("custtitle"));
+function openPobj(objID,objType,objName,url,selectItemID,t){
+	  var fliename="pjinfos";
+	  var winTitle="项目";
+	  var objTitle="项目名称";
+	  var icons="open_manager.gif";
+	  if(objType=="0"){
+	  	fliename="pfinfos";
+	  	winTitle="项目群";
+	  	objTitle="项目群名称";
+	  	icons="open_managerG.gif";
+	  }
+	  var relationMenu = "";
+	//	if(selectItemID==20){//给项目加关联链接
+			relationMenu = ";objectID="+objType+";workItemID="+objID+";loadextramenu=1;display=1;start=1;limit=50;rtype=1;iid="+objID+";eid="+objType;
+	//	}
+	  
+	   var url2 = "../../vpm/vframe/openWindowAction.do?winTitle="+winTitle;
+		url2 += "$$topFrame=objTitle="+objTitle+";objName="+objName+";objType=基本信息;objIcon="+icons;
+		url2 += "$$leftFrame=fileName="+fliename+";projectID="+objID+";selectItemID="+selectItemID+relationMenu;
+		url2 += "$$rightFrame="+url.replaceAll('&',';');
+		Common.showWin("../../vpm/ext-gantt-new/jump.jsp?qSearch="+t.name+"&url="+url2,{top:10,height:528,width:1011});	   
+
+	}
+
+
+function toSrcTask(t){
+	var url='../../vpm/wbs/wbsViewCard.jsp?projectID='+t.pid+';projectName='+t.pname+';typeID=1;parentID=;/project/wbs/projectTreeAction.do?viewType=searchByFilterid,isFilter=0,displayType=tree';
+	openPobj(t.pid,1,t.pname,url,22,t);
+}
+
+
+var ds,changed;
+zs.listen(window,{event:'load',func:function(e,d){
+	Ajax.request({
+		data:{method:'getDiffs',projectId:<%=projectId%>},
+		url:'../../vpm/wbs/loadMapTaskAction.do',
+		method:'post',
+		async:false,
+		success:function(res){
+			ds=res.data||[];
+			changed=res.diffs||{};
+		}, 
+		dataType:'json'
+	});
+
+	var cur,cs=ctx.checks;
+	for(var i=0,l=ds.length;i<l;i++){
+		cur=ds[i];
+		zs.css('#lst-body',{display:'none'});
+		ctx.add(cur,i);
+		zs.css('#lst-body',{display:'block'});
+		cs.push(i+'_c');
+	}
+	var ids=[];
+	for(var j in changed){
+		if(changed.hasOwnProperty(j)){
+			ids.push('#'+j);
+		}
+	}
+	zs.css(ids,{backgroundColor:'pink'});
+	//var pm={des:'/发布1/开发阶段/功能开发/',src:'/版本1/开发阶段/'};
+	zs.listen(document.body,[{event:'click',func:function(e,d){
+		var mc=e.srcElement||e.target;
+		if(mc.getAttribute('id')&&mc.getAttribute('id')=='m-check'){
+			if(mc.getAttribute('sel')=='1'){
+				for(var i=0,l=cs.length;i<l;i++){
+					document.getElementById(cs[i]).checked=false;
+				}
+				mc.setAttribute('sel','0');
+			}else{
+				for(var i=0,l=cs.length;i<l;i++){
+					document.getElementById(cs[i]).checked=true;
+				}
+				mc.setAttribute('sel','1');
+			}
+		}else if(mc.getAttribute('nametype')){
+			
+			var o=ctx.rc[mc.getAttribute('oid')].o;
+			if(mc.getAttribute('nametype')=='des'){
+				toSrcTask({pname:o.dpname,pid:o.dpid,id:o.did,name:o.dname||''});
+			}else{
+				toSrcTask({pname:o.spname,pid:o.spid,id:o.sid,name:o.sname||''});
+			}
+			//Common.showWin("/project/ext-gantt-new/taskDetil.html",{top:10,height:528,width:1011});
+			
+		}
+	}},
+	{event:'mouseover',func:function(e,d){
+		var target=e.srcElement||e.target,type=target.getAttribute('nametype');
+		if(target.parentNode.getAttribute('oid')){
+			var oid=target.parentNode.getAttribute('oid'),o=ctx.rc[oid].o;
+			if(type=='des'||type=='src'){
+				var x=e.clientX,y=e.clientY;
+				if(type=='des'){
+					zs.set(tip,{text:ctx.loadTaskPath(o.dpid,o.did),css:{display:'block',left:x+5,top:y+10}});
+				}else{
+					zs.set(tip,{text:ctx.loadTaskPath(o.spid,o.sid),css:{display:'block',left:x+5,top:y+10}});
+				}
+			}
+		}
+	}},
+	{event:'mouseout',func:function(e,d){
+		var target=e.srcElement||e.target,type=target.getAttribute('otype');
+		if(target.parentNode.getAttribute('oid')){
+			
+			zs.css(tip,{display:'none'});
+		}
+		
+	}}
+	]);
+}});
+
+var ctx={
+		ti:0,
+		rc:{},
+		checks:[],
+		imgMap:{'0':'../../vpm/images/wbstask/icon_taskgz.gif','1':'../../vpm/images/wbstask/icon_task_milestone.gif','4':'../../vpm/images/wbstask/icon_taskzy.gif'},
+		add:function(o,i){
+			if(o){
+				//var cls='row_'+(i%2);
+				var tr1=zs.create({tag:'tr',parent:'#lst-body',attr:{'class':'row_0',oid:i},children:[
+				                              			                              	{tag:'td',attr:{rowspan:2,otype:'des'},css:{borderRight:'1px solid #EDEDED',cursor:'pointer',width:zs.isIE?'20px':'20px'},children:[{tag:'input',attr:{id:i+'_c',type:'checkbox'}}]},
+				                              			                              	{tag:'td',children:[{tag:'div',text:o.dpathname?o.dpathname:'任务已删除',attr:{ oid:i,nametype:'des',otype:'des'},children:o.dpathname?[{tag:'img',css:{marginRight:'5px'},attr:{nametype:'des',oid:o.id,src:ctx.imgMap[o.dtype]}}]:[],css:{color:o.dpathname?'black':'red',width:zs.isIE?'285px':'285px',overflow:'hidden'}}],
+				                              			                              		attr:{'class':'des-td',oid:i,nametype:'des',id:o.did+'_dname',otype:'des'},
+				                              			                              		css:{color:o.dname?'black':'#aaa',paddingLeft:'10px',textAlign:'left',cursor:'pointer',width:zs.isIE?'290px':'290px'}
+				                              			                              		},
+				                              			                            	
+					                              			                          	{tag:'td',attr:{'class':'des-td',id:o.did+'_dpsd',otype:'des'},css:{cursor:'pointer',width:zs.isIE?'145px':'145px'},text:(o.dpsd||'').substring(0,10)},
+				                              			                          		{tag:'td',attr:{'class':'des-td',id:o.did+'_dped',otype:'des'},css:{cursor:'pointer',width:zs.isIE?'145px':'145px'},text:(o.dped||'').substring(0,10)},
+					                              			                          	{tag:'td',attr:{'class':'des-td',id:o.did+'_dfsd',otype:'des'},css:{cursor:'pointer',width:zs.isIE?'145px':'145px'},text:(o.dfsd||'').substring(0,10)},
+				                              			                          		{tag:'td',attr:{'class':'des-td',id:o.did+'_dfed',otype:'des'},css:{cursor:'pointer',width:zs.isIE?'145px':'145px'},text:(o.dfed||'').substring(0,10)},
+					                              			                          	{tag:'td',attr:{'class':'des-td',id:o.did+'_dasd',otype:'des'},css:{cursor:'pointer',width:zs.isIE?'145px':'145px'},text:(o.dasd||'').substring(0,10)},
+				                              			                          		{tag:'td',attr:{'class':'des-td',id:o.did+'_daed',otype:'des'},css:{cursor:'pointer',width:zs.isIE?'125px':'127px'},text:(o.daed||'').substring(0,10)}
+				                              			                        	
+				                              			                              ]
+				                              			});
+				var tr2=zs.create({tag:'tr',parent:'#lst-body',attr:{'class':'row_1',oid:i},children:[
+						                              			                              	{tag:'td',
+						                              			                              		children:[{tag:'div',text:o.spathname?o.spathname:'任务已删除',attr:{oid:i,nametype:'src',otype:'src'},children:o.spathname?[{tag:'img',css:{marginRight:'5px'},attr:{nametype:'src',oid:o.id,src:ctx.imgMap[o.stype]}}]:[],css:{color:o.spathname?'black':'red',width:zs.isIE?'285px':'285px',overflow:'hidden'}}],
+						                              			                              		attr:{'class':'src-td',oid:i,id:o.sid+'_sname',nametype:'src',otype:'src'},css:{color:o.sname?'black':'#aaa',paddingLeft:'10px',textAlign:'left',cursor:'pointer',width:zs.isIE?'290px':'290px'}},
+						                              			                              	
+							                              			                          	{tag:'td',attr:{'class':'src-td',id:o.sid+'_spsd',otype:'src'},css:{cursor:'pointer',width:zs.isIE?'145px':'145px'},text:(o.spsd||'').substring(0,10)},
+						                              			                          		{tag:'td',attr:{'class':'src-td',id:o.sid+'_sped',otype:'src'},css:{cursor:'pointer',width:zs.isIE?'145px':'145px'},text:(o.sped||'').substring(0,10)},
+							                              			                          	{tag:'td',attr:{'class':'src-td',id:o.sid+'_sfsd',otype:'src'},css:{cursor:'pointer',width:zs.isIE?'145px':'145px'},text:(o.sfsd||'').substring(0,10)},
+						                              			                          		{tag:'td',attr:{'class':'src-td',id:o.sid+'_sfed',otype:'src'},css:{cursor:'pointer',width:zs.isIE?'145px':'145px'},text:(o.sfed||'').substring(0,10)},
+							                              			                          	{tag:'td',attr:{'class':'src-td',id:o.sid+'_sasd',otype:'src'},css:{cursor:'pointer',width:zs.isIE?'145px':'145px'},text:(o.sasd||'').substring(0,10)},
+						                              			                          		{tag:'td',attr:{'class':'src-td',id:o.sid+'_saed',otype:'src'},css:{cursor:'pointer',width:zs.isIE?'125px':'127px'},text:(o.saed||'').substring(0,10)}
+						                              			                              ]
+						                              			});
+						
+				                              			ctx.rc[i]={d1:tr1,d2:tr2,o:o};
+			}
+			
+			
+		},
+		add1:function(o,i){
+			if(o){
+				//var cls='row_'+(i%2);
+				var tr1=zs.create({tag:'tr',parent:'#lst-body',attr:{'class':'row_0',oid:i},children:[
+				                              			                              	{tag:'td',attr:{rowspan:2,otype:'des'},css:{borderRight:'1px solid #EDEDED',cursor:'pointer',width:zs.isIE?'20px':'20px'},children:[{tag:'input',attr:{id:i+'_c',type:'checkbox'}}]},
+				                              			                              {tag:'td',children:[{tag:'div',text:o.dname?(o.dpname+'/.../'+o.dname):(o.dpname+'/.../..(任务已删除)'),attr:{ oid:i,nametype:'des',otype:'des'},children:[{tag:'img',css:{marginRight:'5px'},attr:{nametype:'des',oid:o.id,src:'../../vpm/images/wbstask/icon_taskgz.gif'}}],css:{width:zs.isIE?'285px':'285px',overflow:'hidden'}}],
+				                              			                              		attr:{'class':'des-td',oid:i,nametype:'des',id:o.did+'_dname',otype:'des'},
+				                              			                              		css:{color:o.dname?'black':'#aaa',paddingLeft:'10px',textAlign:'left',cursor:'pointer',width:zs.isIE?'290px':'290px'}
+				                              			                              		},
+				                              			                            	
+					                              			                          	{tag:'td',attr:{'class':'des-td',id:o.did+'_dpsd',otype:'des'},css:{cursor:'pointer',width:zs.isIE?'145px':'145px'},text:o.dpsd||''},
+				                              			                          		{tag:'td',attr:{'class':'des-td',id:o.did+'_dped',otype:'des'},css:{cursor:'pointer',width:zs.isIE?'145px':'145px'},text:o.dped||''},
+					                              			                          	{tag:'td',attr:{'class':'des-td',id:o.did+'_dfsd',otype:'des'},css:{cursor:'pointer',width:zs.isIE?'145px':'145px'},text:o.dfsd||''},
+				                              			                          		{tag:'td',attr:{'class':'des-td',id:o.did+'_dfed',otype:'des'},css:{cursor:'pointer',width:zs.isIE?'145px':'145px'},text:o.dfed||''},
+					                              			                          	{tag:'td',attr:{'class':'des-td',id:o.did+'_dasd',otype:'des'},css:{cursor:'pointer',width:zs.isIE?'145px':'145px'},text:o.dasd||''},
+				                              			                          		{tag:'td',attr:{'class':'des-td',id:o.did+'_daed',otype:'des'},css:{cursor:'pointer',width:zs.isIE?'125px':'127px'},text:o.daed||''}
+				                              			                        	
+				                              			                              ]
+				                              			});
+				var tr2=zs.create({tag:'tr',parent:'#lst-body',attr:{'class':'row_1',oid:i},children:[
+						                              			                              	{tag:'td',
+						                              			                              		children:[{tag:'div',text:o.sname?(o.spname+'/.../'+o.sname):(o.spname+'/.../..(任务已删除)'),attr:{oid:i,nametype:'src',otype:'src'},children:[{tag:'img',css:{marginRight:'5px'},attr:{nametype:'des',oid:o.id,src:'../../vpm/images/wbstask/icon_taskgz.gif'}}],css:{width:zs.isIE?'285px':'285px',overflow:'hidden'}}],
+						                              			                              		attr:{'class':'src-td',oid:i,id:o.sid+'_sname',nametype:'src',otype:'src'},css:{color:o.sname?'black':'#aaa',paddingLeft:'10px',textAlign:'left',cursor:'pointer',width:zs.isIE?'290px':'290px'}},
+						                              			                              	
+							                              			                          	{tag:'td',attr:{'class':'src-td',id:o.sid+'_spsd',otype:'src'},css:{cursor:'pointer',width:zs.isIE?'145px':'145px'},text:o.spsd||''},
+						                              			                          		{tag:'td',attr:{'class':'src-td',id:o.sid+'_sped',otype:'src'},css:{cursor:'pointer',width:zs.isIE?'145px':'145px'},text:o.sped||''},
+							                              			                          	{tag:'td',attr:{'class':'src-td',id:o.sid+'_sfsd',otype:'src'},css:{cursor:'pointer',width:zs.isIE?'145px':'145px'},text:o.sfsd||''},
+						                              			                          		{tag:'td',attr:{'class':'src-td',id:o.sid+'_sfed',otype:'src'},css:{cursor:'pointer',width:zs.isIE?'145px':'145px'},text:o.sfed||''},
+							                              			                          	{tag:'td',attr:{'class':'src-td',id:o.sid+'_sasd',otype:'src'},css:{cursor:'pointer',width:zs.isIE?'145px':'145px'},text:o.sasd||''},
+						                              			                          		{tag:'td',attr:{'class':'src-td',id:o.sid+'_saed',otype:'src'},css:{cursor:'pointer',width:zs.isIE?'125px':'127px'},text:o.saed||''}
+						                              			                              ]
+						                              			});
+						
+				                              			ctx.rc[i]={d1:tr1,d2:tr2,o:o};
+			}
+			
+			
+		},
+		del:function(i){
+			var rc=ctx.rc,tr=rc[i].d;
+			tr.parentNode.removeChild(tr);
+			rc[i]=undefined;
+		},
+		search:function(){
+			 window.request = new Object();
+			 var object = undefined;
+			 var x=900;
+			 var y=500;
+			 var xx=(window.screen.width-x)/2;
+			 var yy=(window.screen.height-y)/2;
+			 Common.showModalWin('/project/wbs/selMapObjToolbar.jsp?projectID=<%=projectId%>', window,x,y);
+			 return window.request.resData;
+		},
+		src:function(i,dom){
+			var res=ctx.search(),rc=ctx.rc,o=rc[i];
+			o.src=res;
+			zs.text(dom,res.name);
+			ctx.rc[ctx.ti];
+			if(!(o.src&&o.des)){
+				zs.css(o.d,{background:'pink'});
+			}else{
+				zs.css(o.d,{background:'white'});
+			}
+		},
+		des:function(i,dom){
+			var res=ctx.search(),rc=ctx.rc,o=rc[i];
+			o.des=res;
+			zs.text(dom,res.name);
+			if(!(o.src&&o.des)){
+				zs.css(o.d,{background:'pink'});
+			}else{
+				zs.css(o.d,{background:'white'});
+			}
+		},
+		collectData:function(){
+			var rc=ctx.rc,res=[],done=true;
+			
+			for(var i in rc){
+				if(rc.hasOwnProperty(i)&&rc[i]){
+					var cur=rc[i];
+					if(!(cur.src&&cur.des)){
+						zs.css(cur.d,{background:'pink'});
+						done=false;
+					}else{
+						zs.css(cur.d,{background:'white'});
+						res.push({src:cur.src,des:cur.des});
+					}
+					
+				}
+				
+			}
+			if(done){
+				//window.opener.location.reload();
+				window.opener.TrackTool.setParentMsgBt();
+				window.close();
+			}else{
+				alert('请将镜像关系补充完整！');
+			}
+			
+		},pMap:{},
+		loadTaskPath:function(projectId,taskId){
+			var text='';
+			if(text=ctx.pMap[taskId]){
+				;
+			}else{
+				Ajax.request({
+					data:{method:'getAllPath',projectId:projectId,taskId:taskId},
+					url:'/project/wbs/loadMapTaskAction.do',
+					method:'post',
+					async:false,
+					success:function(res){
+						ctx.pMap[taskId]=text=res.path;
+					},
+					dataType:'json'
+				});
+			}
+			return text;
+		}
+};
+
+
+
+(function(){
+	SiftToolBar.init('toolbar','clickBtn');
+	var okBtn = {id: 'okBtn',text:'确定',iconCls:'btn_icon_007'};
+	var calBtn = {id: 'cancelBtn',text:'取消',iconCls:'btn_icon_016'};
+	SiftToolBar.add(okBtn);
+	SiftToolBar.add('|');
+	SiftToolBar.add(calBtn);
+	SiftToolBar.doLayout();
+	tip=zs.create({tag:'div',text:'/project/ext/gantt/new/taskMapwbs/taskMapwbs/taskMapwbs/taskMapwbs',parent:document.body,css:{background:'#FDFDE0',left:0,top:0,zIndex:1000,display:'none',border:'1px solid #000',position:'absolute'}});
+
+})();
+
+
+function clickBtn(resObj){
+	
+	switch(resObj.buttonID){
+		case 'okBtn':
+			var s=[],cs=ctx.checks,item,res=[];
+			for(var i=0,l=cs.length;i<l;i++){
+				if(document.getElementById(cs[i]).checked){
+					//s.push(i);
+					item=ds[i];
+					if(!(item.dname&&item.sname)){
+						res.push({staskid:item.sid,dtaskid:item.did,type:'del'});
+					}else{
+						res.push({staskid:item.sid,dtaskid:item.did,type:'update'});
+					}
+				}
+			}
+			if(res.length>0){
+				try{
+					Ajax.request({
+						data:{method:'updateSelMapping',projectId:<%=projectId%>,ms:json.toJSONEnCode(res)},
+						url:'/project/wbs/loadMapTaskAction.do',
+						method:'post',
+						async:false,
+						success:function(res){
+						}, 
+						dataType:'json'
+					});
+				}catch(e){
+					;
+				}
+				
+			}
+			//(window.opener||window.dialogArguments).parent.location.href=(window.opener||window.dialogArguments).parent.location.href;
+			var uu = parent.parent.document.getElementById("rightFrame").contentWindow.document.getElementById("infoIframe").src;
+			parent.parent.document.getElementById("rightFrame").contentWindow.document.getElementById("infoIframe").src = uu; 
+			doClose();
+			break;	
+		case 'cancelBtn':
+			doClose();//window.close();
+			break;
+	}
+}
+
+
+</script>
+</html>
+

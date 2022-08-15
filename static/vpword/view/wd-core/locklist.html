@@ -1,0 +1,185 @@
+<!-- <link rel="stylesheet" href="../../../pages/vrm/vrm-word/static/assets/css/vrm-locklist.css?v=1.3"> -->
+<div class="new-right-box">
+<div class="main" id="lockList">
+</div>
+</div>
+
+
+<script type="text/javascript">
+	var toViewLock = {
+			initGrid : function(){
+				vpUtils.dataTable('#toViewLockPanel', {
+                    info:true,
+                    lengthChange:false,
+                    searching:false,
+                    processing: true,
+                    serverSide: true,
+                    autoWidth:false,
+                    ordering:false,
+                    scrollX:false,
+                    scrollY: "370px",
+                    showIndex:true,
+					ajax: {
+                        headers : {
+                                'Authorization': 'Bearer '+ vp.cookie.getToken(),
+                                'Content-Type': 'application/x-www-form-urlencoded',
+                                'Locale': window.LOCALE == 'zh' ? 'zh_CN' : 'en_US',
+                            },
+						url:config.getLockRecord(),
+						type:"GET",
+						data:function(d){
+                            var queryData = {};
+							queryData.current = (d.start)/d.length+1;
+                            queryData.pageSize = d.length;
+                            toViewLock.addQurData_(queryData);
+                            return queryData;
+						},
+                        dataSrc:function(json) {
+                            json.recordsTotal = json.data.totalRows;
+                            json.recordsFiltered = json.data.totalRows;
+                            json.page = json.data.currentPage;
+                            json.size = json.data.numPerPage;
+                            return json.data.resultList;
+                        }
+					},
+					"columns":[
+                        {data : 'origchapnum', title : '章节号', defaultContent: '', width:'60px', sClass:'text-center'},
+                        {data : 'outlinename', title : '章节名称', defaultContent: ''},
+						{data : 'datatype', title : '锁类型',
+							render : function (value, type, row) {
+								if(value == 1){
+									return '文档';
+								}else if(value == 2){
+									return '标题';
+								}else if(value == 3){
+									return '内容';
+								}else if(value == 4){
+									return '下载锁';
+								}else{
+									return '';
+								}
+						}, width:'60px', sClass:'text-center'},
+                        {data :	'lockownername', title : '锁定人', width: '80px'},
+                        {data :	'locktarttime', title : '锁定时间', width: '100px',
+                            render : function (value,type,row) {
+                                return vpUtils.date.formatJavaStr(row.lockstarttime,'yyyy-MM-dd HH:mm');
+						}},
+                        {data :	'docOutlineId', title : '操作', width: '80px', sClass:'text-center',
+                            render : function (value,type,row) {
+					    		if(row.tmpselflock){
+                                    if(row.datatype==4){
+                                        return ['<a title="解锁" onclick =\"toViewLock.removeDocOutlineDownloadLock(\''+row.docoutlineid+'\')\"><i class=\" fa fa-lock fa-lg opt-icon\"></i></a>'].join('');
+                                    }else{
+                                        return ['<a title="解锁" onclick =\"toViewLock.removeLock(\''+row.docoutlineid+'\')\"><i class=\" fa fa-lock fa-lg opt-icon\"></i></a>'].join('');
+                                    }
+									
+                                
+                                }else{
+					    		    return "";
+								}
+                            }},
+
+					]
+				}, function (table) {
+					toViewLock.table = table;
+				});
+			},
+			query:function(){
+                toViewLock.table.ajax.reload();
+			},
+			//补充查询参数
+			addQurData_:function(d){
+				var dataTypeList = $('#dataType').select2('val');
+				if(dataTypeList){
+					d.dataTypes = dataTypeList.join(',');
+				}
+			},
+			removeLock :function (outlineId) {
+                message_dialog('Confirm', {
+                    title : '提示',
+                    content : '是否解锁该大纲内容 ？',
+                    confirm : function () {
+                        window.vrmEditor.LOCK.removeDocOutlineLock(outlineId, null, function () {
+                            toViewLock.query();
+                        });
+                    }
+                })
+            },
+
+            removeDocOutlineDownloadLock :function (outlineId) {
+                message_dialog('Confirm', {
+                    title : '提示',
+                    content : '是否解锁该大纲的下载锁 ？',
+                    confirm : function () {
+                        window.vrmEditor.LOCK.removeDocOutlineDownloadLock(outlineId, null, function () {
+                            toViewLock.query();
+                        });
+                    }
+                })
+            },
+
+			removeDocLock :function () {
+                message_dialog('Confirm', {
+                    title : '提示',
+                    content : '是否解锁该文档 ？',
+                    confirm : function () {
+                        window.vrmEditor.LOCK.removeDocLock();
+                        $('.doc-lock-owner').empty();
+                        $('.doc-lock-time').empty();
+                        $('.doc-lock-opr').empty();
+                    }
+                })
+            }
+	}
+	$(function(){
+        WD_URL.rest.ajax({
+                url: config.getLockType(),
+                type: 'GET',
+                async: false
+            }, function (data) {
+                if(data.existlocks == false){
+                        $("#lockList").append('<div align="center" style="color:#EE8F4F;"><i class="fa fa-info-circle fa-lg"></i>&nbsp;&nbsp;文档没有锁定信息</div>');
+                    }else{
+                        if(data.docLock){
+                            var docLock = data.docLock;
+                            $("#lockList").append('<div class="tabs-list main-title">'+
+                                    '<div class="tab-li choose" data-tab="content">文档锁</div>'+
+                                    '</div>'+
+                                        '<div class="tab-content active">'+
+                                        '<div class="property-box">'+
+                                        '<div class="row">'+
+                                            '<div class="col-xs-4">'+
+                                                '<label class=" control-label">文档名称：</label>'+
+                                                '<span class="doc-lock-name">'+docLock.docname+'</span>'+
+                                            '</div>'+
+                                            '<div class="col-xs-3">'+
+                                                '<label class="control-label">锁定人：</label>'+
+                                                '<span class="doc-lock-owner">'+docLock.lockownername+'</span>'+
+                                            '</div>' +
+                                            '<div class="col-xs-4">'+
+                                                ' <label class=" control-label">锁时间：</label>'+
+                                                '<span class="bind-date doc-lock-time" >'+vpUtils.date.formatJavaStr(docLock.lockstarttime,"yyyy-MM-dd HH:mm")+'</span>'+
+                                            '</div>' +
+                                            '<div class="col-xs-1">'+
+                                                '<span class="doc-lock-opr">'+(docLock.tmpselflock?'<a title="解锁" onclick="toViewLock.removeDocLock()"><i class=" fa fa-lock fa-lg opt-icon"></i></a>':'')+'</span>'+
+                                            '</div></div>' +
+                                    '</div></div></div>');
+                        }else{
+                            $("#lockList").append(
+                                '<div class="tab-content active">'+
+                                    '<div class="property-box">'+
+                                    '<div class="form-inline">'+
+                                    '<select id="dataType" style="width: 240px;" class="form-control" defaultValue=""></select>'+'&nbsp;&nbsp;'+
+                                    '<button type="button" class="btn btn-primary btn-sm" onclick="toViewLock.query()"><i class="fa fa-search"></i>&nbsp;查询</button>'+
+                                '</div>'+
+                                    '<table id="toViewLockPanel" class="t0 table table-striped table-bordered table-hover " style="overflow:hidden; white-space:nowrap;"></table>'+
+                                '</div>'+
+                         '</div>');
+                            vpUtils.select2('#dataType',{data:[{id: "1", text: "文档"}, {id: "2", text: "标题"}], multiple:true, placeholder:"请选择锁类型"});
+		                    toViewLock.initGrid();
+                        }
+                    }
+            })
+		
+	});
+</script>

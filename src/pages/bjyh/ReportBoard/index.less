@@ -1,0 +1,59 @@
+ .work-space {
+    .vpicon{
+        font-size: 20px;
+    } 
+    padding-top: 40px;
+    .line-title {
+        line-height: 50px;
+        &:after {
+            position: absolute;
+            top: 25px;
+            left: 0;
+            content: "";
+            width: 100%;
+            border-bottom: 1px dotted #f0f2f5
+        }
+        span {
+            z-index: 1;
+        }
+        &.dropDown {
+            &:before{
+                position: absolute;
+                top: 18px;
+                z-index: 2;
+                content: "";
+                display: inline-block;
+                height: 14px;
+                border: 2px solid #2db7f5;
+            }
+            i {
+                z-index: 1;
+                color: #eee;
+            }
+        }
+    }
+    .gutter-row {
+        margin-bottom: 25px;
+        .gutter-box {
+            transition: box-shadow .15s linear,background .15s linear,transform .15s linear,border .15s linear;
+            border-radius: 4px;
+            height: 110px;
+            i.type {
+                position: absolute;
+                right: 10px;
+                top: 10px;
+                color: #ffce55;
+                z-index: 10;
+            }
+            &:hover {
+                transform: translate3d(0,-3px,0);
+                box-shadow: 5px 10px 12px rgba(0,0,0,0.13);
+            }
+            p {
+                text-overflow: ellipsis;
+                white-space: normal;
+                overflow: hidden;
+            }
+        }
+    }
+ }

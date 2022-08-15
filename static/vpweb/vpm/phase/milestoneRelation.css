@@ -1,0 +1,50 @@
+.projectGroup .x-tree-icon
+{
+	width: 16px;
+    background: url(../../vpm/images/icon/icon08.gif);
+}
+.project .x-tree-icon
+{
+	width: 16px;
+    background: url(../../vpm/images/icon/icon09.gif);
+}
+.milestone .x-tree-icon
+{
+    width: 16px;
+    background: url(../../vpm/images/wbstask/icon_task_milestone.gif);
+}
+.milestone0 .x-tree-icon
+{
+    width: 16px;
+    background: url(../../vpm/images/wbstask/icon_task_milestone.gif);
+}
+.milestone1 .x-tree-icon
+{
+    width: 14px;
+    height:13px;
+    background: url(../../vpm/images/wbstask/icon_task_milestone1.gif);
+}
+.milestone2 .x-tree-icon
+{
+    width: 14px;
+    height:13px;
+    background: url(../../vpm/images/wbstask/icon_task_milestone2.gif);
+}
+.milestone3 .x-tree-icon
+{
+    width: 14px;
+    height:13px;
+    background: url(../../vpm/images/wbstask/icon_task_milestone3.gif);
+}
+.milestone4 .x-tree-icon
+{
+    width: 14px;
+    height:13px;
+    background: url(../../vpm/images/wbstask/icon_task_milestone4.gif);
+}
+.milestone5 .x-tree-icon
+{
+    width: 14px;
+    height:13px;
+    background: url(../../vpm/images/wbstask/icon_task_milestone5.gif);
+}

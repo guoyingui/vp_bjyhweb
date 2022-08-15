@@ -1,0 +1,162 @@
+<script type="text/javascript" src="static/plugins/bootstrap-validator/0.5.3/bootstrapValidator.js"></script>
+<script type="text/javascript" src="static/plugins/bootstrap-validator/0.5.3/bootstrapValidator.patch.js"></script>
+<script type="text/javascript" src="static/plugins/bootstrap-validator/i18n/zh_CN.js"></script>
+<script type="text/javascript" src="static/plugins/jquery-form/3.51.0/jquery.form.js"></script>
+<link rel="stylesheet" href="static/plugins/bootstrap-validator/0.5.3/bootstrapValidator.css" />
+
+<form id="addOutlineForm" method="put"  role="form" class="form-horizontal" action=''>
+    <div class="row">
+		<div class="form-group">
+			<label class="col-sm-3 control-label"><span style="color: #dd5a43;">*</span>大纲名称：</label>
+			<div class="col-sm-8">
+				<textarea class="form-control"  type="text" id="names" name="names" maxlength="500" rows="10"
+						data-bv-notempty="true" data-bv-notempty-message="大纲名称不能为空" placeholder="请输入大纲名称" />
+			</div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"></label>
+            <div class="col-sm-8">
+                <div class="checkbox">
+                    <label>
+                        <input id="synAddWkId" type="checkbox" name="synAddWk" value="1"> <span class="label label-info" style="font-size: 12px;">同步添加内容</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div id="docArtTplDiv" class="form-group" style="display:none">
+            <label class="col-sm-3 control-label">元素模板：</label>
+            <div class="col-sm-8">
+                    <select id="docArtTplSelect" class="form-control"  name="docArtTpl" style="width: 100%;">
+                    </select>
+                </div>
+            </div>
+        </div>
+	</div>
+</form>
+<script>
+  $(function(){
+     var VE = window.vrmEditor;
+   
+	  //提示绑定事件
+	  vpUtils.formvalidation($("#addOutlineForm"),{
+		submitHandler: function(form, _bootstrapValidator, e) {
+			    vpUtils.formSubmit(form, {
+                    url : (!!addOutlineForm.dialog.scene && addOutlineForm.dialog.scene.auth('tree-menu-addoutlineusearttpl'))? config.addOutlinesByArtTpl(): config.addOutline(),
+                    mask : $(".modal-content"),
+                    maskinfo: '正在提交请稍等...',
+                    data:{
+                        parentId:addOutlineForm.dialog.parentId,
+                        docOutlineId:addOutlineForm.dialog.docOutlineId,
+                        positionType:addOutlineForm.dialog.positionType,
+                    }
+                }, function (json) {
+                    var docOutlineId = addOutlineForm.dialog.docOutlineId;
+                     addOutlineForm.dialogClose();
+                    _bootstrapValidator.disableSubmitButtons(false);
+                    VE.SUBSCRIBE.docArtChange(docOutlineId);   
+                })
+            },
+            excluded: [':disabled'],
+            fields : {
+                names : {
+                    verbose: false,
+                    validators:{
+                        callback : {
+                            message: '包含了已经使用的大纲名称',
+                            callback: function (value, validator) {
+                                var _r = true;
+                                if ($.trim(value)) {
+                                    WD_URL.rest.ajax({
+                                        url: config.checkOutline(),
+                                        type:'GET',
+                                        data: {outlineName: $.trim(value),
+                                            parentId:addOutlineForm.dialog.parentId,
+                                            docOutlineId:addOutlineForm.dialog.docOutlineId,
+                                            positionType:addOutlineForm.dialog.positionType,
+                                            status : '1'
+                                        },
+                                        async: false
+                                    }, function (json) {
+                                        _r = json.vaidResult
+                                    })
+                                }
+                                return _r;
+                            }
+                        }
+                    }
+                }
+            }
+	  });
+  });
+
+  var addOutlineForm = {
+        dialog : null,
+        loadData:function(data){
+            this.dialog = data.dialog;
+            this.dialog.tree = data.tree;
+            this.dialog.parentId = data.parentId;
+            this.dialog.docOutlineId = data.docOutlineId;
+            this.dialog.positionType = data.positionType;
+            this.dialog.scene = data.tree.treeMenu.tree.editor.scene
+            tplHandle(this.dialog.scene);
+        },
+        save : function () {
+            var outlineName = $("#names").val().split("\n");
+            var namesArray = outlineName.sort();
+            for(var i=0 ; i<namesArray.length ; i++){
+                if($.trim(namesArray[i]).length> 0 && $.trim(namesArray[i+1]).length> 0 ) {
+                    if($.trim(namesArray[i]) == $.trim(namesArray[i+1])) {
+                        show_message("有相同的名称!","error");
+                        return;
+                    }
+                }
+            }
+           $('#addOutlineForm').submit();
+        },
+        dialogClose : function () {
+            addOutlineForm.dialog.close();
+        }
+    }
+
+    function tplHandle(scene) {
+        //是否显示元素模板
+        if(!!scene && scene.auth('tree-menu-addoutlineusearttpl')) {
+            $('#docArtTplDiv').show();//显示元素选择
+    
+            $('#synAddWkId').click(function(){
+                if(this.checked) {
+                    $('#docArtTplSelect').attr("disabled","disabled");
+                }else {
+                    $('#docArtTplSelect').removeAttr("disabled");
+                }
+            });
+
+        　  $('#docArtTplSelect').change(function(){ 
+                if($("#docArtTplSelect").val()) {
+                    $('#synAddWkId').attr("disabled","disabled");
+                }else {
+                    $('#synAddWkId').removeAttr("disabled");
+                }
+            })
+
+            WD_URL.rest.ajax({
+                    url: config.selectDocArtTpl(),
+                    type:'GET',
+                    async: false
+                }, function (json) {
+                    vpUtils.select2('#docArtTplSelect',
+                        {
+                            multiple: false,
+                            placeholder: "请选择元素模板",
+                            data: json,
+                            tags: false,
+                            allowClear: true,
+                            minimumResultsForSearch: -1
+                        },function(){
+                            $('#docArtTplSelect').val("").trigger('change');
+                        }
+                    );
+            })
+        }
+    }
+</script>

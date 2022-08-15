@@ -1,0 +1,53 @@
+.progress{
+	left:250px;
+	top:150px;
+	position:absolute;
+	width:400px;
+	height:120px;
+	border:1px solid #A1A1A1;
+	display:none;
+	background:#F6F6F6;
+}
+.progressBar{
+	border:1px solid #A1A1A1;
+	width:100px;
+	height:14px;
+	margin-left:50px;
+	margin-top:20px;
+}
+.uploaded{
+	height:12px;
+	width:1px;
+	background:transparent url('/project/vframe/images/other/jdt_bg.gif') repeat-x 0 0;
+	margin-bottom: 1px;
+	margin-left: 1px;
+	margin-right: 1px;
+	margin-top: 1px;
+}
+.title{
+	height:20px;
+	padding:-10px;
+	border-bottom:#9AA0AC 1px solid;
+}
+.close{
+	display:none;
+	cursor:pointer;
+	font-weight:bold;
+}
+.progressBar1{
+	border:1px solid #A1A1A1;
+	width:100px;
+	height:14px;
+}
+.inputfile1 { 
+	width:0;
+	size:0;
+	border:0;
+	filter:alpha(opacity=0); // 下面的3行支持不同的浏览器
+	-moz-opacity:0.12;
+	opacity:0.12;
+	background-color:#000;
+	margin:0;
+	padding:0; 
+	height:18;
+} 

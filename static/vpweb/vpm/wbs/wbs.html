@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>项目wbs计划 - VP应用全生命周期管理系统</title>
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
+    <link rel="shortcut icon" href="../img/favicon.ico">
+    <link href="../../css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="../../css/font-awesome.min.css?v=4.7.0" rel="stylesheet">
+    <link href="../../css/animate.css" rel="stylesheet">
+    <link href="../../css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+    <link href="../../css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+    <!-- zTree树表 -->
+    <link href="../../css/plugins/zTree/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+    <!-- layUI表格 -->
+    <link href="../../js/plugins/layui/css/layui.css" rel="stylesheet"  media="all">
+    <link href="../../css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="../../css/common.css" rel="stylesheet">
+    <link href="../../css/vp.css" rel="stylesheet">
+    <link href="../../css/plugins/chosen/chosen.css" rel="stylesheet" type="text/css" >
+    
+    <!--[if lte IE 9]>
+        <script src="../../js/html5shiv.min.js"></script>
+        <script src="../../js/respond.js"></script>
+    <![endif]-->
+
+    <!--[if lte IE 9]>
+        <script src="../../js/html5shiv.min.js"></script>
+        <script src="../../js/respond.js"></script>
+    <![endif]-->
+</head>
+<body class="">
+<iframe id="downloadFrame" style="display:none"></iframe>
+<div class="ibox" >
+	<div class="ibox-title" >
+		<div class="ibox-tools vptoolbar">
+	        <a class="text-primary" data-toggle="tooltip" style="font-size: 16px;" data-placement="left" id="changeToTask" title="" data-original-title="生成高层计划">
+	                         高层计划转任务计划
+	        </a>
+	        <a class="text-primary" data-toggle="tooltip" style="font-size: 16px;" data-placement="left" id="export" title="" data-original-title="导出EXCEL">
+        	   <i class="fa fa-share"></i>
+	        </a>
+	        <a class="text-primary" data-toggle="tooltip" style="font-size: 16px;" data-placement="left" id="exportMSPFile" title="" data-original-title="导出MSP">
+        	   <i class="fa fa-file"></i>
+	        </a>
+	        <a class="text-primary" data-toggle="tooltip" style="font-size: 16px;" data-placement="left" id="compareGantt" title="" data-original-title="比较甘特图">
+        	   <i class="fa fa-balance-scale"></i>
+	        </a>
+	        <a class="text-primary" data-toggle="tooltip" style="font-size: 16px;" data-placement="left" id="mirrorView" title="" data-original-title="镜像视图">
+        	   <i class="fa fa-bars"></i>
+	        </a>
+	        <a class="text-primary" data-toggle="tooltip" style="font-size: 16px;" data-placement="left" id="mirrorManage" title="" data-original-title="镜像管理">
+        	   <i class="fa fa-random"></i>
+	        </a>
+	        <!-- <a class="text-primary" data-toggle="tooltip" style="font-size: 16px;" data-placement="left" id="mirrorMessage" title="" data-original-title="镜像消息">
+        	   <i class="fa fa-tasks"></i>
+	        </a> -->
+	    </div>
+	</div>
+	<div class="ibox-content p-n m-t-sm">
+	    <div class="clearfix white-bg animated fadeInRight vp-pr">
+	        <div class="vp-overflow-x">
+	            <ul id="dataTree" class="ztree"></ul>
+	        </div>
+	    </div>
+	    <!-- drawer 侧滑DIV -->
+	    <div class="hide drawer-fixed" id="drawerRight-tree">
+	        <div class="spin-icon" onclick="closeDrawer('#drawerRight-tree')">
+	            <i class="fa fa-times fa-spin"></i>
+	        </div>
+	        <div class="head-title text-center text-ellipsis wrapper h4">意向需求相关字段布局</div>
+	        <div class="ibox-content">
+	            <div class="row">
+	                <div class="col-md-12">
+	                    <div class="form-group">
+	                        <label for="title">标题</label>
+	                        <input id="title" type="text" class="form-control" placeholder="请输入标题...">
+	                    </div>
+	                    <div class="form-group">
+	                        <label for="message">消息</label>
+	                        <textarea class="form-control" id="message" rows="3" placeholder="请输入消息..."></textarea>
+	                    </div>
+	                    <div class="checkbox">
+	                        <label class="checkbox" for="closeButton">
+	                            <input id="closeButton" type="checkbox" value="checked" class="input-mini" > 关闭按钮
+	                        </label>
+	                    </div>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+</div>           
+<!-- 全局js -->
+<script src="../../js/jquery-1.11.3.min.js"></script>
+<script src="../../../vpcommon/config.js"></script>
+<script src="../../../vpcommon/vputils.min.js"></script>
+<!--[if IE 8]>
+<script type="text/javascript" src="../../js/jquery-1.9.1.min.js"></script>
+<![endif]-->
+<script src="../../js/bootstrap.min.js?v=3.3.6"></script>
+<!-- 自定义js -->
+<script src="../../js/content.js?v=1.0.0"></script>
+<!-- 日期控件 -->
+<script src="../../js/plugins/datapicker/bootstrap-datepicker.js"></script>
+<!-- layer弹出层 -->
+<script src="../../js/plugins/layer/layer.min.js"></script>
+<script src="../../js/plugins/layui/layui.js"></script>
+<!-- 下拉选择列表 -->
+<script src="../../js/plugins/chosen/chosen.jquery.js"></script>
+<!-- zTree模拟树表 -->
+<script src="../../js/plugins/zTree/jquery.ztree.all.min.js"></script>
+<script src="../../js/vpsoft/WBSTreeTable.js"></script>
+<!-- <script src="../../vpm/js/common.js"></script> -->
+<script src="../../js/vpsoft/common.js"></script>
+<script src="../../js/vpsoft/form.js"></script>
+<script src="../../js/plugins/iCheck/icheck.min.js"></script>
+<script src="../../js/vpsoft/getUrlParam.js"></script>  
+
+<script src="../../js/vpsoft/chosenEntity.js?v=1.0.0" charset="utf-8"></script>
+
+<script type="text/javascript" src="../../vpm/vpJS/dialog.js"></script>
+<script type="text/javascript"  src="../../vpm/vframe/js/common.js"></script>
+
+<script type="text/javascript">
+var parentUrlParams = location.search;//获取url中含"?"符后的字串
+var urlParams = getRequestParams();
+var cols = new Array();
+var projectid = urlParams.iid;
+var entityid = urlParams.entityid;
+
+$(document).ready(function () {
+	initTaskTree();
+	
+	if(entityid=='8'){
+		$("#changeToTask").hide();
+		$("#compareGantt").hide();
+		$("#mirrorView").hide();
+	}else{
+		$("#changeToTask").show();
+		$("#compareGantt").show();
+		$("#mirrorView").show();
+	}
+	
+	$("#compareGantt").click(function(){
+		var projectID = urlParams.iid;
+
+		var title = '比较甘特图';
+		var url = "compareGantt.html?ientityid=" + entityid + "&projectid=" + projectid + "&iparent=0&relentityId=7";
+		openWindow1(url, title, {}, function(index, layero, ibtn) {
+			try {
+				$(layero).find("iframe")[0].contentWindow.saveForm(function(data) {
+					layer.close(index);
+				});
+			} catch (e) {
+				layer.msg(e, { icon: 2, time: 2000 });
+			}
+		},'100', '548');
+	});
+	
+	$("#mirrorView").click(function(){
+		var projectID = urlParams.iid;
+
+		var title = '镜像视图';
+		var url = "wbsMapView.html?ientityid=10&projectId=" + projectid + "&relentityId=7";
+		openWindow1(url, title, {}, function(index, layero, ibtn) {
+			try {
+				$(layero).find("iframe")[0].contentWindow.saveForm(function(data) {
+					layer.close(index);
+				});
+			} catch (e) {
+				layer.msg(e, { icon: 2, time: 2000 });
+			}
+		},'100', '548');
+	});
+	
+	$("#mirrorManage").click(function(){
+		//var id = taskID;
+		//var name = taskName;
+		var projectID = urlParams.iid;
+
+		var title = '镜像管理';
+		var url = "wbsMap.html?ientityid=" + entityid + "&projectid=" + projectid;
+		openWindow1(url, title, {}, function(index, layero, ibtn) {
+			try {
+				$(layero).find("iframe")[0].contentWindow.saveForm(function(data) {
+					layer.close(index);
+				});
+			} catch (e) {
+				layer.msg(e, { icon: 2, time: 2000 });
+			}
+		},'70', '548');
+	});
+	
+	$("#mirrorMessage").click(function(){
+		var title = '镜像消息';
+		var url = "newMapMsg.html?relentityId=7&projectid=" + projectid;
+		openWindow1(url, title, {}, function(index, layero, ibtn) {
+			try {
+				$(layero).find("iframe")[0].contentWindow.saveForm(function(data) {
+					layer.close(index);
+				});
+			} catch (e) {
+				layer.msg(e, { icon: 2, time: 2000 });
+			}
+		},'70', '548');
+	});
+	
+});
+
+//获取请求参数
+function getRequestParams() {
+   var url = location.search; //获取url中含"?"符后的字串
+   var theRequest = new Object();
+   if (url.indexOf("?") != -1) {
+      var str = url.substr(1);
+      strs = str.split("&");
+      for(var i = 0; i < strs.length; i ++) {
+         theRequest[strs[i].split("=")[0]]=unescape(strs[i].split("=")[1]);
+      }
+   }
+   return theRequest;
+}  
+
+/**
+ * 配置zTree
+ */
+var setting = {
+	view: {
+		showLine: false,
+		nameIsHTML: false,
+		addDiyDom: addDiyDom,
+	},
+	data: {
+		simpleData: {
+			enable: true,
+			idKey: "iid",
+            pIdKey: "iparent",
+			rootPId:0
+		}
+	},
+	callback: {
+		onExpand: onExpand/* ,
+		onClick: zTreeOnClick */
+	}
+};
+
+//初始化WBS计划树
+function initTaskTree(){
+	//加载表头数据
+	vpAjax(getVpmPath() + '/vpmwbs/header', {}, "GET", function(rst) {
+		try {
+			if(rst.success) {
+				cols = rst.headers;
+			    //加载数据
+			    treeHandler();
+		    }else{
+	  			layer.msg(rst.message, {icon: 1,time: 2000});
+	  			return false;
+	  		}
+		}catch(exception) {
+			layer.msg(msg004, { icon: 2, time: 2000 });
+		}	
+	});
+}
+
+//加载树表头及数据
+function treeHandler(){
+	var objparam = {'projectId': projectid, 'entityid': entityid};
+	vpPostAjax(getVpmPath() + '/vpmwbs/viewtreetask', objparam, 'POST', function(data){//获取wbs计划树数据
+		//初始化树数
+	    if(data.success) {
+	    	$("#dataTree").children().remove();    
+	    	var treeObj = $.fn.zTree.init($("#dataTree"), setting, data.treeData);
+			var rows = $("#dataTree").find('li');
+			//加载表头
+			var imgSpan = '编辑';
+			var li_head = '<li class="head"><a>'
+						+ '	<div class="divTd" style="width:50px;min-width:50px;text-indent:5px;">序号<div class="drag-handle"></div></div>'
+						+ '	<div class="divTd" style="width:80px;min-width:80px;">' + imgSpan + '<div class="drag-handle"></div></div>'
+						+ '	<div class="divTd" style="width:200px;text-align:center;">WBS计划<div class="drag-handle"></div></div>';
+			            //+ '	<div class="divTd" style="width:120px;text-align:center;">标志<div class="drag-handle"></div></div>'
+			$.each(cols, function(i, item) {//动态加载列
+				if(item.fieldname=='istatusid' || item.fieldname=='iparent' 
+						|| item.fieldname=='idepartmentid' || item.fieldname=='iprojectid' 
+						|| item.fieldname=='iclassid' || item.fieldname=='sdescription' || item.fieldname=='iid' || item.fieldname=='sname' 
+						|| item.fieldname=='scode' || item.fieldname=='iassignto' || item.fieldname=='icreator' || item.fieldname=='iflag' || item.fieldname=='inamerole'){
+					
+				}else{
+					li_head +='	<div class="divTd" style="width:' + (item.width-4.1) +'px;">'
+		    				+ '		'+item.displayname+'<div class="drag-handle"></div>'
+		    				+ '	</div>';
+				}
+			});
+			li_head += '</a></li>'
+			if (rows.length > 0) {
+				rows.eq(0).before(li_head);//添加表头
+				// 这里是给每行里面的列添加索引方便操作
+				rows.each(function(index, el) {
+					$(this).find('.divTd').not('.fixTd_r').each(function(ind, els) {
+						$(this).addClass('index_'+ind)
+					});
+				});
+			} else {
+				$("#dataTree").append(li_head);//添加表头
+				$("#dataTree").append('<li ><div style="text-align: center;line-height: 30px;" >无符合条件数据</div></li>')
+			}
+			// 鼠标移到该元素上拖
+			$('.drag-handle').each(function(index, el) {
+		        bindResize(index,el);
+		    });
+		    // 如果添加了固定列，列前一个要距离固定列的宽少1px
+		    if($('.fixTd_r').length > 0){
+		    	var fixEle = $('.fixTd_r')
+		    	//fixEle.prev('.divTd').css('margin-right', fixEle.outerWidth() - 1 +'px'); 
+		    	fixEle.css('margin-right', '-10px'); 
+		    }
+		    expandAll(treeObj);//默认展开到一级树
+  		}else{
+  			layer.msg(relData.message, {icon: 1,time: 2000});
+  			return false;
+  		}
+    }); 
+}
+
+/**
+ * 自定义DOM节点
+ */
+function addDiyDom(treeId, treeNode) {
+	var liObj = $("#" + treeNode.tId);
+	var aObj = $("#" + treeNode.tId + "_a");
+	var switchObj = $("#" + treeNode.tId + "_switch");
+	var icoObj = $("#" + treeNode.tId + "_ico");
+	var spanObj = $("#" + treeNode.tId + "_span");
+	var spanObjText = $("#" + treeNode.tId + "_span").text();
+	var editStr = '';
+	aObj.attr('title', '');
+	var optHtml = '<div class="divTd" style="width:50px;min-width:50px;" >'
+				+ '	' + treeNode.rownum + ' '
+				+ '</div>';
+	
+	aObj.append(optHtml);
+	var imgHtml = '';
+	if(treeNode.dactualenddate!=''){//编辑entityid
+		imgHtml += '<a id="taskEdit"  onclick="openeditWin(\''+ treeNode.iid +'\',\''+ treeNode.name + '\',\'' + projectid + '\')"><i class="fa fa-edit fa-fw text-success"></i></a>';
+	}else{
+		imgHtml += '<a id="taskEdit"  onclick="openeditWin(\''+ treeNode.iid +'\',\''+ treeNode.name + '\',\'' + projectid + '\')"><i class="fa fa-edit fa-fw text-success"></i></a>';
+	}
+	
+	aObj.append('<div class="divTd" style="width:84px;min-width:80px;text-align:center;">'+imgHtml+'</div>');
+	aObj.append('<div class="divTd swich fnt" style="width:204px;text-align:left;"></div>');
+	
+	
+    var aObj2 = $("#" + treeNode.tId + "_a");
+	var imgHtml2 = '';
+	if("0"==treeNode.flag1){//标志
+		imgHtml2 += "<img src=\"/project/images/wbstask/icon_wks.gif\" title=\"未开始\"/>&nbsp;";
+	}else if("1"==treeNode.flag1){
+		imgHtml2 += "<img src=\"/project/images/wbstask/icon_jxz.gif\" title=\"进行中\"/>&nbsp;";
+	}else if(undefined==treeNode.flag1){
+		
+	}else {
+		imgHtml2 += "<img src=\"/project/images/wbstask/icon_ywc.gif\" title=\"已完成\"/>&nbsp;";
+	}
+	if("0"==treeNode.flag2){//指示灯
+		imgHtml2 += "<img src=\"/project/images/wbstask/icon_green.gif\" title=\"进度正常\"/>&nbsp;";
+	}else if("1"==treeNode.flag2){
+		imgHtml2 += "<img src=\"/project/images/wbstask/icon_yellow.gif\" title=\"进度警告\"/>&nbsp;";
+	}else if(undefined==treeNode.flag2){
+		
+	}else{
+		imgHtml2 += "<img src=\"/project/images/wbstask/icon_red.gif\" title=\"进度延迟\"/>&nbsp;";
+	}
+	if("0"==treeNode.flag3){//文档
+		imgHtml2 += "<img src=\"/project/images/wbstask/icon_word_no.gif\" title=\"无文档\"/>&nbsp;";
+	}else if(undefined==treeNode.flag3){
+		
+	}else{
+		imgHtml2 += "<img src=\"/project/images/wbstask/icon_word_yes.gif\" title=\"有文档\"/>&nbsp;";
+	}
+	var workstatname="无评论消息";
+	if("0"==treeNode.flag4){
+		imgHtml2 += "<img src=\"/project/images/wbstask/icon_successful.gif\"  title=\""+workstatname+"\"/>";
+	}else if("1"==treeNode.flag4){
+		imgHtml2 += "<img src=\"/project/images/wbstask/icon_trouble.gif\" title=\""+workstatname+"\"/>";
+	}else if(undefined==treeNode.flag4){
+		
+	}else{
+		imgHtml2 += "<img src=\"/project/images/wbstask/icon_problem.gif\" title=\""+workstatname+"\"/>";
+	}
+	if("0"==treeNode.flag5){
+		imgHtml2 += "<img src=\"/project/images/wbstask/icon_cjyes.gif\" title=\"可裁剪\"/>";
+	}else if(undefined==treeNode.flag5){
+		
+	}else{
+		imgHtml2 += "<img src=\"/project/images/wbstask/icon_cjno.gif\" title=\"不可裁剪\"/>";
+	}
+	//aObj.append('<div class="divTd" style="width:125px;text-align:center;">'+imgHtml2+'</div>');
+	
+	
+	var div = $(liObj).find('div').eq(2);
+	//从默认的位置移除
+	switchObj.remove();
+	spanObj.remove();
+	icoObj.remove();
+	//在指定的div中添加
+	div.append(switchObj);
+	div.append(spanObj);
+	
+	
+	//隐藏了层次的span
+	var levelSpace = 0;
+	var spaceWidth = 25;
+	if(treeNode.level!=0 && treeNode.level!=1){
+		levelSpace = (spaceWidth - 10) * treeNode.level * 1.5;
+	}else{
+		levelSpace = spaceWidth * treeNode.level;
+	}  
+	var spaceStr = "<span style='height:1px;display: inline-block;width:" + levelSpace + "px'></span>";
+	switchObj.before(spaceStr);
+	switchObj.after(icoObj);
+	$.each(cols, function(i, item) {//动态加载列
+		var fieldname = item.fieldname;
+		var colwidth = parseFloat(item.width);
+		if(fieldname=='sname' || item.fieldname=='istatusid' || item.fieldname=='iparent' 
+				|| item.fieldname=='idepartmentid' || item.fieldname=='iprojectid'
+			    || item.fieldname=='iclassid' || item.fieldname=='sdescription' || item.fieldname=='iid'
+			    || item.fieldname=='scode' || item.fieldname=='iassignto' || item.fieldname=='icreator' ||  item.fieldname=='inamerole'){
+			
+		}else{
+		    editStr +='<div class="divTd" style="width:'+colwidth+'px;" >'
+					+ '	<a onclick="openDetail(\''+ treeNode.iid +'\',\''+ treeNode.name + '\',\'' + treeNode.iparent + '\',\'' + projectid + '\');" projectID="' + projectid+ '" milestoneortask="" sname="' + treeNode.name + '" iid="' + treeNode.iid + '" objectid="' + treeNode.objectid + '">' + treeNode[fieldname] +'</a>'
+					+ '</div>';
+		}
+	});
+	aObj.append(editStr);
+}
+
+function itemOver(event){
+	var obj = event;
+	if(!obj.status || !obj.status=="clicked"){
+		obj.src = "/project/vframe/images/other/icon_openhover.gif";
+	} 
+}
+function itemOut(event){
+	var obj = event;
+	if(!obj.status || !obj.status=="clicked"){
+		obj.src = "/project/vframe/images/other/icon_openlink.gif";
+	} 
+}
+
+//展开操作DIV
+function clickOpr(currentphase){
+	var obj = event.target;
+	var taskid = $(obj).attr("iid");
+	var objectid = $(obj).attr("objectid");
+	var methodtemplateid = $(obj).attr("methodtemplateid");
+	var targetParent = $(obj).closest('.divTd');
+	var offsetTop = 10 + targetParent.offset().top - $('.ztree').offset().top + targetParent.outerHeight()/2;
+	var offsetLeft = 10 + targetParent.offset().left - $('.ztree').offset().left + targetParent.outerWidth()/2;
+	offsetTop -= 5;
+	offsetLeft -= 10;
+	
+	xjjd = "新建阶段";
+	xjrw = "新建活动";
+	xjlcb = "新建里程碑";
+	xjjfw = "新建交付物";
+	sc = "删除";
+	sy = "上移";
+	xy = "下移";
+	szdqjd = "设置当前阶段";
+	qcdqjd = "清除当前阶段";
+	
+	var htmlStr = '';
+		htmlStr += '<div class="animated fadeInRight divSert" style="left:'+ offsetLeft +'px;top:'+ offsetTop +'px">';
+        htmlStr += '<ul class="padding-10 vp-radius">';
+    
+   	if(objectid=='21'){//阶段
+   		htmlStr += '<li><a id="xjrw"  onclick="doEvent(\''+ taskid +'\',\''+ objectid +'\',\''+ methodtemplateid +'\')"><i class="fa fa-circle-o fa-fw text-success"></i>'+xjrw+'</a></li>';
+		htmlStr += '<li><a id="xjlcb" onclick="doEvent(\''+ taskid +'\',\''+ objectid +'\',\''+ methodtemplateid +'\')"><i class="fa fa-circle-o fa-fw text-success"></i>'+xjlcb+'</a></li>';
+        htmlStr += '<li><a id="xjjfw" onclick="doEvent(\''+ taskid +'\',\''+ objectid +'\',\''+ methodtemplateid +'\')"><i class="fa fa-circle-o fa-fw text-success"></i>'+xjjfw+'</a></li>';
+		htmlStr += '<li><a id="sc" 	  onclick="doEvent(\''+ taskid +'\',\''+ objectid +'\',\''+ methodtemplateid +'\')"><i class="fa fa-circle-o fa-fw text-success"></i>'+sc+'</a></li>';
+        htmlStr += '<li><a id="sy" 	  onclick="doEvent(\''+ taskid +'\',\''+ objectid +'\',\''+ methodtemplateid +'\')"><i class="fa fa-circle-o fa-fw text-success"></i>'+sy+'</a></li>';
+		htmlStr += '<li><a id="xy" 	  onclick="doEvent(\''+ taskid +'\',\''+ objectid +'\',\''+ methodtemplateid +'\')"><i class="fa fa-circle-o fa-fw text-success"></i>'+xy+'</a></li>';
+        
+		if(currentphase==1){
+			htmlStr += '<li><a id="qcdqjd" onclick="doEvent(\''+ taskid +'\',\''+ objectid +'\',\''+ methodtemplateid +'\')"><i class="fa fa-circle-o fa-fw text-success"></i>'+qcdqjd+'</a></li>';
+		}else{
+			htmlStr += '<li><a id="szdqjd" onclick="doEvent(\''+ taskid +'\',\''+ objectid +'\',\''+ methodtemplateid +'\')"><i class="fa fa-circle-o fa-fw text-success"></i>'+szdqjd+'</a></li>';
+        }
+	}else if(objectid=='22'||objectid=='23'){//交付物、里程碑
+		htmlStr += '<li><a id="sc" 	  onclick="doEvent(\''+ taskid +'\',\''+ objectid +'\',\''+ methodtemplateid +'\')"><i class="fa fa-circle-o fa-fw text-success"></i>'+sc+'</a></li>';
+        htmlStr += '<li><a id="sy" 	  onclick="doEvent(\''+ taskid +'\',\''+ objectid +'\',\''+ methodtemplateid +'\')"><i class="fa fa-circle-o fa-fw text-success"></i>'+sy+'</a></li>';
+		htmlStr += '<li><a id="xy" 	  onclick="doEvent(\''+ taskid +'\',\''+ objectid +'\',\''+ methodtemplateid +'\')"><i class="fa fa-circle-o fa-fw text-success"></i>'+xy+'</a></li>';
+	}else if(objectid=='24'){//活动
+		htmlStr += '<li><a id="xjrw"  onclick="doEvent(\''+ taskid +'\',\''+ objectid +'\',\''+ methodtemplateid +'\')"><i class="fa fa-circle-o fa-fw text-success"></i>'+xjrw+'</a></li>';
+		htmlStr += '<li><a id="xjlcb" onclick="doEvent(\''+ taskid +'\',\''+ objectid +'\',\''+ methodtemplateid +'\')"><i class="fa fa-circle-o fa-fw text-success"></i>'+xjlcb+'</a></li>';
+        htmlStr += '<li><a id="xjjfw" onclick="doEvent(\''+ taskid +'\',\''+ objectid +'\',\''+ methodtemplateid +'\')"><i class="fa fa-circle-o fa-fw text-success"></i>'+xjjfw+'</a></li>';
+		htmlStr += '<li><a id="sc" 	  onclick="doEvent(\''+ taskid +'\',\''+ objectid +'\',\''+ methodtemplateid +'\')"><i class="fa fa-circle-o fa-fw text-success"></i>'+sc+'</a></li>';
+        htmlStr += '<li><a id="sy" 	  onclick="doEvent(\''+ taskid +'\',\''+ objectid +'\',\''+ methodtemplateid +'\')"><i class="fa fa-circle-o fa-fw text-success"></i>'+sy+'</a></li>';
+		htmlStr += '<li><a id="xy" 	  onclick="doEvent(\''+ taskid +'\',\''+ objectid +'\',\''+ methodtemplateid +'\')"><i class="fa fa-circle-o fa-fw text-success"></i>'+xy+'</a></li>';
+    }else{
+		htmlStr += '<li><a id="xjjd" 	  onclick="doEvent(\''+ taskid +'\',\'21\',\''+ methodtemplateid +'\')"><i class="fa fa-circle-o fa-fw text-success"></i>'+xjjd+'</a></li>';
+	}  
+		
+    htmlStr += '</ul>';
+    htmlStr += '</div>';
+    // 关闭其他的下拉层
+	$('.divSert').remove();
+	$(targetParent).after(htmlStr);
+	// 如果下边空间不足于显示下拉层改为往上显示
+	if($(window).height() - $(event.target).offset().top < targetParent.next('.divSert').outerHeight()){
+		offsetTop -= targetParent.next('.divSert').outerHeight()
+		targetParent.next('.divSert').css('top', offsetTop + 'px');
+	}
+}
+
+//菜单选中点击操作
+function doEvent(taskid, objectid, methodtemplateid){
+	var obj = event.target;
+	var id = $(obj).attr("id");
+	
+	if(id=='xjjd'){
+		newopenPobj(taskid,0,urlParams.typeID,urlParams.projectID);
+	}else if(id=='xjrw'){
+		newopenPobj(taskid,1,urlParams.typeID,urlParams.projectID);
+	}else if(id=='xjlcb'){
+		newopenPobj(taskid,3,urlParams.typeID,urlParams.projectID);
+	}else if(id=='xjjfw'){
+		newopenPobj(taskid,2,urlParams.typeID,urlParams.projectID);
+	}else if(id=='szdqjd'){//设置当前阶段
+		var url = "/project/wbs/phase/changeCurrentphase2Action.do?projectID="+urlParams.projectID+"&taskid="+taskid+"&flag=notClearNowStat";
+		Common.sendFormData(url,undefined,function(res){
+			if(res.success){
+				initTaskTree();
+			}else{
+				layer.msg("设置失败\n" + res.errMessage, {icon: 2,time: 2000});
+			}
+			return;
+		},new Object());
+	}else if(id=='qcdqjd'){//清除当前阶段
+		var url = "/project/wbs/phase/changeCurrentphase2Action.do?projectID="+urlParams.projectID+"&taskid="+taskid+"&flag=clearNowStat";
+		Common.sendFormData(url,undefined,function(res){
+			if(res.success){
+				initTaskTree();
+			}else{
+				layer.msg("清除失败\n" + res.errMessage, {icon: 2,time: 2000});
+			}
+			return;
+		},new Object());
+	}else if(id=='sy'){//上移
+		var url = "/project/wbs/phase/pjPhaseStageUpAction.do?taskid="+taskid+"&projectID="+urlParams.projectID+"&methodtemplateid="+methodtemplateid;
+		Common.sendFormData(url,undefined,function(res){
+			if(res.success){
+				initTaskTree();
+			}else{
+				layer.msg("上移失败\n" + res.errMessage, {icon: 2,time: 2000});
+			}
+		},new Object());
+	}else if(id=='xy'){//下移
+		var url = "/project/wbs/phase/pjPhaseStageDownAction.do?taskid="+taskid+"&projectID="+urlParams.projectID+"&methodtemplateid="+methodtemplateid;
+		Common.sendFormData(url,undefined,function(res){
+			if(res.success){
+				initTaskTree();
+			}else{
+				layer.msg("下移失败\n" + res.errMessage, {icon: 2,time: 2000});
+			}
+		},new Object());
+	}
+}
+
+//刷新按钮
+$("#refresh").on('click',function(event) {
+	initTaskTree();
+});
+
+//高层计划转任务计划
+$("#changeToTask").on('click',function(event) {
+	var params = {projectId:projectid,entityId:entityid,flag:1};
+	vpPostAjax(getVpmPath() + '/vpmphasecopytowbs/phaseCopyToWBS', params, "POST", function(rst) {
+		if(rst.success == true){
+			Common.showMessage("转成任务计划成功");
+			initTaskTree();
+		}else{
+			Common.showMessage(rst.msg);
+		}
+	});
+});
+
+//导出Excel按钮
+$("#export").on('click',function(event) {
+	var obj = document.getElementById("downloadFrame");
+	obj.src = getVpmPath() + "/vpm/wbsfiles/exportfile?projectId=" + projectid + "&relentityId=" + entityid + "&type=expdata" + "&access_token=" + token;
+});
+
+//导出MSP按钮
+$("#exportMSPFile").on('click',function(event) {
+	var obj = document.getElementById("downloadFrame");
+	//obj.src = "/vpweb/vpm/wbsfiles/exportMSPfile?projectId=" + projectid + "&relentityId=" + entityid;
+	obj.src = getVpmPath() + "/vpm/wbsfiles/exportMSPfile?projectId=" + projectid + "&relentityId=" + entityid + "&access_token=" + token;
+});
+
+function ow(url){
+	if('workitem1033'=='<%=fromPage%>'){
+		dialog.openQuery('导出WBS', url);
+	}else{
+		dialog.openQuery('导出WBS', url);
+	}
+}
+
+// 捕获节点被点击的事件回调函数
+function toInfo(event){
+	var resObj = {buttonID: "saveBtn", text: "", iconCls: ""};
+	var formWidth = '950px', formHeight = '578px';
+	var obj = event;
+	var projectID = urlParams.projectID;
+	var typeid = urlParams.typeID;
+	var url="/project/wbs/phase/phaseInfoAction.do?templateID="+$(obj).attr("methodtemplateid")+"&fromPageFlag=selectRow&phaseOrStep="+$(obj).attr("phaseorstep")+"&taskid="+$(obj).attr("taskid")+"&projectID="+projectID+"&parentPhaseID="+$(obj).attr("parentphaseid")+"&defaltforecastDate=&defaltforecastDateend=&typeID="+typeid+"&displayFlag=2";
+	parent.layer.open({
+		type: 2,
+		btn: ['保存','取消'],
+		btnAlign: 'c',
+		shade: 0.1,
+		maxmin: true,
+		title: '详细信息',
+		area: [ formWidth, formHeight ], //宽高
+		content: [encodeURI(url)],
+		btn1:function(index, layero){
+			$(layero).find("iframe")[0].contentWindow.clickBtn(resObj);
+			layer.close(index);
+		},
+		end : function(){ 
+			initTaskTree();//关闭窗口时刷新列表
+		}
+	});
+}
+
+//展开树
+function expandAll(tree){
+    //获取 zTree 的全部节点数据将节点数据转换为简单 Array 格式
+    var nodes = tree.transformToArray(tree.getNodes());
+    for(var i=0;i<nodes.length;i++){
+        if(nodes[i].level == 0){
+            //根节点展开
+            tree.expandNode(nodes[i],true,true,false);
+            onExpand('','',nodes[i]);
+        }else{
+            tree.expandNode(nodes[i],false,true,false);
+            onExpand('','',nodes[i]);
+        }
+    }
+}
+
+// 展开回调
+function onExpand(event, treeId, treeNode) {
+	var oLis = $("#"+treeNode.tId+"_ul").find('li');
+	var oAs = $("#"+treeNode.tId+"_a").find('.divTd').not('.fixTd_r');
+	// 这里是给每行里面的列添加索引方便操作
+	var pArr = [];
+	oAs.each(function(index, el) {
+		pArr.push($(this).outerWidth())
+	});
+	oLis.each(function(index, el) {
+		var cArr = [];
+		var _this = $(this);
+		$(this).find('.divTd').not('.fixTd_r').each(function(indx, els) {
+			$(this).addClass('index_'+indx)
+			cArr.push($(this).outerWidth())
+			// 如果父级宽度变了新展开的子级也要变
+			for(var i=0;i<pArr.length;i++){
+				if(cArr[i]!==pArr[i]){
+					_this.find('.divTd').not('.fixTd_r').eq(i).css('width', pArr[i] + 'px')
+				}
+			}
+		});
+	});
+};
+
+// 给头部插入拖动列宽功能
+function bindResize(index,el) {
+	//获取要改变宽的元素
+	var els = $(el).closest('.divTd')[0];
+	var oldW = $(els).outerWidth();
+	index = index ? index : 0 ;
+	//鼠标的 X 和 Y 轴坐标
+	x = 0;
+	//鼠标按下事件
+	$(el).mousedown(function(e) {
+		//按下元素后，计算当前鼠标与对象计算后的坐标
+		x = e.clientX - $(els).outerWidth();
+		//支持 setCapture,此方法是IE特有
+		el.setCapture ? (
+			//捕捉焦点
+			el.setCapture(),
+			//设置事件
+			el.onmousemove = function(ev) {
+				mouseMove(ev || event);
+			},
+			el.onmouseup = mouseUp
+		) : (
+			//绑定事件
+			$(document).on("mousemove",mouseMove).on("mouseup", mouseUp)
+		);
+		//防止默认事件发生
+		e.preventDefault();
+		
+	});
+	//移动事件
+	function mouseMove(e) {
+		//动态赋值元素宽度
+		var l = e.clientX - x;
+		if(l>oldW){
+			$(els).css('width', (l) + 'px');
+			$('.index_'+index).css('width', l + 'px');
+		}else{
+			$(els).css('width', (oldW) + 'px');
+			$('.index_'+index).css('width', oldW + 'px');
+		}
+	}
+	//停止事件
+	function mouseUp() {
+		//支持 releaseCapture
+		el.releaseCapture ? (
+			//释放焦点
+			el.releaseCapture(),
+			//移除事件
+			el.onmousemove = el.onmouseup = null
+		) : (
+			//卸载事件
+			$(document).off("mousemove", mouseMove).off("mouseup", mouseUp)
+		);
+	}
+}
+
+// 点击其他位置关闭滑出层
+$(document).on('click', function(event) {
+	event.preventDefault();
+	var et = $(event.target);
+	// 关闭浮出的菜单
+	if(et.hasClass('dropdownDiv') || et.closest('.dropdownDiv').hasClass('dropdownDiv')){
+
+	}else{
+		$('.divSert').remove()
+	}
+});
+
+
+//WBS计划表单
+var newphaseID = "0";
+function formView(title,url) {
+	var formWidth = '950px', formHeight = '578px';
+	var resObj={buttonID: "saveBtn", iconCls: "", text: "agile", url: url};
+	parent.layer.open({
+		type: 2,
+		btn: ['保存','保存并新建','保存并关闭'],
+		btnAlign: 'c',
+		shade: 0.1,
+		maxmin: true,
+		title: title,
+		area: [ formWidth, formHeight ], //宽高
+		content: [encodeURI(url)],
+		btn1:function(index, layero){
+			$(layero).find("iframe")[0].contentWindow.clickBtn(resObj);
+		},
+		btn2:function(index, layero){
+			var name=$(layero).find("iframe")[0].contentWindow.document.getElementById("phasename").value;
+			var phasetype=$(layero).find("iframe")[0].contentWindow.document.getElementById("phasetype").value;
+			var endTime=$(layero).find("iframe")[0].contentWindow.document.getElementById("forecastEndDate").value;
+			$(layero).find("iframe")[0].contentWindow.clickBtn(resObj);
+			if(name!=""&&endTime!=""){
+				if(phasetype=="200"||phasetype=="204"){//阶段200，活动204	需要判断forecastDate属性
+					var startTime=$(layero).find("iframe")[0].contentWindow.document.getElementById("forecastDate").value;
+					if(startTime==""){
+						return false;
+					}
+				}
+				formView(title,url);
+			}else{
+				return false;
+			}
+		},
+		btn3:function(index, layero){
+			var name=$(layero).find("iframe")[0].contentWindow.document.getElementById("phasename").value;
+			var phasetype=$(layero).find("iframe")[0].contentWindow.document.getElementById("phasetype").value;
+			var endTime=$(layero).find("iframe")[0].contentWindow.document.getElementById("forecastEndDate").value;
+			$(layero).find("iframe")[0].contentWindow.clickBtn(resObj);
+			if(name!=""&&endTime!=""){
+				if(phasetype=="200"||phasetype=="204"){//阶段200，活动204	需要判断forecastDate属性
+					var startTime=$(layero).find("iframe")[0].contentWindow.document.getElementById("forecastDate").value;
+					if(startTime==""){
+						return false;
+					}
+				}
+				layer.close(index);
+			}else{
+				return false;
+			}
+		},
+		end : function(){ 
+			initTaskTree();//关闭窗口时刷新列表
+		}
+	});
+}
+
+function newopenPobj(objID,objType,typeID,projectID){
+	var url="/project/wbs/phase/phaseInfoAction.do?templateID=0&phaseOrStep="+objType+"&parentPhaseID="+objID+"&defaltforecastDate=&defaltforecastDateend=&taskid=0&typeID="+typeID+"&projectID="+projectID;
+	
+	var objecttype = "";
+	var fliename="phasebar_new";
+	var winTitle="阶段";
+	var objTitle="阶段名称";
+	var icons="open_phase.gif";
+	var newobjName="新建";
+	if(objType=="1"){
+	  	fliename="taskbar_new";
+	  	winTitle="活动";
+	  	objTitle="活动名称";
+	  	newobjName="新建";
+	  	icons="open_gcjh.gif";
+	  	objecttype = "24";
+	}else if(objType=="2"){
+	  	fliename="deliverablesbar_new";
+	  	winTitle="交付物";
+	  	objTitle="交付物名称";
+	  	newobjName="新建";
+	  	icons="open_object.gif";
+	  	objecttype = "22";
+	}else if(objType=="3"){
+	  	fliename="milestonebar_new";
+	  	winTitle="里程碑";
+	  	objTitle="里程碑名称";
+	  	newobjName="新建";
+	  	icons="open_milestone.gif";
+	  	objecttype = "23";
+	}else if(objType=="0"){
+		objecttype = "21";
+	}
+	
+	if(typeID == "0"){
+		fliename += "_pf";
+	}
+	var title = newobjName+winTitle;
+	formView(title,url);
+}
+
+
+var isClose;
+function openeditWin(taskID, taskName, projectID){
+	taskName = encodeURI(encodeURI(taskName));
+	var url = "";
+	/* if(taskID == 0){
+		url = "../../vpm/ext-gantt-new/ganttEdit-new.html?rwFlag=2&projectName=" + taskName + "&relentityId=" + entityid + "&projectID=" + projectID;
+	}else{
+		url = "../../vpm/ext-gantt-new/ganttEdit-new.html?rwFlag=2&projectName="+taskName+"&wbsObjId=" + taskID + "&relentityId=" + entityid + "&projectID=" + projectID;
+	} */
+	
+	if(taskID == 0){
+		url = "ganttEdit-new.html?rwFlag=2&projectName=" + taskName + "&relentityId=" + entityid + "&projectID=" + projectID;
+	}else{
+		url = "ganttEdit-new.html?rwFlag=2&projectName="+taskName+"&wbsObjId=" + taskID + "&relentityId=" + entityid + "&projectID=" + projectID;
+	}
+	var title = '编辑WBS计划';
+	var param = {};
+	openWindow1(url, title, param, function(index, layero, ibtn) {
+		try
+		{
+			$(layero).find("iframe")[0].contentWindow.saveForm(function(data) {
+				layer.close(index);
+			});
+		}catch (e){
+			layer.msg(e, { icon: 2, time: 2000 });
+		}
+	}, '100', '548');
+}
+
+//打开任务明细
+function openDetail(taskID, taskName, iparent, projectID){
+	var name = taskName;
+	var id = taskID;
+	var projectID = projectID;
+	
+	var objectID = 31;
+
+	var title = 'WBS详细-->' + name;
+	var url = "openWindow_menu.html?iparent=" + iparent + "&projectId=" + projectID + "&wbsId=" + id + "&relentityId=" + entityid;
+	openWindow1(url, title, {wbsObjectID:objectID,objectID:objectID,taskID:id,projectID:projectID,workItemID:id,detailobjectid:id,loadextramenu:'1',iid:id,eid:objectID,taskname:name}, function(index, layero, ibtn) {
+		try {
+			$(layero).find("iframe")[0].contentWindow.saveForm(function(data) {
+				layer.close(index);
+			});
+		} catch (e) {
+			layer.msg(e, { icon: 2, time: 2000 });
+		}
+	}, '100', '548');
+}
+</script>
+</body>
+</html>

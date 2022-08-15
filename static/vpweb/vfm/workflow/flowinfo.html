@@ -1,0 +1,51 @@
+
+<div class="spin-icon" onclick="closeDrawer('#drawerRight-list')">
+    <i class="fa fa-times"></i>
+</div>
+<div class="drawer-box" id="app">
+    <div class="padding-10">
+        <div id="xq-info">
+            <div class="ibox m-b-xxl">
+                <div class="tabs-container p-t-lg">
+					<ul class="nav nav-tabs topFixed-tab">
+						<li class="active"><a data-toggle="tab" href="#edit-tab-1"
+							aria-expanded="true">当前步骤</a></li>
+						<li class=""><a data-toggle="tab" href="#edit-tab-2"
+							aria-expanded="false">执行状态</a></li>
+						<li class=""><a data-toggle="tab" href="#edit-tab-3"
+							aria-expanded="false">操作日志</a></li>
+					</ul>
+				</div>
+                <div class="ibox-content">
+					<div id="frm" style="height: 546px;">
+						<iframe id="frminfo" src="flowstep.html" style="border: 0px; width: 100%; height: 100%;"></iframe>
+					</div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+var vm = new Vue({
+	el : '#app',
+	//data : {workflow:workflow},
+	methods : {
+		postWorkflow : function() {
+			var form = $("#oForm");
+			var validator = form.validate();
+			if (!validator.form()) {
+				return;
+			}
+			$("#saveBtn").attr('disabled', "true");
+			vpAjax(getWorkflowPath() +"/rest/workflow", form.serializeJSON(), "POST", function(result) {
+				vppage();
+			});
+			$("#saveBtn").removeAttr('disabled');
+		}
+	}
+});
+</script>
+
+

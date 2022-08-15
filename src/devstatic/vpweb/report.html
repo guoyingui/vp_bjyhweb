@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+</head>
+
+<body class="page-login layout-full">
+	<!-- 全局js -->
+    <script src="js/jquery-1.11.3.min.js"></script>
+	<!--[if IE 8]>
+	<script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
+	<![endif]-->
+	<script src="../vpcommon/config.js"></script>
+	<script src="../vpcommon/vputils.min.js"></script>
+	<script>
+		function getParameter(name) {
+			var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+			var r = window.location.search.substr(1).match(reg);
+			if (r != null) return unescape(r[2]); return null;
+		}
+		function getRealPath(url) {
+			var devflag = window.vp.config.URL.devflag;
+			var realUrl = "";
+			var urlType = "";
+			var config = window.vp.config;
+			var arr = url.split("/");
+			var type = arr[1].substring(1, arr[1].length - 1);
+			urlType = config.SETTING[type];
+			var endUrl = ''
+			for (var i = 2; i < arr.length; i++) {
+				endUrl += "/" + arr[i]
+			}
+			if (devflag) {       //开发模式
+				realUrl = config.URL.devMode.proxy[urlType];
+				realUrl = realUrl + endUrl;
+			} else {            //生产模式
+				var gatWayUrl = window.vp.config.URL.localHost;
+				realUrl = gatWayUrl + "/" + urlType + endUrl;
+			}
+			return realUrl;
+		}
+		var host = window.location.protocol + "//" + window.location.host + "/vpplatweb";
+		if (vp.cookie.getTkInfo().userid != undefined) {
+			var url = getRealPath("/{bjyh}/util/getRportName");
+			$.ajax({
+				type: "post",
+				url: url,
+				headers: {
+					Authorization: "Bearer " + window.vp.cookie.getToken(),
+					Locale: 'zh_CN'
+				},
+				data: {url: window.location.pathname + window.location.search.split("&_tk=")[0]},
+				async: false, //false代表只有在等待ajax执行完毕后才执行,默认是true
+				dataType: "json",
+				success: function(res){
+					window.location = rpthost + "/vpreport/showRpt.jsp?rpx=" + getParameter('rpx') 
+					+ "&userid=" + vp.cookie.getTkInfo().userid 
+					+ "&valmhost=" + host
+					+ "&reportname=" + res.data.sname
+					;
+				}
+			});
+		} else {
+			top.window.location = window.vp.config.SETTING.vpgatway + "/login";
+		}
+	</script>
+</body>
+
+</html>

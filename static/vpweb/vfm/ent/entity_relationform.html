@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>任务看板 - VP应用全生命周期管理系统</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
+    <link rel="shortcut icon" href="img/favicon.ico">
+    <link href="../../css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="../../css/font-awesome.min.css?v=4.7.0" rel="stylesheet">
+    <link href="../../css/animate.css" rel="stylesheet">
+    <link href="../../css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+    <link href="../../css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+    <link href="../../css/plugins/chosen/chosen.css" rel="stylesheet">
+    <!-- zTree树表 -->
+    <link href="../../css/plugins/zTree/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+    <!-- layUI表格 -->
+    <link rel="stylesheet" href="../../js/plugins/layui/css/layui.css"  media="all">
+    <link href="../../css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="../../css/common.css" rel="stylesheet">
+    <link href="../../css/vp.css" rel="stylesheet">
+    <script src="../../../vpcommon/config.js"></script>
+    <script src="../../../vpcommon/vputils.min.js"></script>
+    <!--[if lte IE 9]>
+        <script src="../../js/html5shiv.min.js"></script>
+        <script src="../../js/respond.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+	<div class="padding-10 space-10" style="top: 0px;">
+		<div class="ibox">
+			<div class="ibox-title border-bottom p-l-none" style="display: none;">
+				<h5>关系信息</h5>
+				<div class="ibox-tools">
+					<a class="collapse-link" data-toggle="tooltip" data-placement="top" title="收起">
+						
+					</a>
+				</div>
+			</div>
+			<div class="ibox-content1 p-n clearfix">
+				<div class="form-horizontal m-t" id="signupForm">
+					<div class="form-group">
+						<div class="col-sm-6">
+							<label class="col-sm-4 col-md-3 control-label text-ellipsis">主实体：</label>
+							<div class="col-sm-8 col-md-9">
+								<input id="imainentityname" name="imainentityname" class="form-control" type="text" disabled>
+							</div>
+						</div>
+						<div class="col-sm-6">
+							<label class="col-sm-4 col-md-3 control-label text-ellipsis">关联实体：</label>
+							<div class="col-sm-8 col-md-9">
+								<select id="irelationentity" name="irelationentity" class="chosen-select vp-width-100">
+								</select>
+							</div>
+						</div>
+					</div>		
+					<div class="form-group">
+					<div class="col-sm-6">
+							<label class="col-sm-4 col-md-3 control-label text-ellipsis">关系编码：</label>
+							<div class="col-sm-8 col-md-9">
+								<input id="scode" name="scode" class="form-control" type="text" maxlength="20">
+							</div>
+						</div>
+						<div class="col-sm-6">
+							<label class="col-sm-4 col-md-3 control-label text-ellipsis">关系名称：</label>
+							<div class="col-sm-8 col-md-9">
+								<input id="sname" name="sname" class="form-control" type="text" maxlength="80">
+							</div>
+						</div>						
+					</div>
+					
+					<div class="form-group">
+						
+						<div class="col-sm-6">
+							<label class="col-sm-4 col-md-3 control-label text-ellipsis">关系类型：</label>
+							<div class="col-sm-8 col-md-9">
+								<select id="irelationtype" name="irelationtype" class="chosen-select vp-width-100">
+									<!--<option value="0">1:N主子关系</option>
+									<option value="1" selected>1:N</option>-->
+									<option value="2">M:N</option>
+								</select>
+							</div>
+						</div>
+						<div class="col-sm-6">
+							<label class="col-sm-4 col-md-3 control-label text-ellipsis">是否启用：</label>
+							<div class="col-sm-8 col-md-9">
+								<div class="radio radio-info radio-inline">
+									<input type="radio" id="iflag1" value="0" name="iflag" checked="">
+									<label for="iflag1">启用</label>
+								</div>
+								<div class="radio radio-info radio-inline">
+									<input type="radio" id="iflag2" value="1" name="iflag">
+									<label for="iflag2">禁用</label>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<div class="col-sm-12">
+							<label class="col-sm-2 col-md-3 control-label text-ellipsis">实体状态：</label>
+							<div class="col-sm-10 col-md-9">
+								<div class="checkbox checkbox-info checkbox-inline">
+									<input type="checkbox" id="imainallow" value="1" name="imainallow">
+									<label for="imainallow">允许从主实体关联相关实体</label>
+								</div>
+								<div class="checkbox checkbox-info checkbox-inline">
+									<input type="checkbox" id="irelationallow" value="1" name="irelationallow">
+									<label for="irelationallow">允许从相关实体关联主实体</label>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>	
+			</div>
+			<div class="ibox-title border-bottom p-l-none">
+				<h5>主实体选项</h5>
+				<div class="ibox-tools">
+					<a class="collapse-link" data-toggle="tooltip" data-placement="top" title="收起"></a>
+				</div>
+			</div>
+			<div class="ibox-content2 p-n clearfix">
+			     <div class="form-horizontal m-t" id="signupForm">
+					<div class="form-group">
+						<div class="col-sm-6">
+							<label class="col-sm-4 col-md-3 control-label text-ellipsis">显示选项：</label>
+							<div class="col-sm-8 col-md-9">
+								<select id="imainshow" name="imainshow" class="chosen-select vp-width-100">
+									<option value="0">不显示</option>
+									<option value="1">显示</option>
+								</select>
+							</div>
+						</div>
+						<div class="col-sm-6">
+							<label class="col-sm-4 col-md-3 control-label text-ellipsis">显示名称：</label>
+							<div class="col-sm-8 col-md-9">
+								<input id="smainname" name="smainname" class="form-control" type="text" minlength="2" maxlength="20" type="text" required>
+							</div>
+						</div>
+					</div>	
+					<div class="form-group vpsimplclass">
+						<div class="col-sm-6">
+							<label class="col-sm-4 col-md-3 control-label text-ellipsis" title='格式为：field={value}'>条件定义：</label>
+							<div class="col-sm-8 col-md-9">
+								<input id="smcondition" name="smcondition" placeholder="格式为：field={value}" class="form-control" type="text" maxlength="280">
+							</div>
+						</div>
+						<div class="col-sm-6">
+							
+						</div>
+					</div> 
+				</div>	
+			</div>						
+			<div class="ibox-title border-bottom p-l-none">
+				<h5>关联实体选项</h5>
+				<div class="ibox-tools">
+					<a class="collapse-link" data-toggle="tooltip" data-placement="top" title="收起">
+						
+					</a>
+				</div>
+			</div>	
+			<div class="ibox-content3 p-n clearfix">
+				<div class="form-horizontal m-t" id="signupForm">
+					<div class="form-group">
+						<div class="col-sm-6">
+							<label class="col-sm-4 col-md-3 control-label text-ellipsis">显示选项：</label>
+							<div class="col-sm-8 col-md-9">
+								<select id="irelationshow" name="irelationshow" class="chosen-select vp-width-100">
+									<option value="0">不显示</option>
+									<option value="1">显示</option>
+								</select>
+							</div>
+						</div>
+						<div class="col-sm-6">
+							<label class="col-sm-4 col-md-3 control-label text-ellipsis">显示名称：</label>
+							<div class="col-sm-8 col-md-9">
+								<input id="srelationname" name="srelationname" class="form-control" type="text" minlength="2" maxlength="20" type="text" required>
+							</div>
+						</div>
+					</div>
+					<div class="form-group vpsimplclass">
+						<div class="col-sm-6">
+							<label class="col-sm-4 col-md-3 control-label text-ellipsis" title='格式为：field={value}'>条件定义：</label>
+							<div class="col-sm-8 col-md-9">
+								<input id="srcondition" name="srcondition" placeholder="格式为：field={value}" class="form-control" type="text" maxlength="280">
+							</div>
+						</div>
+						<div class="col-sm-6">
+							
+						</div>
+					</div> 
+				</div>			
+			</div>						
+		</div>
+	</div>
+</body>
+    <!-- 全局js -->
+    <script src="../../js/jquery-1.11.3.min.js"></script>
+	<!--[if IE 8]>
+	<script type="text/javascript" src="../../js/jquery-1.9.1.min.js"></script>
+	<![endif]-->
+    <script src="../../js/bootstrap.min.js?v=3.3.6"></script>
+    <!-- 自定义js -->
+    <script src="../../js/content.js?v=1.0.0"></script>
+    <!-- 日期控件 -->
+    <script src="../../js/plugins/datapicker/bootstrap-datepicker.js"></script>
+    <!-- layer弹出层 -->
+    <script src="../../js/plugins/layer/layer.min.js"></script>
+    <!-- 下拉选择列表 -->
+    <script src="../../js/plugins/chosen/chosen.jquery.js"></script>
+    <!-- jQuery 表单验证-->
+    <script src="../../js/plugins/validate/jquery.validate.min.js"></script>
+    <script src="../../js/plugins/validate/messages_zh.min.js"></script>
+    <!-- zTree模拟树表 -->
+    <script src="../../js/plugins/zTree/jquery.ztree.all.min.js"></script>
+    <script src="../../js/vpsoft/TreeTable.js"></script>
+    <script src="../../js/vpsoft/common.js"></script>
+    <script src="../../js/vpsoft/form.js"></script>
+    <script src="../../js/plugins/iCheck/icheck.min.js"></script>
+    <script src="../../js/vpsoft/getUrlParam.js"></script>    
+</html>
+<script>
+
+	$(document).ready(function () {
+		$('.i-checks').iCheck({
+			checkboxClass: 'text-primary fa fa-fw fa-square-o'
+		});
+		var sparam = { ientityid : UrlParm.parm("ientityid"), iid : UrlParm.parm("iid")};
+		vpPostAjax('/cfgentrelation/get', sparam, 'POST', function(rst) {
+			   
+			   if(rst.success){   
+				   //$("#imainentityname").val($("#irelationentity").find("option[text='"+rst.data.imainentity+"']").text());
+					var smanname = '';
+					//$("#irelationentity").append("<option value=''></option>");
+					if(rst.data.entitylist!=undefined){
+					    if(rst.data.entitylist.length>0){
+							$.each(rst.data.entitylist, function(i, item) {								
+								var sname=rst.data.entitylist[i].sname;
+								var iid=rst.data.entitylist[i].iid;
+								$("#irelationentity").append("<option value='"+iid+"'>"+sname+"</option>");
+								/*
+								if (UrlParm.parm("ientityid") == iid) {
+									smanname = sname;
+								}
+								else {
+									$("#irelationentity").append("<option value='"+iid+"'>"+sname+"</option>");
+								}
+								*/
+							});
+						}
+			   		}
+					
+					//$("#imainentityname").val(smanname);
+					$("#imainentityname").val($("#irelationentity").find("option[value='"+rst.data.imainentity+"']").text());
+					$("#irelationentity").find("option[value='"+rst.data.irelationentity+"']").attr("selected",true);
+					
+				   if(rst.data.sname!=undefined){
+			    		$('#irelationentity').attr('disabled','disabled');
+			    		$('#scode').attr('disabled','disabled');
+			    		var iflag=rst.data.iflag;
+			    		
+					   if(iflag==0){
+						   document.getElementById("iflag1").checked=true;
+					   }else{
+						   document.getElementById("iflag2").checked=true;
+					   }
+
+					   var irelationtype=rst.data.irelationtype;
+					   var imainshow=rst.data.imainshow;
+					   var irelationshow=rst.data.irelationshow;
+			
+						//document.getElementById("irelationtype").options[irelationtype].selected=true;
+						document.getElementById("imainshow").options[imainshow].selected=true;
+						document.getElementById("irelationshow").options[irelationshow].selected=true;
+						$('#irelationtype').attr('disabled','disabled');
+					   
+					   document.getElementById("sname").value=rst.data.sname;
+					   document.getElementById("scode").value=rst.data.scode;
+					   
+					   
+					   document.getElementById("smainname").value=rst.data.smainname;
+					   document.getElementById("srelationname").value=rst.data.srelationname;
+					   document.getElementById("smcondition").value=rst.data.smcondition;
+					   document.getElementById("srcondition").value=rst.data.srcondition;
+					   
+					   var imainallow=rst.data.imainallow;
+					   var irelationallow=rst.data.irelationallow;
+					   if(imainallow==1){
+			    		   document.getElementById("imainallow").checked=true;
+			    	   }else{
+			    		   document.getElementById("imainallow").checked=false;
+			    	   }
+					   if(irelationallow==1){
+			    		   document.getElementById("irelationallow").checked=true;
+			    	   }else{
+			    		   document.getElementById("irelationallow").checked=false;
+			    	   }
+			   		}
+
+				}else{
+					parent.layer.msg('查询失败，！'+rst.msg, { icon: 2, time: 2000 });
+				}
+		});
+		var config = {'.chosen-select': {} }
+		for (var selector in config) {
+	        $(selector).chosen(config[selector]);
+	    }
+		$('#irelationentity_chosen').find('.chosen-results').height('200px');
+		$('#irelationtype_chosen').find('.chosen-results').height('150px');
+		$('#imainshow_chosen').find('.chosen-results').height('150px');
+		$('#irelationshow_chosen').find('.chosen-results').height('150px');
+	});
+	
+	//筛选数据类型
+	$(document).on('click','.active-result',function(){
+	 	var index=$(this).attr("data-option-array-index");
+	 	var val = "";
+	 	if($(this).closest("#irelationentity_chosen").attr("id")=="irelationentity_chosen"){
+	 		val=$("#irelationentity>option:eq("+index+")").val();
+	 		$('#irelationentity').val(val);
+	 	} else if($(this).closest("#irelationtype_chosen").attr("id")=="irelationtype_chosen"){
+	 		val=$("#irelationtype>option:eq("+index+")").val();
+	 		$('#irelationtype').val(val);
+	 	} else if($(this).closest("#imainshow_chosen").attr("id")=="imainshow_chosen"){
+	 		val=$("#imainshow>option:eq("+index+")").val();
+	 		$('#imainshow').val(val);
+	 	} else if($(this).closest("#irelationshow_chosen").attr("id")=="irelationshow_chosen"){
+	 		val=$("#irelationshow>option:eq("+index+")").val();
+	 		$('#irelationshow').val(val);
+	 	}
+	 	val = "";
+	});
+
+	function saveViewInfo(){
+
+		if($("#sname").val()==""){
+			layer.msg('请填写关系名称！', { icon: 5, time: 2000 });
+			return false;
+		}
+		
+		if($("#scode").val()==""){
+			layer.msg('请填写关系编码！', { icon: 5, time: 2000 });
+			return false;
+		}
+
+		if(/^[A-Za-z]([0-9A-Za-z]*$)/g.test($("#scode").val())){
+	    } else { 
+			layer.msg('关系编码只能是以英文字母开头的英文字母或数字组成！', { icon: 5, time: 2000 });
+			return false;
+		}
+		if ($("#irelationtype").val() == 2) {
+			var isUnique = true;
+			vpPostAjax('/vfmcheck/isUnique', { code: 'cfg_entityrelation', iid: UrlParm.parm("iid"), data: [ 
+					{ field: 'scode', fieldvalue: document.getElementById("scode").value }
+					,{ field: 'irelationtype', fieldvalue: document.getElementById("irelationtype").value }
+					 ] }, 'POST', function(rst) {
+				isUnique = !rst;
+			});
+			if(!isUnique){
+				layer.msg("关系编码已经存在，请重新输入!", {icon: 5,time: 2000});
+				return false;
+			}
+		}
+
+		var dataObj=new Object();
+		
+		dataObj.iid=UrlParm.parm("iid");
+		dataObj.sname=$("#sname").val();
+		dataObj.scode=$("#scode").val();
+		dataObj.irelationentity=$("#irelationentity").val();
+		dataObj.iflag=getCheckValue("iflag");
+
+		dataObj.irelationtype=$("#irelationtype").val();
+		dataObj.imainallow=getCheckValue("imainallow");
+		dataObj.irelationallow=getCheckValue("irelationallow");
+		
+		dataObj.imainshow=$("#imainshow").val();
+		dataObj.smainname=$("#smainname").val();
+		dataObj.irelationshow=$("#irelationshow").val();
+		dataObj.srelationname=$("#srelationname").val();
+		dataObj.smcondition = $("#smcondition").val();
+		dataObj.srcondition = $("#srcondition").val();
+		console.log(dataObj);
+		var action='/cfgentrelation/update';
+		if(dataObj.iid==0){
+			action='/cfgentrelation/add';
+			dataObj.ientityid=UrlParm.parm("ientityid");
+		}
+
+	   vpPostAjax(action, dataObj, 'POST', function(rst) {
+		   if(rst.success){   
+			   if(rst.data==-100){
+				   parent.layer.msg('关系编码重复，请重新输入！', { icon: 5, time: 2000 });
+			   }else{
+				   parent.layer.msg('保存成功！', { icon: 1, time: 2000 });
+			   }			
+		}else{
+			parent.layer.msg('保存失败，！'+rst.msg, { icon: 2, time: 2000 });
+		}
+	   });
+	}
+	function getCheckValue(attrName) {
+		var v = 0;
+		var len = document.getElementsByName(attrName).length;
+		for ( var i = 0; i < len; i++) {
+			if (document.getElementsByName(attrName)[i].checked) {
+				v = document.getElementsByName(attrName)[i].value;
+			}
+
+		}
+		return v;
+	}
+	
+</script>

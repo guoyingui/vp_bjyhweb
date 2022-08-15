@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>任务看板 - VP应用全生命周期管理系统</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
+    <link rel="shortcut icon" href="img/favicon.ico">
+    <link href="../../css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="../../css/font-awesome.min.css?v=4.7.0" rel="stylesheet">
+    <link href="../../css/animate.css" rel="stylesheet">
+    <link href="../../css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+    <link href="../../css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+    <link href="../../css/plugins/zTree/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+	<link href="../../js/plugins/layui/css/layui.css" rel="stylesheet" media="all">
+    <!-- 自定义css -->
+    <link href="../../css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="../../css/common.css" rel="stylesheet">
+    <link href="../../css/vp.css" rel="stylesheet">
+    <script src="../../../vpcommon/config.js"></script>
+    <script src="../../../vpcommon/vputils.min.js"></script>
+
+    <!--[if lte IE 9]>
+        <script src="../../js/html5shiv.min.js"></script>
+        <script src="../../js/respond.js"></script>
+    <![endif]-->
+
+    <!--[if lte IE 9]>
+        <script src="../../js/html5shiv.min.js"></script>
+        <script src="../../js/respond.js"></script>
+    <![endif]-->
+	<style>
+		.ztree div.divTd {
+			min-width: 70px;
+		}
+		.nav-tabs li.active>a {
+			border: 0px;
+			color: #1890ff;
+		}
+		#vppagebar {
+			border-top: 0px;
+		}
+
+	</style>
+</head>
+
+<body class="gray-bg">
+    <div class="sub-navigator clearfix">
+        <div class="col-sm-2 sub-head" id="vpsearch">           
+        </div>
+        <div class="col-sm-4 subnav">
+            <div data-toggle="buttons" class="btn-group" id="vpfilter">
+                
+            </div>
+        </div>
+        <div class="col-sm-3 subnav">
+            <!-- 放其他栏目或工具按钮 -->
+        </div>
+        <div class="col-sm-3 subnav tabs-container">
+            <ul class="toolicon clearfix" id="vptoolbar">
+                
+            </ul>
+        </div>
+    </div>
+    <div class="padding-10" id="vpcontainer" style="padding-top:45px; ">
+        <div class="clearfix white-bg padding-10 animated fadeInRight vp-pr">
+            <div class="vp-overflow-x vpcontent">
+                <ul id="vptreetable" class="ztree" lay-filter="vpclick"></ul>
+				<script type="text/html" id="vpbar">
+					{{# if(d.ipubstatus=="未发布"){ }}
+                        <a lay-event="download"><i class="fa fa-download text-success" data-toggle="tooltip" title="导出"></i></a>
+					{{#}else{ }}
+						<a lay-event="download" ><i class="fa fa-download text-success" data-toggle="tooltip" title="导出"></i></a>
+					{{# }}}
+				</script>
+            </div>
+			<div class="layui-table-page" id="vppagebar">
+			  
+			</div>
+        </div> 
+    </div>
+<div class="vp-pr vp-height-35 m-b-sm" style="display:none" ><a id="test" class="btn btn-white"><i class="fa fa-cloud-upload" aria-hidden="true"></i>添加附件</a></div> 
+<iframe id="dowloadFrame" style="width: 0px; height: 0px;"></iframe>
+	<!-- drawer 侧滑DIV -->
+    <div class="hide drawer-fixed vp-studio vp-t" style="margin-top: 40px;" id="vpeditform">
+        
+    </div>
+
+    <!-- 全局js -->
+    <script src="../../js/jquery-1.11.3.min.js"></script>
+	<!--[if IE 8]>
+	<script type="text/javascript" src="../../js/jquery-1.9.1.min.js"></script>
+	<![endif]-->
+    <script src="../../js/bootstrap.min.js?v=3.3.6"></script>
+    <!-- 自定义js -->
+    <script src="../../js/content.js?v=1.0.0"></script>
+    <!-- 日期控件 -->
+    <script src="../../js/plugins/datapicker/bootstrap-datepicker.js"></script>
+    <!-- layer弹出层 -->
+    <script src="../../js/plugins/layer/layer.min.js"></script>
+    <script src="../../js/plugins/layui/layui.js"></script>
+    <!-- 下拉选择列表 -->
+    <script src="../../js/plugins/chosen/chosen.jquery.js"></script>
+    <!-- zTree模拟树表 -->
+    <script src="../../js/plugins/zTree/jquery.ztree.all.min.js"></script>
+    <script src="../../js/vpsoft/TreeTable.js"></script>
+    <script src="../../js/vpsoft/common.js"></script>
+    <script src="../../js/vpsoft/form.js"></script>
+    <script src="../../js/plugins/iCheck/icheck.min.js"></script>
+
+
+	<!--选择用户-->
+	<script src="../../js/vpsoft/chosenEntity.js?v=1.0.0" charset="utf-8"></script>
+	<style>
+		.layui-table-view{ overflow-x: scroll;  }
+	</style>
+</body>
+<script>
+var iparamtype = "0";
+var senv = "";
+
+var osearch = Search({ el: 'vpsearch', id: 'quicksearch' });
+osearch.parseEl();
+
+var ofilter = Filter({ el: 'vpfilter', data: [ { value: '0', text: '系统类', iscurrent: true }, 
+			{ value: '3', text: '定制类' },
+			//{ value: '3', text: '禁用' },
+			{ value: '', text: '全部' } 
+	] });
+ofilter.parseEl();
+
+var olisttool = ListTool({ el: 'vptoolbar', primary:'vpadd', data: [ 
+			{ id: 'vpadd', faclass: 'fa-plus', title: '新建' }
+	] });
+
+vpAjax('/api/all/isproentity', { }, "GET", function(rst) {
+	if (rst) {
+		olisttool.parseEl();
+	}
+});
+
+vpAjax('/api/all/env', { }, "GET", function(rst) {
+	senv = rst;
+});
+
+var olisttable = ListTable({ el: 'vptreetable', vpurl: '/cfgent/page', checkbox: true, toolbar: true, toolbarevent: 'doTestFunc',toolbarwidth:90,
+		param:  { filtervalue: $("#vpfilter").find(".active").attr("value"), itype: iparamtype }
+	});
+olisttable.parseEl();
+var ientityid=0;
+var oformview = FormView({ el: 'vpeditform', title: '实体->xxx对象', data:  [ 
+			{ text: '实体', url: 'entity_import.html' },
+			{ text: '属性', url: 'entity_attribute.html' },
+			{ text: '列表', url: 'entity_view.html?iviewtype=0' },
+			{ text: '表单', url: 'entity_view.html?iviewtype=3' },
+			{ text: '过滤器', url: 'entity_view.html?iviewtype=4' },
+			{ text: '状态', url: 'entity_status.html' },
+			{ text: '类别', url: 'entity_type.html' },
+			{ text: '关系', url: 'entity_relation.html' },
+			{ text: '流程', url: 'entity_vari.html' },
+			{ text: '角色', url: 'entity_role.html' },
+			{ text: '模板', url: 'entity_view.html?iviewtype=5,6' },
+
+			{ text: '子表属性', url: 'entity_subattribute.html?iviewtype=7' },
+			{ text: '子表表单', url: 'entity_subview.html?iviewtype=7' }
+	]});
+
+
+function doTestFunc(obj) {
+	var data = obj.data; 
+	var layEvent = obj.event; 
+
+	if (layEvent == 'btnpub') {
+		var param = {iid:data.iid};
+		   vpPostAjax('/cfgent/publish', param, 'POST', function(rst) {
+			   if(rst.success){  
+					//parent.layer.close(index);
+					olisttable.parseEl();
+					//$(".tooltip.fade.top.in").remove();
+				}
+		   });
+	}
+	else if (layEvent == 'btnunpub') {
+		var param = {iid:data.iid};
+		   vpPostAjax('/cfgent/unpublish', param, 'POST', function(rst) {
+			   if(rst.success){  
+					olisttable.parseEl();
+				}
+		   });
+	}	else if (layEvent == 'download') {
+		var param = {ientityid:data.iid};
+		var obj = document.getElementById("dowloadFrame");
+
+		obj.src =getUploadPath()+"/vfrm/cfgent/exportfile?access_token="+token+"&ientityid="+data.iid+"&ifromtype=1";
+	} else if(layEvent == 'upload'){
+	
+		$("#test").attr("entityid",data.iid);
+		
+		
+		$("#test").trigger("click");
+
+	}else {
+		$('#vpeditform').attr("fromtype", "entinit");
+		formview(data);
+	}
+}
+
+$("#vpadd").click(function(){
+	$('#vpeditform').attr("fromtype", "entinit");
+	formview();
+});
+
+/*
+layui.use('upload', function(){
+	  var upload = layui.upload;
+	  //执行实例
+	  upload.render({
+	    elem:'.btn-white' //绑定元素
+	    ,url:getUploadPath()+'/vfrm/cfgent/importfile'//上传接口
+	    ,accept: 'file'
+	    ,before: function(obj){ 
+	    		this.data={'ientityid':$("#test").attr("entityid")};
+	    } 
+	    ,done: function(res){
+	      //上传完毕回调
+	    	console.log(res);
+	    	
+	    }});
+});	  
+*/
+</script>
+</html>

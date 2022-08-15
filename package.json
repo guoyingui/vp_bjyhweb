@@ -1,0 +1,23 @@
+{
+  "name": "vpui-bjyh",
+  "version": "2.0.6",
+  "description": "2019-07-03",
+  "main": "index.js",
+  "scripts": {
+    "macpublish": "export MODE=copy && node inserthtml.js && node generate.js && export NODE_ENV=production && node --max_old_space_size=4096 node_modules/webpack/bin/webpack.js --config webpack.pro.config.js&&node insertjson.js",
+    "macbuild": "node inserthtml.js && node generate.js && export NODE_ENV=production && node --max_old_space_size=4096 node_modules/webpack/bin/webpack.js --config webpack.pro.config.js&&node insertjson.js",
+    "macstart": "export MODE=development && node inserthtml.js --$MODE && node generate.js && node node_modules/webpack-dev-server/bin/webpack-dev-server.js --config webpack.dev.config.js",
+    "publish": "set MODE=copy && node inserthtml.js && node generate.js && set NODE_ENV=production && node --max_old_space_size=4096 node_modules/webpack/bin/webpack.js --config webpack.pro.config.js&&node insertjson.js",
+    "build": "node inserthtml.js && node generate.js && set NODE_ENV=production && node --max_old_space_size=4096 node_modules/webpack/bin/webpack.js --config webpack.pro.config.js&&node insertjson.js",
+    "start": "set MODE=development && node inserthtml.js --$MODE && node generate.js && node node_modules/webpack-dev-server/bin/webpack-dev-server.js --config webpack.dev.config.js"
+  },
+  "author": "jiangsw,tick",
+  "license": "ISC",
+  "dependencies": {
+    "@antv/g6": "^3.2.7",
+    "@antv/g6-plugins": "^1.0.9",
+    "vpbusiness": "^2.0.8",
+    "vplat": "^2.0.7",
+    "vpreact": "^2.0.7"
+  }
+}

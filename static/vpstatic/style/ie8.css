@@ -1,0 +1,75 @@
+#app .ant-tree li span.ant-tree-switcher.ant-tree-roots_open:after,
+#app .ant-tree li span.ant-tree-switcher.ant-tree-center_open:after,
+#app .ant-tree li span.ant-tree-switcher.ant-tree-bottom_open:after,
+#app .ant-tree li span.ant-tree-switcher.ant-tree-noline_open:after,
+#app .ant-tree li span.ant-tree-switcher.ant-tree-roots_close:after,
+#app .ant-tree li span.ant-tree-switcher.ant-tree-center_close:after,
+#app .ant-tree li span.ant-tree-switcher.ant-tree-bottom_close:after,
+#app .ant-tree li span.ant-tree-switcher.ant-tree-noline_close:after{
+        font-size: 12px !important;
+}
+.ant-checkbox-checked .ant-checkbox-inner:after {
+    -ms-transform: rotate(45deg);
+    /* IE 9 */
+    -moz-transform: rotate(45deg);
+    /* Firefox */
+    -webkit-transform: rotate(45deg);
+    /* Safari 和 Chrome */
+    -o-transform: rotate(45deg);
+    /* Opera */
+}
+
+#v-ie .ant-dropdown {
+    right: 0;
+    top: 32px !important;
+    left: inherit !important;
+    box-shadow: 0 0px 2px rgba(0, 21, 41, .2);
+    border: 1px solid #eee \0;
+}
+
+.v-input-group .ant-input-wrapper {
+    display: table-cell;
+}
+
+.v-input-group .ant-input-wrapper .v-pr {
+    display: table;
+    width: 100%;
+    line-height: 26px;
+}
+
+.v-pr .placeholder{
+	position:absolute;
+	z-index:10;
+}
+
+/* 
+* 处理 ie 下表格固定列无法滚动的样式
+*/
+.ant-collapse>.ant-collapse-item>.ant-collapse-header .arrow {
+    line-height: 1 !important;
+}
+.ant-table-content .ant-table-fixed-left .ant-table-body-outer,
+.ant-table-content .ant-table-fixed-right .ant-table-body-outer {
+    margin-bottom: 0 !important;
+}
+.ant-table-content:hover .ant-table-fixed-left .ant-table-body-outer {
+    overflow-x: auto !important;
+}
+/*
+* 处理 ie 下 echarts 图标的 z-index 高于模态框的问题
+*/
+.zrvml {
+    z-index: 1000 !important;
+}
+/*
+* 处理创建工作室角色列表的样式
+*/
+.business-container .ant-transfer-operation {
+    margin: 0 5px;
+}
+/*
+* 处理ie下搜索框显示太长
+*/
+.ant-search-input-wrapper {
+    width: 100%;
+}

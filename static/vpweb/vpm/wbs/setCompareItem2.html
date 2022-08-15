@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WBS甘特图设置比较项</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
+    <link rel="shortcut icon" href="img/favicon.ico">
+    <link href="../../css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="../../css/font-awesome.min.css?v=4.7.0" rel="stylesheet">
+    <link href="../../css/animate.css" rel="stylesheet">
+    <link href="../../css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+    <link href="../../css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+    <link href="../../css/plugins/zTree/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+	<link href="../../css/plugins/chosen/chosen.css" rel="stylesheet">
+    <link href="../../css/plugins/iCheck/custom.css" rel="stylesheet">
+    <link href="../../js/plugins/layui/css/layui.css"  rel="stylesheet" media="all">
+    <!-- 自定义css -->
+    <link href="../../css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="../../css/common.css" rel="stylesheet">
+    <link href="../../css/vp.css" rel="stylesheet">
+
+    <!--[if lte IE 9]>
+        <script src="../../js/html5shiv.min.js"></script>
+        <script src="../../js/respond.js"></script>
+    <![endif]-->
+
+    <!--[if lte IE 9]>
+        <script src="../../js/html5shiv.min.js"></script>
+        <script src="../../js/respond.js"></script>
+    <![endif]-->
+	<style>
+		.ztree div.divTd {
+			min-width: 70px;
+		}
+		.nav-tabs li.active>a {
+			border: 0px;
+			color: #1890ff;
+		}
+		#vppagebar {
+			border-top: 0px;
+		}
+
+	</style>
+</head>
+
+<body class="wight-bg">
+    <div class="sub-navigator clearfix" style="height:408px;">
+        <div class="col-sm-4 sub-head">
+            <label class="col-sm-4 col-md-3 control-label text-ellipsis" style="padding-top: 3px;">比较项：</label>
+			<div class="col-sm-8 col-md-9">
+                <select id="item1" class="chosen-select vp-width-100" tabindex="2">
+                     <option value="0,0" hassubinfo="true" selected>当前-预测</option>
+                     <option value="1,0" hassubinfo="true" >当前-计划</option>
+                     <option value="2,0" hassubinfo="true" >当前-实际</option>
+                </select>
+	        </div>
+        </div>
+        
+        <div class="col-sm-4 sub-head ">
+            <label class="col-sm-4 col-md-3 control-label text-ellipsis" style="padding-top: 3px;">被比较项：</label>
+			<div class="col-sm-8 col-md-9">
+                <select id="item2" class="chosen-select vp-width-100" tabindex="2">
+                     <option value="0,0" hassubinfo="true" >当前-预测</option>
+                     <option value="1,0" hassubinfo="true" selected>当前-计划</option>
+                     <option value="2,0" hassubinfo="true" >当前-实际</option>
+                </select>
+	        </div>
+        </div>
+    </div>
+    
+    <!-- 全局js -->
+    <script src="../../js/jquery-1.11.3.min.js"></script>
+    <script src="../../../vpcommon/config.js"></script>
+    <script src="../../../vpcommon/vputils.min.js"></script>
+	<!--[if IE 8]>
+	<script type="text/javascript" src="../../js/jquery-1.9.1.min.js"></script>
+	<![endif]-->
+    <script src="../../js/bootstrap.min.js?v=3.3.6"></script>
+    <!-- 自定义js -->
+    <script src="../../js/content.js?v=1.0.0"></script>
+    <!-- 日期控件 -->
+    <script src="../../js/plugins/datapicker/bootstrap-datepicker.js"></script>
+    <!-- layer弹出层 -->
+    <script src="../../js/plugins/layer/layer.min.js"></script>
+    <script src="../../js/plugins/layui/layui.js"></script>
+    <!-- 下拉选择列表 -->
+    <script src="../../js/plugins/chosen/chosen.jquery.js"></script>
+    <!-- zTree模拟树表 -->
+    <script src="../../js/plugins/zTree/jquery.ztree.all.min.js"></script>
+    <script src="../../js/vpsoft/TreeTable.js"></script>
+    <!-- <script src="../../vpm/js/common.js"></script> -->
+    <script src="../../js/vpsoft/common.js"></script>
+    <script src="../../js/vpsoft/form.js"></script>
+    <script src="../../js/plugins/iCheck/icheck.min.js"></script>
+</body>
+<script>
+var parentUrlParams = location.search; //获取url中含"?"符后的字串
+var urlParams = getRequestParams();
+var projectId = urlParams.projectId;
+var relentityid = urlParams.relentityid;
+
+//获取请求参数
+function getRequestParams() {
+	var url = location.search; //获取url中含"?"符后的字串
+	var theRequest = new Object();
+	if (url.indexOf("?") != -1) {
+		var str = url.substr(1);
+		strs = str.split("&");
+		for (var i = 0; i < strs.length; i++) {
+			theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+		}
+	}
+	return theRequest;
+}
+
+
+var config = {'.chosen-select': {} }
+
+vpPostAjax(getVpmPath() + '/vpmwbs/loadCompareGanttBases', {entityid: relentityid, projectid: projectId}, 'POST', function(rst) {
+	if(rst.success){
+		var html = '';
+		var list = rst.data;
+		$.each(list, function(i, item) {
+			html+= '<option value="'+item.iid+'" hassubinfo="true">'+item.sname+'</option>';
+		});
+		$('#item1').append(html);
+		$('#item2').append(html);
+	}else{
+		layer.msg("加载比较项下拉框数据异常", {icon: 2,time: 2000});
+	}
+});
+
+for (var selector in config) {
+    $(selector).chosen(config[selector]);
+}
+
+$('#item1_chosen').find('.chosen-results').height('138px');
+$('#item2_chosen').find('.chosen-results').height('138px');
+
+var compareFrom = "0,0";
+var compareTo = "1,0";
+var compareFromText = "当前-预测";
+var compareToText = "当前-计划";
+
+//筛选数据类型
+$(document).on('click','.active-result',function(){
+ 	var index=$(this).attr("data-option-array-index");
+ 	if($(this).closest("#item1_chosen").attr("id")=="item1_chosen"){
+ 		compareFrom=$("#item1>option:eq("+index+")").val();
+ 		compareFromText=$("#item1>option:eq("+index+")").text();
+ 	}
+ 	
+ 	if($(this).closest("#item2_chosen").attr("id")=="item2_chosen"){
+ 		compareTo=$("#item2>option:eq("+index+")").val();
+ 		compareToText=$("#item2>option:eq("+index+")").text();
+ 	}
+});
+
+function getData(){
+	var  resobj = new Object();
+	resobj.compareFrom = compareFrom;
+	resobj.compareTo = compareTo;
+	resobj.compareFromText = compareFromText;
+	resobj.compareToText = compareToText;
+	return resobj;
+}
+</script>
+</html>

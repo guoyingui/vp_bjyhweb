@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>定时器任务列表  - VLM</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
+    <link rel="shortcut icon" href="img/favicon.ico">
+    <link href="../../css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="../../css/font-awesome.min.css?v=4.7.0" rel="stylesheet">
+    <link href="../../css/animate.css" rel="stylesheet">
+    <link href="../../css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+    <link href="../../css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+    <link href="../../css/plugins/zTree/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+	<link href="../../js/plugins/layui/css/layui.css" rel="stylesheet" media="all">
+    <!-- 自定义css -->
+    <link href="../../css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="../../css/common.css" rel="stylesheet">
+    <link href="../../css/vp.css" rel="stylesheet">
+    <script src="../../../vpcommon/config.js"></script>
+    <script src="../../../vpcommon/vputils.min.js"></script>
+	
+    <!--[if lte IE 9]>
+    <script src="../../js/html5shiv.min.js"></script>
+    <script src="../../js/respond.js"></script>
+    <![endif]-->
+	<style>
+		.ztree div.divTd {
+			min-width: 70px;
+		}
+		.nav-tabs li.active>a {
+			border: 0px;
+			color: #1890ff;
+		}
+
+	</style>
+</head>
+<body class="gray-bg">
+    <div class="sub-navigator clearfix">
+        <div class="col-sm-2 sub-head" id="vpsearch">           
+        </div>
+        <div class="col-sm-4 subnav">
+            <div data-toggle="buttons" class="btn-group" id="vpfilter">
+                
+            </div>
+        </div>
+        <div class="col-sm-3 subnav">
+            <!-- 放其他栏目或工具按钮 -->
+        </div>
+        <div class="col-sm-3 subnav tabs-container">
+            <ul class="toolicon clearfix" id="vptoolbar">
+                
+            </ul>
+        </div>
+    </div>
+    <div class="padding-10" id="vpcontainer" style="padding-top:45px; ">
+        <div class="clearfix white-bg padding-10 animated fadeInRight vp-pr">
+            <div class="vp-overflow-x vpcontent">
+                <ul id="vptreetable" class="ztree" lay-filter="vpclick"></ul>
+				<script type="text/html" id="vpbar">
+                    {{# if(d.istatus==1){ }}
+                    {{# if(window.sysaccess == 1){ }}
+						<a lay-event="del"><i class="fa fa-times fa-fw text-danger" data-toggle="tooltip" title="删除"></i></a>
+                    {{# } }}
+                    {{# }else{ }}
+						
+					{{# } }}
+				</script>
+            </div>
+			<div class="layui-table-page" id="vppagebar">
+			  
+			</div>
+        </div> 
+    </div>
+
+	<!-- drawer 侧滑DIV -->
+    <div class="hide drawer-fixed vp-studio vp-t" style="margin-top: 40px;" id="vpeditform">
+        
+    </div>
+	
+    <!-- 全局js -->
+    <script src="../../js/jquery-1.11.3.min.js"></script>
+	<!--[if IE 8]>
+	<script type="text/javascript" src="../../js/jquery-1.9.1.min.js"></script>
+	<![endif]-->
+    <script src="../../js/bootstrap.min.js?v=3.3.6"></script>
+    <!-- 自定义js -->
+    <script src="../../js/content.js?v=1.0.0"></script>
+    <!-- 日期控件 -->
+    <script src="../../js/plugins/datapicker/bootstrap-datepicker.js"></script>
+    <!-- layer弹出层 -->
+    <script src="../../js/plugins/layer/layer.min.js"></script>
+    <script src="../../js/plugins/layui/layui.js"></script>
+    <!-- 下拉选择列表 -->
+    <script src="../../js/plugins/chosen/chosen.jquery.js"></script>
+    <!-- zTree模拟树表 -->
+    <script src="../../js/plugins/zTree/jquery.ztree.all.min.js"></script>
+    <script src="../../js/plugins/validate/jquery.validate.min.js"></script>
+    <script src="../../js/vpsoft/TreeTable.js"></script>
+    <script src="../../js/vpsoft/common.js"></script>
+    <script src="../../js/vpsoft/form.js"></script>
+    <script src="../../js/plugins/iCheck/icheck.min.js"></script>
+	<!-- <script src="../../js/vue.js"></script> -->
+</body>
+<script>
+var iid_ = 0;
+var parentid_ = 0;
+systemRole();
+var olisttool = ListTool({ el: 'vptoolbar', primary:'vpadd', data: [
+		{ id: 'vpadd', faclass: 'fa-plus', title: '新建' }
+	] });
+olisttool.parseEl();
+
+var olisttable = ListTable({ el: 'vptreetable', vpurl: '/schedule/task/page', checkbox: true, toolbar: true, toolbarwidth: 60, toolbarevent: 'viewDoEdit',
+	    param:  { filtervalue: $("#vpfilter").find(".active").attr("value") }
+	});
+olisttable.parseEl();
+var oformview = FormView({ el: 'vpeditform', title: '任务 ->', data:  [ 
+	{ text: '任务', url: 'taskform.html', toolbar: window.sysaccess == 1?true:false }
+]});
+function viewDoEdit(obj){
+	var data = obj.data; 
+	var layEvent = obj.event; 
+	if(layEvent == 'del'){
+        var param = {ids: data.iid};
+        vpPostAjax('/schedule/task/delete', param, 'POST', function(rst) {
+		    if(rst.success){
+                layer.msg('删除成功！', { icon: 1, time: 2000 });
+                $('.tooltip').remove()
+				olisttable.parseEl();
+			}else{
+                $('.tooltip').remove()
+				layer.msg(rst.msg, { icon: 2, time: 2000 });
+			}
+	    });
+	}else{
+	    formview(data);
+	}
+}
+
+$("#vpadd").click(function(){
+    formview();
+    $('.tooltip').remove()
+});
+function systemRole () {
+	let sparam = {saccesskey:"system"}
+	vpAjax('/api/pur/point', sparam, 'GET', function(rst) {
+		window.sysaccess = rst.system//全局存在系统操作权限码
+		if(rst.system != 1){
+            try {
+                $("#vptoolbar").css("display","none");
+            } catch (error) {
+                
+            }
+		}
+	});
+}
+</script>
+</html>

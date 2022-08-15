@@ -1,0 +1,215 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <title>鼠标拾取地图坐标</title>
+    <link rel="stylesheet" href="http://cache.amap.com/lbs/static/main1119.css"/>
+    <script type="text/javascript"
+            src="http://webapi.amap.com/maps?v=1.4.4&key=410978ce38d48291aec8d7a1e73ae91f&plugin=AMap.Autocomplete,AMap.PlaceSearch,AMap.Geocoder"></script>
+    <script type="text/javascript" src="http://cache.amap.com/lbs/static/addToolbar.js"></script>
+
+    <script src="../../js/jquery-1.11.3.min.js"></script>
+    <script src="../../js/vpsoft/common.js"></script>
+</head>
+<style>
+#myPageTop {
+	position: absolute;
+	top: 5px;
+	right: 25%;
+	background: #fff none repeat scroll 0 0;
+	border: 1px solid #ccc;
+	margin: 10px auto;
+	padding:6px;
+	font-family: "Microsoft Yahei", "Î¢ÈíÑÅºÚ", "Pinghei";
+	font-size: 14px;
+}
+#myForm {
+	position: absolute;
+	top: 5px;
+	left: 77%;
+	
+	background: #fff none repeat scroll 0 0;
+	border: 1px solid #ccc;
+	margin: 10px auto;
+	padding:6px;
+	font-family: "Microsoft Yahei", "Î¢ÈíÑÅºÚ", "Pinghei";
+	font-size: 14px;
+}
+#tip {
+    background-color: #fff;
+    padding-left: 10px;
+    padding-right: 10px;
+    position: absolute;
+    font-size: 12px;
+    right: 40%;
+    top: 90px;
+    border-radius: 3px;
+    border: 1px solid #ccc;
+    line-height: 30px;
+}
+</style>
+<body>
+<div id="container" style="width:75%"></div>
+<div id="myPageTop">
+    <table>
+        <tr>
+            <td>
+                <label>按关键字搜索：</label>
+            </td>
+            <td class="column2">
+                <label>左击获取经纬度：</label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <input type="text" placeholder="请输入关键字进行搜索" id="tipinput">
+            </td>
+            <td class="column2">
+                <input type="text" readonly="true" id="lnglat">
+            </td>
+        </tr>
+    </table>
+</div>
+<div id="myForm">
+    <table>
+        <tr>
+            <td>
+                <label>考勤地点：</label>
+            </td>
+            <td>
+                <input type="text"  id="kqdd">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>考勤地点详情：</label>
+            </td>
+            <td class="column2">
+                <input type="text" readonly="true" id="kqddxq" readonly>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>考勤地点经纬度：</label>
+            </td>
+            <td class="column2">
+                <input type="text" readonly="true" id="kqjw" readonly>
+            </td>
+        </tr>
+         <tr align="center">
+            <td colspan="2" >
+                <input type="button" value="提 交" onclick="onSubmit(1)">&nbsp;&nbsp;
+                <input type="button" value="重 置" onclick="onSubmit(0)">
+            </td>
+        </tr>
+    </table>
+</div>
+<div id="tip">
+    <b id="aa"></b>
+    <span id="result"></span>
+</div>
+<script type="text/javascript">
+   // alert( getParameter("iid"));
+    var marker, map = new AMap.Map("container", {
+        resizeEnable: true
+    });
+     
+    //为地图注册click事件获取鼠标点击出的经纬度坐标
+    var clickEventListener = map.on('click', function(e) {
+        document.getElementById("lnglat").value = e.lnglat.getLng() + ',' + e.lnglat.getLat();
+        document.getElementById("kqjw").value = e.lnglat.getLng() + ',' + e.lnglat.getLat();
+        addMaker(e.lnglat.getLng(),e.lnglat.getLat());
+        regeocoder(e.lnglat.getLng(),e.lnglat.getLat());
+       
+    });
+    AMap.plugin(['AMap.Autocomplete'], function() {
+    var auto = new AMap.Autocomplete({
+    	city:"",
+        input: "tipinput"
+    });
+    AMap.event.addListener(auto, "select", select);//注册监听，当选中某条记录时会触发
+    function select(e) {
+        if (e.poi && e.poi.location) {
+            map.setZoom(15);
+            map.setCenter(e.poi.location);
+            addMaker(e.poi.location.getLng(),e.poi.location.getLat());
+            regeocoder(e.poi.location.getLng(),e.poi.location.getLat());
+            document.getElementById("lnglat").value = e.poi.location.getLng() + ',' + e.poi.location.getLat();
+            document.getElementById("kqjw").value = e.poi.location.getLng() + ',' + e.poi.location.getLat();
+           
+        }
+    }
+    });
+    // 增加标记
+	function addMaker(jd,wd){
+			// 删除已有标记
+			 if (marker) {
+	            marker.setMap(null);
+	            marker = null;
+	        }
+			 marker = new AMap.Marker({
+			 map: map,
+	         icon: "http://webapi.amap.com/theme/v1.3/markers/n/mark_r.png",
+	         position: [jd,wd]
+	    });
+	    marker.setMap(map);
+	}
+	//逆地理编码
+	function regeocoder(jd,wd) {  
+        var geocoder = new AMap.Geocoder({
+            radius: 100,
+            extensions: "all"
+        });        
+        geocoder.getAddress([jd,wd], function(status, result) {
+            if (status === 'complete' && result.info === 'OK') {
+                geocoder_CallBack(result,jd,wd);
+            }
+        });        
+        map.setFitView();
+    }
+    
+     function geocoder_CallBack(data,jd,wd) {console.log(data.regeocode);
+     	// alert(data.regeocode.addressComponent["neighborhood"]);
+        var address = data.regeocode.formattedAddress; //返回地址描述
+        document.getElementById("aa").innerHTML = "经纬度"+jd+","+wd+" 的地理编码结果:"
+        document.getElementById("result").innerHTML = address;
+        document.getElementById("kqddxq").value = address;
+    }
+    var iparentid = getParameter("iparentid");// 记录id
+    var iitemid = getParameter("iitemid");// 对象id
+  
+    try{
+        
+    	$('#kqdd').val(decodeURIComponent(getParameter("kqdd"))=='null'?'':decodeURIComponent(getParameter("kqdd")));
+    	$('#kqddxq').val(decodeURIComponent(getParameter("kqddxq"))=='null'?'':decodeURIComponent(getParameter("kqddxq")));
+    	$('#kqjw').val(getParameter("kqjw"));
+    }catch(e){}
+    function onSubmit(type){
+    	if(0==type){
+    		$('#kqdd').val('');
+    		$('#kqddxq').val('');
+    		$('#kqjw').val('');
+    		return;
+    	}
+    	var kqdd = $('#kqdd').val();
+    	var kqddxq = $('#kqddxq').val();
+    	var kqjw = $('#kqjw').val();
+    	if(null==kqdd||''==kqdd){
+    		// alert('请输入考勤地点');
+    		$('#kqdd').focus();
+    		return;
+        }
+       
+        //var param = {id:id,iid:iid,type:stype,kqdd:encodeURIComponent(kqdd),kqddxq:encodeURIComponent(kqddxq),kqjw:kqjw};
+        var param = {iparentid:iparentid,iitemid:iitemid,skqdd:kqdd,skqddxq:kqddxq,skqjw:kqjw};
+    	if(parent.window.dailylist){ 
+            parent.window.dailylist.updateData(param);
+        }
+    }
+   
+   //  window.opener.document.getElementById("xid").value='aaaa';
+</script>
+</body>
+</html>

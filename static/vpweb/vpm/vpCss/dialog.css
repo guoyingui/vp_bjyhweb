@@ -1,0 +1,15 @@
+/* layer dialog css */
+#shadeLayer{z-index:999;position:absolute;background-color:#000000;filter:alpha(opacity=25);-moz-opacity:0.25;opacity:0.25;}
+#LayerContainer{z-index:1000;position:absolute;}
+#titleDiv{float:left;width:100%;height:30px;cursor: default/*move*/;}
+#titleSpan{float:left;color:black;font-weight:bold;padding-top:7px;padding-left:5px;}
+#titleClose{float:right;color:black;padding-top:7px;padding-right:5px;cursor:pointer;}
+#mainDiv{width:100%;background:#eee;border:0px #9298a4 solid;}
+#boxDiv{width:100%;height:435px;margin:0px;border:0px #b5b5b5 solid;background:#fff;clear:left;}
+#grayLine{height:1px;background:#949aa6;font-size:0;overflow:hidden;margin:0px 0px 0 0px;clear:left;}
+#whiteLine{height:1px;background:#fff;font-size:0;margin:0 5px 0 5px;overflow:hidden;}
+#yesnoDiv{height:20px;text-align:right;padding-right:5px;margin-top:5px;}
+.titleImg {
+  position: relative; margin-right: 2px; margin-left: 2px; vertical-align: middle; height: 22px;
+}
+#objTitleDiv{float:left;width:100%;height:60px;cursor: default/*move*/;}

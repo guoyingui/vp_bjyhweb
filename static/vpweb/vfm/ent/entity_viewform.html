@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>任务看板 - VP应用全生命周期管理系统</title>
+<meta name="keywords" content="">
+<meta name="description" content="">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Cache-control" content="no-cache">
+<meta http-equiv="Cache" content="no-cache">
+<link rel="shortcut icon" href="img/favicon.ico">
+<link href="../../css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+<link href="../../css/font-awesome.min.css?v=4.7.0" rel="stylesheet">
+<link href="../../css/animate.css" rel="stylesheet">
+<link href="../../css/plugins/datapicker/datepicker3.css"
+	rel="stylesheet">
+<link
+	href="../../css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css"
+	rel="stylesheet">
+<!-- zTree树表 -->
+<link href="../../css/plugins/zTree/zTreeStyle/zTreeStyle.css"
+	rel="stylesheet">
+<!-- layUI表格 -->
+<link rel="stylesheet" href="../../js/plugins/layui/css/layui.css" media="all">
+<link href="../../css/style.css?v=4.1.0" rel="stylesheet">
+<link href="../../css/common.css" rel="stylesheet">
+<link href="../../css/vp.css" rel="stylesheet">
+    <script src="../../../vpcommon/config.js"></script>
+    <script src="../../../vpcommon/vputils.min.js"></script>
+<!--[if lte IE 9]>
+        <script src="../../js/html5shiv.min.js"></script>
+        <script src="../../js/respond.js"></script>
+    <![endif]-->
+<!-- 全局js -->
+<script src="../../js/jquery-1.11.3.min.js"></script>
+<!--[if IE 8]>
+	<script type="text/javascript" src="../../js/jquery-1.9.1.min.js"></script>
+	<![endif]-->
+<script src="../../js/bootstrap.min.js?v=3.3.6"></script>
+<!-- 自定义js -->
+<script src="../../js/content.js?v=1.0.0"></script>
+<!-- 日期控件 -->
+<script src="../../js/plugins/datapicker/bootstrap-datepicker.js"></script>
+<!-- layer弹出层 -->
+<script src="../../js/plugins/layer/layer.min.js"></script>
+<!-- 下拉选择列表 -->
+<script src="../../js/plugins/chosen/chosen.jquery.js"></script>
+<!-- layui表格 -->
+<script src="../../js/plugins/layui/layui.js" charset="utf-8"></script>
+<script src="../../js/vpsoft/common.js"></script>
+<script src="../../js/vpsoft/form.js"></script>
+<script src="../../js/vpsoft/getUrlParam.js"></script>
+<script src="../../js/plugins/iCheck/icheck.min.js"></script>
+
+<script language="javascript" src="../../js/jquery-1.3.2.js"></script>
+<script language="javascript" src="../../js/ui.core.js"></script>
+<script language="javascript" src="../../js/ui.sortable.js"></script>
+<script language="javascript" src="../../js/vpsoft/createentityview.js"></script>
+<script language="javascript" src="../../js/jshashset.js"></script>
+	<style>
+		tr {
+			height: 30px;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="padding-10">
+		<div class="ibox-title border-bottom ">
+			<h5>基本信息</h5>
+			<div class="ibox-tools">
+				<a class="collapse-link" data-toggle="tooltip" data-placement="top"
+					title="收起"> <i class="fa fa-caret-up"></i>
+				</a>
+			</div>
+		</div>
+		<div class="ibox-content p-n clearfix">
+			<div class="form-horizontal m-t" id="signupForm">
+				<input type="hidden" id="ientityid" name="ientityid">
+				<div class="form-group">
+					<div class="col-sm-6">
+						<label class="col-sm-4 col-md-3 control-label text-ellipsis">视图编号：</label>
+						<div class="col-sm-8 col-md-9">
+							<input id="code" name="code" class="form-control" type="text" maxlength="20">
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<label class="col-sm-4 col-md-3 control-label text-ellipsis">视图名称：</label>
+						<div class="col-sm-8 col-md-9">
+							<input id="name" name="name" class="form-control" type="text" maxlength="60">
+						</div>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<div class="col-sm-6">
+						<label class="col-sm-4 col-md-3 control-label text-ellipsis">排序字段：</label>
+						<div class="col-sm-8 col-md-9">
+							<select id="ssortname" name="ssortname" class="form-control">
+							</select>	
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<label class="col-sm-4 col-md-3 control-label text-ellipsis">排序规则：</label>
+						<div class="col-sm-8 col-md-9">
+							<select id="ssorttype" name="ssorttype" class="form-control">
+							  	<option value="asc" selected>升序</option>
+								<option value="desc" >降序</option>
+							</select>		
+						</div>
+					</div>
+				</div>
+				<div class="form-group vpfilter">
+					<div class="col-sm-6">
+						<label class="col-sm-4 col-md-3 control-label text-ellipsis">所属分组：</label>
+						<div class="col-sm-8 col-md-9">
+							<input id="sgroupname" name="sgroupname" class="form-control" type="text" maxlength="20">
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<label class="col-sm-4 col-md-3 control-label text-ellipsis">分组图标：</label>
+						<div class="col-sm-8 col-md-9">
+							<input id="sgroupico" name="sgroupico" class="form-control" type="text" maxlength="60">
+						</div>
+					</div>
+				</div>
+				<div class="form-group vpfilter">
+					<div class="col-sm-6">
+						<label class="col-sm-4 col-md-3 control-label text-ellipsis">分组顺序：</label>
+						<div class="col-sm-8 col-md-9">
+							<input id="sgroupseq" name="sgroupseq" class="form-control" type="text" maxlength="20">
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<label class="col-sm-4 col-md-3 control-label text-ellipsis">过滤器顺序：</label>
+						<div class="col-sm-8 col-md-9">
+							<input id="sfilterseq" name="sfilterseq" class="form-control" type="text" maxlength="60">
+						</div>
+					</div>
+				</div>
+				<div class="form-group group2 vpfilter">
+					<div>
+						<label class="col-sm-2 col-md-1 control-label text-ellipsis">SQL：</label>
+						<div class="col-sm-10 col-md-11">
+							<textarea id="ssql" name="ssql" class="form-control" rows="5" type="text" maxlength="3000"></textarea>
+						</div>
+					</div>
+				</div>
+				<div class="form-group vpsimplclass">
+					<div class="col-sm-6">
+						<label class="col-sm-4 col-md-3 control-label text-ellipsis">状态：</label>
+						<div class="col-sm-8 col-md-9">
+							<div class="radio radio-info radio-inline">
+								<input type="radio" id="iflag1" value="0" name="iflag" checked="">
+								<label for="iflag1">启用</label>
+							</div>
+							<div class="radio radio-info radio-inline">
+								<input type="radio" id="iflag2" value="1" name="iflag">
+								<label for="iflag2">禁用</label>
+							</div>
+						</div>
+					</div>
+				</div> 
+				<div class="form-group vpsimplclass">
+					<div class="col-sm-12">
+						<label class="col-sm-2 col-md-3 control-label text-ellipsis">实现类：</label>
+						<div class="col-sm-10 col-md-9">
+							<input id="simplclass" name="simplclass" class="form-control" type="text" maxlength="260">
+						</div>
+					</div>
+				</div> 
+
+				<div class="ibox-title border-bottom vpview" style="display: none;">
+					<h5>视图列定义</h5>
+					<div class="ibox-tools">
+						<a class="collapse-link" data-toggle="tooltip"
+							data-placement="top" title="收起"> <i class="fa fa-caret-up"></i>
+						</a>
+					</div>
+					<div class="form-group">
+						<div class="col-sm-12">
+							<!-- 已选区域开始 -->
+							<div style="overflow: auto; height: 244px;" id="moveArea">
+								<table id="selected_0" class="normal_list" width="96%"
+									border="0" cellspacing="0" onmouseover="disableMove();"
+									onmouseout="activeMove();">
+									<tr class="normal_list_tdtitle" style="table-layout: fixed;border-top: solid white 0px;border-bottom: solid #ededed 1px;cursor:default;">
+										<td width="50%">字段名称</td>
+										<td id="iconstrainttd" width="15%">字段行为</td>
+										<td width="15%">列宽</td>
+										<td width="15%" align="center">是否隐藏</td>
+									</tr>
+								</table>
+							</div>										
+						</div>
+					</div>		
+				</div>
+
+			</div>
+		</div>
+	</div>
+</body>
+<script>
+var globalSequencekey=0;
+var iviewtype = UrlParm.parm("iviewtype");
+var addflag = UrlParm.parm("addflag");
+$(document).ready(function() {
+	$("#moveArea").height($("body").height() - 270);
+	if (iviewtype == 4) {
+		$(".vpview").hide();
+		$(".vpfilter").show();
+	}
+	else {
+		$(".vpview").show();
+		$(".vpfilter").hide();
+	}
+
+
+	 $("#moveArea").sortable({
+		   update: function(event, ui) { 
+				var itemArr= $("#moveArea").sortable("toArray");
+				itemArr.shift();
+				//sequencekey
+				for (var index = 0; index < itemArr.length; index++) {
+					$("#"+itemArr[index]).find("input").attr("sequencekey",(index+1));
+				}
+		   	}
+		 });
+	var sparam = { ientityid : UrlParm.parm("ientityid"), iid : UrlParm.parm("iid"),itype:0};
+	
+	
+	  vpPostAjax('/cfgentview/get', sparam, 'POST', function(rst) {
+		   if(rst.success){   
+			   if(rst.data.iid!='0'){
+				   document.getElementById("name").value=rst.data.sname;
+				   document.getElementById("code").value=rst.data.scode;
+				   document.getElementById("ientityid").value=rst.data.ientityid;
+				   document.getElementById("simplclass").value=((rst.data.simplclass==undefined || rst.data.simplclass=='null')?"":rst.data.simplclass);
+				   var idefault=rst.data.idefault;
+				   var ssortname=rst.data.ssortname;
+				   var ssorttype=rst.data.ssorttype;
+				   if(ssorttype=='desc'){
+						document.getElementById("ssorttype").options[1].selected=true;
+				   }
+				   if(idefault==0){
+					   document.getElementById("code").readOnly=true;
+				   }
+				   
+				   document.getElementById("sfilterseq").value=(rst.data.sfilterseq==undefined?"":rst.data.sfilterseq);
+				   document.getElementById("sgroupname").value=(rst.data.sgroupname==undefined?"":rst.data.sgroupname);
+				   document.getElementById("sgroupseq").value=(rst.data.sgroupseq==undefined?"":rst.data.sgroupseq);
+				   document.getElementById("sgroupico").value=(rst.data.sgroupico==undefined?"":rst.data.sgroupico);
+				   document.getElementById("ssql").value=(rst.data.ssql==undefined?"":rst.data.ssql);
+				   $(":radio[name='iflag'][value='" + (rst.data.iflag==undefined?"0":rst.data.iflag) + "']").attr("checked", "checked");
+				   
+				   if(rst.data.fields){
+					    if(rst.data.fields.length>0){
+							$.each(rst.data.fields, function(i, item) {
+								var fieldiid=rst.data.fields[i].iattributeid;
+								var sname=rst.data.fields[i].sname;
+								var idatatype=rst.data.fields[i].idatatype;
+								var scode=rst.data.fields[i].scode;
+								var iwidth=rst.data.fields[i].iwidth;
+								var iconstraint=rst.data.fields[i].iconstraint;
+
+					    		objvalues=scode+","+idatatype+","+sname+","+fieldiid+","+iwidth+","+iconstraint;
+								doAddRowobj(objvalues);	
+								
+								//if(rst.data.scode!='editview' && UrlParm.parm("iviewtype") != '0'){
+								if(rst.data.scode.indexOf('edit') == -1) {
+									  $("#iconstrainttd"+scode).hide();
+								}								
+							});
+						}
+				   }
+					//if(rst.data.scode!='editview' && UrlParm.parm("iviewtype") != '0'){
+					if(rst.data.scode.indexOf('edit') == -1) {
+						$("#iconstrainttd").hide();
+					}
+					
+			   } 
+			   
+			   if(rst.data.sortfields){
+					if(rst.data.sortfields.length>0){
+						$.each(rst.data.sortfields, function(i, item) {
+							
+							var sname=rst.data.sortfields[i].sname;
+							var idatatype=rst.data.sortfields[i].idatatype;
+							var scode=rst.data.sortfields[i].scode;
+						
+							if(ssortname==scode){
+								$("#ssortname").append("<option value='"+scode+"' selected>"+sname+"</option>"); 
+							}else{
+								$("#ssortname").append("<option value='"+scode+"'>"+sname+"</option>"); 
+							}
+						});
+					}
+			   }
+			   
+				if (addflag == 0) { 
+				   document.getElementById("ientityid").value = UrlParm.parm("ientityid");
+				}
+				/*
+				if ($("#ientityid").val() == -1 || $("#ientityid").val() == -2 || $("#ientityid").val() == -3) {					
+				   document.getElementById("name").disabled = "disabled";
+				   document.getElementById("code").disabled = "disabled";
+				   document.getElementById("ientityid").disabled = "disabled";
+				   // document.getElementById("simplclass").disabled = "disabled";
+				   document.getElementById("sfilterseq").disabled = "disabled";
+				   document.getElementById("sgroupname").disabled = "disabled";
+				   document.getElementById("sgroupseq").disabled = "disabled";
+				   document.getElementById("sgroupico").disabled = "disabled";
+				   // document.getElementById("ssql").disabled = "disabled";
+				}
+				*/
+			}else{
+				parent.layer.msg('查询失败，！'+rst.msg, { icon: 2, time: 2000 });
+			}
+	   });
+
+});
+
+function doNewAddRow() {
+	var param = {};
+	if (iviewtype != 4) {
+		param["btn"] = new Array(["确定"]);
+		parent.openWindow('entity_view_field.html?iviewid='+ UrlParm.parm("iid") + "&iviewtype="+iviewtype, '属性', param, function(layerindex,layero,index) {
+			try{
+				 var resData = $(layero).find("iframe")[0].contentWindow.returnData();
+				 
+				parent.layer.close(layerindex);
+				if(resData!=undefined && resData.length>0){
+					$.each(resData, function(i, item) {
+						doAddRowobj(resData[i]+",0");	
+						if(document.getElementById("code").value!='editview'){
+							 $("#iconstrainttd"+resData[i].split(",")[0]).hide();
+						}
+					});
+				}
+			} catch(exception) {
+				
+			}
+		});
+	}
+}
+ function saveViewInfo(){
+	 
+		if(document.getElementById("code").value==""){
+			parent.layer.msg('请填写编号！', { icon: 5, time: 2000 });
+			return false;
+		}
+		if(/^[A-Za-z]([0-9A-Za-z]*$)/g.test(document.getElementById("code").value)){
+	    } 
+		else { 
+			parent.layer.msg('编号只能是以英文字母开头的英文字母或数字组成！', { icon: 5, time: 2000 });
+			return false;
+		}
+		var isUnique = true;
+		vpPostAjax('/vfmcheck/isUnique', { code: 'cfg_entity_view', iid: UrlParm.parm("iid"), data: [ 
+				{ field: 'scode', fieldvalue: document.getElementById("code").value }
+				, { field: 'iviewtype', fieldvalue: iviewtype }
+				, { field: 'ientityid', fieldvalue: document.getElementById("ientityid").value } ] }, 'POST', function(rst) {
+			isUnique = !rst;
+		});
+		if(!isUnique){
+			parent.layer.msg("视图编码已经存在，请重新输入!", {icon: 5,time: 2000});
+			return false;
+		}
+		if(document.getElementById("name").value==""){
+			parent.layer.msg('请填写名称！', { icon: 5, time: 2000 });
+			return false;
+		}
+
+		var dataObj=new Object();
+		var fieldArr=[];
+		var fieldArr1=[];
+		$("input[name='colWidth']").each(function(){
+			var fieldName=encodeURIComponent($(this).attr("fieldName"));
+			var sequencekey=encodeURIComponent($(this).attr("sequencekey"));
+			var fieldiid=encodeURIComponent($(this).attr("fieldiid"));
+			
+			var width=$(this).val();
+
+			if(/^([0-9]*$)/g.test(width)){
+		    } else { 
+
+				parent.layer.msg('宽度必须为数字！', { icon: 5, time: 2000 });
+				return false;
+			}
+			
+			if(!width){
+				width="0";
+			}
+			fieldArr.push(fieldName+","+sequencekey+","+width+","+fieldiid);
+		});
+		var icr=0;
+		$("select[name='inputType']").each(function(){
+			var fieldName=encodeURIComponent($(this).attr("fieldName"));
+			var fieldiid=encodeURIComponent($(this).attr("fieldiid"));
+			
+			var inputType=$(this).val();
+
+			if (document.getElementsByName("coldisplay")[icr].checked) {
+				inputType = -1;
+			}
+			fieldArr1.push(fieldName+","+inputType+","+fieldiid);
+			icr++;
+		});
+		
+		
+		dataObj.fieldArr=fieldArr.join(",,,");
+		dataObj.fieldArr1=fieldArr1.join(",,,");
+		dataObj.ientityid=$("#ientityid").val();
+		dataObj.iid=UrlParm.parm("iid");
+		dataObj.sname=$("#name").val();
+		dataObj.scode=$("#code").val();
+		dataObj.scode=$("#code").val();
+		dataObj.simplclass=$("#simplclass").val();
+		dataObj.ssorttype=$("#ssorttype").val();
+		dataObj.ssortname=$("#ssortname").val();
+		
+		dataObj.sfilterseq=$("#sfilterseq").val();
+		dataObj.sgroupname=$("#sgroupname").val();
+		dataObj.sgroupseq=$("#sgroupseq").val();
+		dataObj.sgroupico=$("#sgroupico").val();
+		dataObj.ssql=$("#ssql").val();
+		dataObj.iflag=$("input[name='iflag']:checked").val();
+
+		dataObj.iviewtype=iviewtype;
+		var action='/cfgentview/update';
+		if(dataObj.iid==0){
+			action='/cfgentview/add';
+		}
+		
+	   vpPostAjax(action, dataObj, 'POST', function(rst) {
+		   console.log(rst);
+		   if(rst.success){   
+			parent.layer.msg('保存成功！', { icon: 1, time: 2000 });
+		}else{
+			parent.layer.msg('保存失败，！'+rst.message, { icon: 2, time: 2000 });
+		}
+	   });
+	}
+
+
+</script>
+</html>

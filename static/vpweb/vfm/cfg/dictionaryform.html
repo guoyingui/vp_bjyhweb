@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>任务看板 - VP应用全生命周期管理系统</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
+    <link rel="shortcut icon" href="img/favicon.ico">
+    <link href="../../css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="../../css/font-awesome.min.css?v=4.7.0" rel="stylesheet">
+    <link href="../../css/animate.css" rel="stylesheet">
+    <link href="../../css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+    <link href="../../css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+    <!-- zTree树表 -->
+    <link href="../../css/plugins/zTree/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+    <!-- layUI表格 -->
+    <link rel="stylesheet" href="../../js/plugins/layui/css/layui.css"  media="all">
+    <link href="../../css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="../../css/common.css" rel="stylesheet">
+    <link href="../../css/vp.css" rel="stylesheet">
+    <script src="../../../vpcommon/config.js"></script>
+    <script src="../../../vpcommon/vputils.min.js"></script>
+    <!--[if lte IE 9]>
+        <script src="../../js/html5shiv.min.js"></script>
+        <script src="../../js/respond.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+	<div class="padding-10 space-10" style="top: 0px;">
+		<div class="ibox">			
+			<div class="ibox-content p-n clearfix">
+				<form class="form-horizontal m-t" id="oForm"> 
+				<input type="hidden" id="iid" name="iid">
+				<input type="hidden" id="iparent" name="iparent">
+					<div class="form-group">
+						<div class="col-sm-6">
+							<label class="col-sm-4 col-md-3 control-label text-ellipsis">分组编号：</label>
+							<div class="col-sm-8 col-md-9">
+								<input id="scode" name="scode" class="form-control" type="text" minlength="2" maxlength="20" type="text" required>
+							</div>
+						</div>
+						<div class="col-sm-6">
+							<label class="col-sm-4 col-md-3 control-label text-ellipsis">分组名称：</label>
+							<div class="col-sm-8 col-md-9">
+								<input id="sname" name="sname" class="form-control" type="text" minlength="2" maxlength="60" type="text" required>
+							</div>
+						</div>
+					</div>
+				</form>
+				<form class="form-horizontal m-t" id="oForm2"> 
+					<div class="form-group">
+						<div class="ibox-title clearfix">
+						<h5>数据字典明细</h5>
+					</div>
+
+					<div class="ibox-content p-n m-t-sm" style="margin-left: 60px;">
+						<div class="form-group m-b-sm">
+							<div class="col-xs-2 ">选项值</div>
+							<div class="col-xs-2 ">选项名称</div>
+							<div class="col-xs-2 ">排序码</div>
+							<div class="col-xs-3 ">描述</div>
+							<div class="col-xs-1 ">默认值</div>
+							<div class="col-xs-1 ">状态</div>
+						</div>
+						
+						<div id="vprow" style="height:300;"></div>
+						<div class="col-xs-9 m-t-sm" style="display: none;" id="newAddDiv">
+							<a class="text-primary newAdd"><i class="fa fa-plus-circle"></i>再添加一个</a>
+						</div>
+					</div>
+				</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+    <!-- 全局js -->
+    <script src="../../js/jquery-1.11.3.min.js"></script>
+	<!--[if IE 8]>
+	<script type="text/javascript" src="../../js/jquery-1.9.1.min.js"></script>
+	<![endif]-->
+    <script src="../../js/bootstrap.min.js?v=3.3.6"></script>
+    <!-- 自定义js -->
+    <script src="../../js/content.js?v=1.0.0"></script>
+    <!-- 日期控件 -->
+    <script src="../../js/plugins/datapicker/bootstrap-datepicker.js"></script>
+    <!-- layer弹出层 -->
+    <script src="../../js/plugins/layer/layer.min.js"></script>
+    <!-- 下拉选择列表 -->
+    <script src="../../js/plugins/chosen/chosen.jquery.js"></script>
+    <!-- jQuery 表单验证-->
+    <script src="../../js/plugins/validate/jquery.validate.min.js"></script>
+    <script src="../../js/plugins/validate/messages_zh.min.js"></script>
+    <!-- zTree模拟树表 -->
+    <script src="../../js/plugins/zTree/jquery.ztree.all.min.js"></script>
+    <script src="../../js/vpsoft/TreeTable.js"></script>
+    <script src="../../js/vpsoft/common.js"></script>
+    <script src="../../js/vpsoft/form.js"></script>
+    <script src="../../js/plugins/iCheck/icheck.min.js"></script>
+</html>
+<script>
+	$(document).ready(function () {		
+		$('.i-checks').iCheck({
+			checkboxClass: 'text-primary fa fa-fw fa-square-o'
+		});
+		
+		var accesslevel = -1;
+		if (getParameter("iid") != 0) {
+			vpPostAjax('/cfgdictionary/get', { iid: getParameter("iid"), iparent: getParameter("iparent") }, "POST", function(rst) {			
+				var json = rst.data;
+				accesslevel = rst.accesslevel;
+				
+				for (var key in json) {
+					$('#'+key).val(json[key]);
+				}
+				//$(".layui-layer-btn0", parent.document).addClass("layui-btn-disabled");	
+				/*
+				$.each(rst.subdata, function(i, item) {
+					console.log(item);
+				});
+				*/
+				newRow();
+			});
+		}
+		else {
+			$("#iparent").val(getParameter("iparent"));
+		}
+	});
+	
+	function newRow(obj) {
+		var irow = $("#vprow").children().length;
+		var str = '';
+			str += '<div class="form-group form-item vp-pr m-b-sm vprow">';
+			str += '	<input id="iid'+irow+'" name="iid" type="hidden" value="">';
+			str += '	<div class="vp-delAdd" irow="'+irow+'">';
+			str += '		<a href="#"><i class="fa fa-minus-circle text-danger"></i></a>';
+			str += '	</div>';
+			str += '	<div class="col-xs-2">';
+			str += '		<input id="ivalue'+irow+'" name="ivalue" placeholder="请输入选项值" maxlength="8" class="form-control input-sm" value="">';
+			str += '	</div>';
+			str += '	<div class="col-xs-2">';
+			str += '		<input id="stext'+irow+'" name="stext" placeholder="请输入选项名称" maxlength="60" class="form-control input-sm" value="">';
+			str += '	</div>';
+			str += '	<div class="col-xs-2">';
+			str += '		<input id="ssequencekey'+irow+'" name="ssequencekey" placeholder="请输入排序码" maxlength="30" class="form-control input-sm" value="">';
+			str += '	</div>';
+			str += '	<div class="col-xs-3">';
+			str += '		<input id="sdescription'+irow+'" name="sdescription" placeholder="请输入描述" maxlength="300" class="form-control input-sm" value="">';
+			str += '	</div>';
+			str += '	<div class="col-xs-1">';
+			str += '		<input id="idefaultvalue'+irow+'" name="idefaultvalue" type="checkbox" value="1">';
+			str += '	</div>';
+			str += '	<div class="col-xs-1">';
+			str += '		<i id="iflag' + irow + '"  irow="'+irow+'" class="fa fa-toggle-on fa-fw text-success" onclick="toggleState(this)" data-toggle="tooltip" data-placement="right" title="开启"></i>';
+			str += '	</div>';
+			str += '</div>';
+		
+		$("#vprow").append(str);
+	}
+
+	$(".newAdd").click(function(){			
+		newRow();
+		$(".vp-delAdd").click(function(){
+			$(this).parent(".vprow").remove();
+		});
+	});
+
+	function toggleState(obj) {
+		if (obj.className.indexOf("text-success") != -1) {
+			obj.className = "fa fa-toggle-off fa-fw text-fail";
+			obj.setAttribute("data-original-title", "关闭");
+		}
+		else if (obj.className.indexOf("text-fail") != -1) {
+			obj.className = "fa fa-toggle-on fa-fw text-success";
+			obj.setAttribute("data-original-title", "开启");
+		}
+	}
+
+	function saveForm(callback) {
+		callbackfunc = callback;
+		$("#oForm").submit();
+	}
+	
+	$("#oForm").validate({
+		submitHandler : function(form) {
+			try
+			{
+				var oFormData = $('#oForm').serializeJSON();
+				//console.log(JSON.stringify(oFormData)); 
+				//oFormData["osub"] = $('#oForm2').serializeJSON();
+				var arr = new Array();
+				var flag=false;
+				$.each($("#vprow>div"), function(i) {
+					var obj = {};
+					obj["iid"] = $("#iid" + i).val();
+					obj["ivalue"] = $("#ivalue" + i).val();
+					obj["stext"] = $("#stext" + i).val();
+					obj["ssequencekey"] = $("#ssequencekey" + i).val();
+					obj["sdescription"] = $("#sdescription" + i).val();
+					obj["idefaultvalue"] = $("#idefaultvalue" + i + ":checked").val();
+					if($("#iflag" + i).attr("data-original-title")=="开启"){
+						obj["iflag"] = 1;
+					}else{
+						obj["iflag"] = 0;
+					}
+					if (obj["ivalue"] == '') {
+						layer.msg('字典编码不能为空', { icon: 5, time: 2000 });
+						flag = true;
+						return flag;
+					}
+					else if (!/^[\d]+\.?\d*$/g.test(obj["ivalue"])) {
+						layer.msg('字典编码只能是数字', { icon: 5, time: 2000 });
+						flag = true;
+						return flag;
+					}
+					else if(obj["stext"] =='') {
+						layer.msg('名称不能为空', { icon: 5, time: 2000 });
+						flag = true;
+						return flag;
+					}
+					arr.push(obj);
+				});
+				oFormData["osub"] = arr;
+				// console.log("oFormData:  " + JSON.stringify(oFormData)); 
+				if(flag){
+					//layer.msg('字典编码只能是数字！', { icon: 5, time: 2000 });
+					return false;
+				}
+				vpPostAjax('/cfgdictionary/save', oFormData , "POST", function(rst) {
+					try {
+						$("#iid").val(rst.iid);
+						eval(callbackfunc)();
+					}
+					catch(exception) {
+						layer.msg(msg004 + callback, { icon: 2, time: 2000 });
+					}	
+				});
+			}
+			catch (e)
+			{
+				layer.msg('取表单数据失败', { icon: 2, time: 2000 });
+			}
+			return false;
+		}
+	});
+
+</script>

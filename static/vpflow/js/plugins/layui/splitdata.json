@@ -1,0 +1,87 @@
+{
+    "code": 0,
+    "msg": "",
+    "count": 1000,
+    "data": [
+    {
+        "id": 10000,
+        "fun": "功能点名称",
+        "status": "已拆分",
+        "ascription": "<a href='' class='text-primary chosenPro'>产品名称</a>",
+        "charge": "<img alt='image' class='img-circle m-r-sm' src='img/profile_small.jpg' width='20' height='20'  data-toggle='tooltip' data-placement='top' title='梦想'><img alt='image' class='img-circle m-r-sm' src='img/profile_small.jpg' width='20' height='20'  data-toggle='tooltip' data-placement='top' title='梦想'><img alt='image' class='img-circle m-r-sm' src='img/profile_small.jpg' width='20' height='20'  data-toggle='tooltip' data-placement='top' title='梦想'>",
+        "wealth": "<a href='' data-toggle='tooltip' data-placement='top' title='编辑'><i class='fa fa-edit fa-fw text-success'></i></a><a href='' data-toggle='tooltip' data-placement='top' title='删除'><i class='fa fa-times fa-fw text-danger'></i></a><a href='' data-toggle='tooltip' data-placement='top' title='复制'><i class='fa fa-copy fa-fw text-info'></i></a>"
+    },
+    {
+        "id": 10001,
+        "fun": "功能点名称?",
+        "status": "已拆分",
+        "ascription": "<a href='' class='text-primary chosenPro'>产品名称</a>",
+        "charge": "<img alt='image' class='img-circle m-r-sm' src='img/profile_small.jpg' width='20' height='20'  data-toggle='tooltip' data-placement='top' title='梦想'><img alt='image' class='img-circle m-r-sm' src='img/profile_small.jpg' width='20' height='20'  data-toggle='tooltip' data-placement='top' title='梦想'><img alt='image' class='img-circle m-r-sm' src='img/profile_small.jpg' width='20' height='20'  data-toggle='tooltip' data-placement='top' title='梦想'>",
+        "wealth": "<a href='' data-toggle='tooltip' data-placement='top' title='编辑'><i class='fa fa-edit fa-fw text-success'></i></a><a href='' data-toggle='tooltip' data-placement='top' title='删除'><i class='fa fa-times fa-fw text-danger'></i></a><a href='' data-toggle='tooltip' data-placement='top' title='复制'><i class='fa fa-copy fa-fw text-info'></i></a>"
+    },
+    {
+        "id": 10002,
+        "fun": "功能点名称?",
+        "status": "未拆分",
+        "ascription": "<a href='' class='text-primary chosenPro'>产品名称</a>",
+        "charge": "<img alt='image' class='img-circle m-r-sm' src='img/profile_small.jpg' width='20' height='20'  data-toggle='tooltip' data-placement='top' title='梦想'><img alt='image' class='img-circle m-r-sm' src='img/profile_small.jpg' width='20' height='20'  data-toggle='tooltip' data-placement='top' title='梦想'><img alt='image' class='img-circle m-r-sm' src='img/profile_small.jpg' width='20' height='20'  data-toggle='tooltip' data-placement='top' title='梦想'>",
+        "wealth": "<a href='' data-toggle='tooltip' data-placement='top' title='编辑'><i class='fa fa-edit fa-fw text-success'></i></a><a href='' data-toggle='tooltip' data-placement='top' title='删除'><i class='fa fa-times fa-fw text-danger'></i></a><a href='' data-toggle='tooltip' data-placement='top' title='复制'><i class='fa fa-copy fa-fw text-info'></i></a>"
+    },
+    {
+        "id": 10003,
+        "fun": "功能点名称?",
+        "status": "已拆分",
+        "ascription": "<a href='' class='text-primary chosenPro'>产品名称</a>",
+        "charge": "<img alt='image' class='img-circle m-r-sm' src='img/profile_small.jpg' width='20' height='20'  data-toggle='tooltip' data-placement='top' title='梦想'><img alt='image' class='img-circle m-r-sm' src='img/profile_small.jpg' width='20' height='20'  data-toggle='tooltip' data-placement='top' title='梦想'><img alt='image' class='img-circle m-r-sm' src='img/profile_small.jpg' width='20' height='20'  data-toggle='tooltip' data-placement='top' title='梦想'>",
+        "wealth": "<a href='' data-toggle='tooltip' data-placement='top' title='编辑'><i class='fa fa-edit fa-fw text-success'></i></a><a href='' data-toggle='tooltip' data-placement='top' title='删除'><i class='fa fa-times fa-fw text-danger'></i></a><a href='' data-toggle='tooltip' data-placement='top' title='复制'><i class='fa fa-copy fa-fw text-info'></i></a>"
+    },
+    {
+        "id": 10004,
+        "fun": "功能点名称?",
+        "status": "未拆分",
+        "ascription": "<a href='' class='text-primary chosenPro'>产品名称</a>",
+        "charge": "<img alt='image' class='img-circle m-r-sm' src='img/profile_small.jpg' width='20' height='20'  data-toggle='tooltip' data-placement='top' title='梦想'><img alt='image' class='img-circle m-r-sm' src='img/profile_small.jpg' width='20' height='20'  data-toggle='tooltip' data-placement='top' title='梦想'><img alt='image' class='img-circle m-r-sm' src='img/profile_small.jpg' width='20' height='20'  data-toggle='tooltip' data-placement='top' title='梦想'>",
+        "wealth": "<a href='' data-toggle='tooltip' data-placement='top' title='编辑'><i class='fa fa-edit fa-fw text-success'></i></a><a href='' data-toggle='tooltip' data-placement='top' title='删除'><i class='fa fa-times fa-fw text-danger'></i></a><a href='' data-toggle='tooltip' data-placement='top' title='复制'><i class='fa fa-copy fa-fw text-info'></i></a>"
+    },
+    {
+        "id": 10005,
+        "fun": "功能点名称?",
+        "status": "已拆分",
+        "ascription": "<a href='' class='text-primary chosenPro'>产品名称</a>",
+        "charge": "<img alt='image' class='img-circle m-r-sm' src='img/profile_small.jpg' width='20' height='20'  data-toggle='tooltip' data-placement='top' title='梦想'><img alt='image' class='img-circle m-r-sm' src='img/profile_small.jpg' width='20' height='20'  data-toggle='tooltip' data-placement='top' title='梦想'><img alt='image' class='img-circle m-r-sm' src='img/profile_small.jpg' width='20' height='20'  data-toggle='tooltip' data-placement='top' title='梦想'>",
+        "wealth": "<a href='' data-toggle='tooltip' data-placement='top' title='编辑'><i class='fa fa-edit fa-fw text-success'></i></a><a href='' data-toggle='tooltip' data-placement='top' title='删除'><i class='fa fa-times fa-fw text-danger'></i></a><a href='' data-toggle='tooltip' data-placement='top' title='复制'><i class='fa fa-copy fa-fw text-info'></i></a>"
+    },
+    {
+        "id": 10006,
+        "fun": "功能点名称?",
+        "status": "未拆分",
+        "ascription": "<a href='' class='text-primary chosenPro'>产品名称</a>",
+        "charge": "<img alt='image' class='img-circle m-r-sm' src='img/profile_small.jpg' width='20' height='20'  data-toggle='tooltip' data-placement='top' title='梦想'><img alt='image' class='img-circle m-r-sm' src='img/profile_small.jpg' width='20' height='20'  data-toggle='tooltip' data-placement='top' title='梦想'><img alt='image' class='img-circle m-r-sm' src='img/profile_small.jpg' width='20' height='20'  data-toggle='tooltip' data-placement='top' title='梦想'>",
+        "wealth": "<a href='' data-toggle='tooltip' data-placement='top' title='编辑'><i class='fa fa-edit fa-fw text-success'></i></a><a href='' data-toggle='tooltip' data-placement='top' title='删除'><i class='fa fa-times fa-fw text-danger'></i></a><a href='' data-toggle='tooltip' data-placement='top' title='复制'><i class='fa fa-copy fa-fw text-info'></i></a>"
+    },
+    {
+        "id": 10007,
+        "fun": "功能点名称?",
+        "status": "已拆分",
+        "ascription": "<a href='' class='text-primary chosenPro'>产品名称</a>",
+        "charge": "<img alt='image' class='img-circle m-r-sm' src='img/profile_small.jpg' width='20' height='20'  data-toggle='tooltip' data-placement='top' title='梦想'><img alt='image' class='img-circle m-r-sm' src='img/profile_small.jpg' width='20' height='20'  data-toggle='tooltip' data-placement='top' title='梦想'><img alt='image' class='img-circle m-r-sm' src='img/profile_small.jpg' width='20' height='20'  data-toggle='tooltip' data-placement='top' title='梦想'>",
+        "wealth": "<a href='' data-toggle='tooltip' data-placement='top' title='编辑'><i class='fa fa-edit fa-fw text-success'></i></a><a href='' data-toggle='tooltip' data-placement='top' title='删除'><i class='fa fa-times fa-fw text-danger'></i></a><a href='' data-toggle='tooltip' data-placement='top' title='复制'><i class='fa fa-copy fa-fw text-info'></i></a>"
+    },
+    {
+        "id": 10008,
+        "fun": "功能点名称?",
+        "status": "已拆分",
+        "ascription": "<a href='' class='text-primary chosenPro'>产品名称</a>",
+        "charge": "<img alt='image' class='img-circle m-r-sm' src='img/profile_small.jpg' width='20' height='20'  data-toggle='tooltip' data-placement='top' title='梦想'><img alt='image' class='img-circle m-r-sm' src='img/profile_small.jpg' width='20' height='20'  data-toggle='tooltip' data-placement='top' title='梦想'><img alt='image' class='img-circle m-r-sm' src='img/profile_small.jpg' width='20' height='20'  data-toggle='tooltip' data-placement='top' title='梦想'>",
+        "wealth": "<a href='' data-toggle='tooltip' data-placement='top' title='编辑'><i class='fa fa-edit fa-fw text-success'></i></a><a href='' data-toggle='tooltip' data-placement='top' title='删除'><i class='fa fa-times fa-fw text-danger'></i></a><a href='' data-toggle='tooltip' data-placement='top' title='复制'><i class='fa fa-copy fa-fw text-info'></i></a>"
+    },
+    {
+        "id": 10009,
+        "fun": "功能点名称?",
+        "status": "已拆分",
+        "ascription": "<a href='' class='text-primary chosenPro'>产品名称</a>",
+        "charge": "<img alt='image' class='img-circle m-r-sm' src='img/profile_small.jpg' width='20' height='20'  data-toggle='tooltip' data-placement='top' title='梦想'><img alt='image' class='img-circle m-r-sm' src='img/profile_small.jpg' width='20' height='20'  data-toggle='tooltip' data-placement='top' title='梦想'><img alt='image' class='img-circle m-r-sm' src='img/profile_small.jpg' width='20' height='20'  data-toggle='tooltip' data-placement='top' title='梦想'>",
+        "wealth": "<a href='' data-toggle='tooltip' data-placement='top' title='编辑'><i class='fa fa-edit fa-fw text-success'></i></a><a href='' data-toggle='tooltip' data-placement='top' title='删除'><i class='fa fa-times fa-fw text-danger'></i></a><a href='' data-toggle='tooltip' data-placement='top' title='复制'><i class='fa fa-copy fa-fw text-info'></i></a>"
+    }
+    ]
+}

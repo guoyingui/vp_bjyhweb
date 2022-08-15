@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>类别</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
+    <link rel="shortcut icon" href="img/favicon.ico">
+    <link href="../../css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="../../css/font-awesome.min.css?v=4.7.0" rel="stylesheet">
+    <link href="../../css/animate.css" rel="stylesheet">
+    <link href="../../css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+    <link href="../../css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+    <!-- zTree树表 -->
+    <link href="../../css/plugins/zTree/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+    <!-- layUI表格 -->
+    <link href="../../css/plugins/chosen/chosen.css" rel="stylesheet">
+    <link href="../../css/plugins/iCheck/custom.css" rel="stylesheet">
+    <link href="../../js/plugins/layui/css/layui.css"  rel="stylesheet" media="all">
+    <link href="../../css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="../../css/common.css" rel="stylesheet">
+    <link href="../../css/vp.css" rel="stylesheet">
+    <script src="../../../vpcommon/config.js"></script>
+    <script src="../../../vpcommon/vputils.min.js"></script>
+	<style>
+	.step-box .valid {
+		color: #000000;
+	}
+	</style>
+    <!--[if lte IE 9]>
+        <script src="../../js/html5shiv.min.js"></script>
+        <script src="../../js/respond.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+	<div class="step-box-pan display-inline">
+		<div class="step-box m-t-md">
+			<div class="part1">
+				<div class="ibox">
+				    <form class="form-horizontal m-t" id="oForm">
+							<input type="hidden" id="iid" name="iid">
+				            <input type="hidden" id="parentid" name="parentid">
+						    
+							<div class="form-group">
+								<div class="col-xs-12">
+									<label class="col-xs-3 control-label">编号：</label>
+									<div class="col-xs-9">
+									    <input id="scode" name="scode" placeholder="编号" maxlength="60" type="text" class="form-control vp-radius">
+									</div>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<div class="col-xs-12">
+									<label class="col-xs-3 control-label">名称：</label>
+									<div class="col-xs-9">
+									    <input id="sname" name="sname" placeholder="名称" maxlength="60" type="text" class="form-control vp-radius">
+									</div>
+								</div>
+							</div>
+							
+							<div class="form-group layui-form" lay-filter="status">
+								<div class="col-xs-12">
+									<label class="col-xs-3 control-label">描述：</label>
+									<div class="col-xs-9">
+										<textarea id="sdescription" name="sdescription" class="form-control" maxlength="500"></textarea>
+									</div>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<div class="col-xs-12">
+									<label class="col-xs-3 control-label">默认初始状态：</label>
+									<div class="col-xs-9">
+									    <select id="entitystatusid" name="entitystatusid" class="form-control"></select>
+									</div>
+								</div>
+							</div>
+						</form>
+				</div>
+				
+				<!-- <div class="text-center">
+					<button class="btn btn-sm btn-primary" id="btnSaveEntityStatus">保存</button>
+				</div> -->
+			</div>
+		</div>
+	</div>
+
+</body>
+    <!-- 全局js -->
+    <script src="../../js/jquery-1.11.3.min.js"></script>
+	<!--[if IE 8]>
+	<script type="text/javascript" src="../../js/jquery-1.9.1.min.js"></script>
+	<![endif]-->
+    <script src="../../js/bootstrap.min.js?v=3.3.6"></script>
+    <!-- 自定义js -->
+    <script src="../../js/content.js?v=1.0.0"></script>
+    <!-- 日期控件 -->
+    <script src="../../js/plugins/datapicker/bootstrap-datepicker.js"></script>
+    <!-- layer弹出层 -->
+    <script src="../../js/plugins/layer/layer.min.js"></script>
+    <!-- 下拉选择列表 -->
+    <script src="../../js/plugins/chosen/chosen.jquery.js"></script>
+    <!-- jQuery 表单验证-->
+    <script src="../../js/plugins/validate/jquery.validate.min.js"></script>
+    <script src="../../js/plugins/validate/messages_zh.min.js"></script>
+    <!-- zTree模拟树表 -->
+    <script src="../../js/plugins/zTree/jquery.ztree.all.min.js"></script>
+    <script src="../../js/vpsoft/TreeTable.js"></script>
+    <script src="../../js/vpsoft/common.js"></script>
+    <script src="../../js/vpsoft/form.js"></script>
+    <script src="../../js/plugins/iCheck/icheck.min.js"></script>
+    <script src="../../js/vpsoft/getUrlParam.js"></script>
+</html>
+
+<script>
+var iid = parent.document.getElementById("frminfo").contentWindow.iid_;
+	var parentid = parent.document.getElementById("frminfo").contentWindow.parentid_;
+	$("#iid").val(iid);
+	$("#parentid").val(parentid);
+	
+    $(document).ready(function () {
+		$('.i-checks').iCheck({
+			checkboxClass: 'text-primary fa fa-fw fa-square-o'
+		});
+
+
+    	if (iid != 0 && iid != null && iid != '' && iid != undefined){
+    		initEditData(iid, parentid);
+	    }else{
+	    	initData(parentid);
+	    }
+	});
+    
+	//新增功能初始化
+	function initData(parentid){
+		var sparam = {'parentid': parentid};
+		vpPostAjax("/cfgenttype/entitystatuslist", sparam, "POST", function(rst){
+	    	if(rst.success){
+	    		$("#entitystatusid").append("<option ></option>");
+	    		$.each(rst.data, function(i, data) {
+	    			$("#entitystatusid").append("<option value='" + data.iid + "'>" + data.sname + "</option>");
+				});
+	    	}else{
+	    		layer.msg("初始化数据失败！");
+	    	}
+	    });
+	}
+	
+	//编辑功能初始化
+	function initEditData(iid, parentid){
+		var sparam = {'parentid': parentid, 'iid': iid};
+		vpPostAjax("/cfgenttype/get", sparam, "POST", function(rst){
+			var obj = rst;
+	    	if(obj.success){
+	    		$("#entitystatusid").append("<option ></option>");
+	    		$.each(obj.statuslist, function(i, data) {
+	    			$("#entitystatusid").append("<option value='" + data.iid + "'>" + data.sname + "</option>");
+				});
+
+	    		//初始化数据
+	    		$("#scode").val(obj.data.scode);
+	    		$("#sname").val(obj.data.sname);
+	    		$("#sdescription").val(obj.data.sdescription);
+	    		$("#entitystatusid").val(obj.data.idefaultstatusid); 
+	    	}else{
+	    		layer.msg("初始化数据失败！");
+	    	}
+	    });
+	}
+	
+	var callbackfunc = "";
+	function saveForm(callback) {
+		callbackfunc = callback;
+/* 		if (iid != null && iid != '' && iid != undefined && iid != 0){
+			editEntityTypeInfo(iid, parentid);
+		}else{
+			saveEntityTypeInfo(parentid);
+		} */
+		if(document.getElementById("scode").value==""){
+			parent.layer.msg('请填写编号！', { icon: 5, time: 2000 });
+			return false;
+		}
+		if(document.getElementById("sname").value==""){
+			parent.layer.msg('请填写名称！', { icon: 5, time: 2000 });
+			return false;
+		}
+		var isUnique = true;
+		vpPostAjax('/vfmcheck/isUnique', { code: 'cfg_entity_type', iid: $("#iid").val(), data: [ 
+				{ field: 'scode', fieldvalue: document.getElementById("scode").value }
+				, { field: 'iparentid', fieldvalue: $("#parentid").val() } ] }, 'POST', function(rst) {
+			isUnique = !rst;
+		});
+		if(!isUnique){
+			parent.layer.msg("编号已经存在，请重新输入!", {icon: 5,time: 2000});
+			return false;
+		}
+		if(document.getElementById("entitystatusid").value==""){
+			parent.layer.msg('请选择类别所对应的默认初始状态！', { icon: 5, time: 2000 });
+			return false;
+		}
+		
+		$("#oForm").submit();
+	}
+	
+	$("#oForm").validate({
+		submitHandler : function(form) {
+			try
+			{
+				vpPostAjax('/cfgenttype/save', $('#oForm').serializeJSON(), "POST", function(rst) {
+					try {
+						$("#iid").val(rst.iid);
+						eval(callbackfunc)();
+					}
+					catch(exception) {
+						layer.msg(msg004 + callback, { icon: 2, time: 2000 });
+					}	
+				});
+			}
+			catch (e)
+			{
+				layer.msg('取表单数据失败', { icon: 2, time: 2000 });
+			}
+			return false;
+		}
+	});
+	
+	//保存实体类别信息
+	function saveEntityTypeInfo(parentid){
+		var parentid = parentid;
+		var sdescription = $("#sdescription").val()
+	  	var entitystatusid = $("#entitystatusid option:selected").val();
+	  	
+	  	var sname = $("#sname").val().replace(/\s/g, "");
+		if(sname == null || sname == ''){
+			layer.msg("名称不能为空!", {icon: 5,time: 2000});
+			return;
+		}
+		
+	  	var sparam = {'parentid': parentid, 'sname':sname, 'sdescription': sdescription, 'idefaultstatusid': entitystatusid};
+		vpPostAjax("/cfgenttype/add", sparam, "POST", function(rst){
+	    	if(rst.success){
+	    		layer.msg("添加成功!", {icon: 1, time: 2000});
+	    	}else{
+	    		layer.msg("操作数据失败！");
+	    		return ;
+	    	}
+    		parent.layer.closeAll();
+	    });
+	}
+	
+	//修改实体类别信息
+	function editEntityTypeInfo(iid, parentid){
+		if (iid != '' && iid != null && iid != undefined && iid != 0){
+			var sdescription = $("#sdescription").val()
+		  	var entitystatusid = $("#entitystatusid option:selected").val();
+		  	
+		  	var sname = $("#sname").val().replace(/\s/g, "");
+			if(sname == null || sname == ''){
+				layer.msg("名称不能为空!", {icon: 5,time: 2000});
+				return;
+			}
+			
+		  	var sparam = {'iid':iid,'sname':sname, 'sdescription': sdescription, 'idefaultstatusid':entitystatusid };
+			vpPostAjax("/cfgenttype/update", sparam, "POST", function(rst){
+		    	if(rst.success){
+		    		layer.msg("保存成功!", {icon: 1, time: 2000});
+		    	}else{
+		    		layer.msg("操作数据失败！");
+		    		return ;
+		    	}
+		    	parent.layer.closeAll();
+		    });
+		}
+	}
+</script>

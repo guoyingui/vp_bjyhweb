@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>计划  --定时任务处理</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
+    <link rel="shortcut icon" href="img/favicon.ico">
+    <link href="../../css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="../../css/font-awesome.min.css?v=4.7.0" rel="stylesheet">
+    <link href="../../css/animate.css" rel="stylesheet">
+    <link href="../../css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+    <link href="../../css/plugins/datapicker/bootstrap-datetimepicker.min.css" rel="stylesheet">
+    <link href="../../css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+    <!-- zTree树表 -->
+    <link href="../../css/plugins/zTree/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+    <!-- layUI表格 -->
+    <link rel="stylesheet" href="../../js/plugins/layui/css/layui.css"  media="all">
+    <link href="../../css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="../../css/common.css" rel="stylesheet">
+    <link href="../../css/vp.css" rel="stylesheet">
+    <script src="../../../vpcommon/config.js"></script>
+    <script src="../../../vpcommon/vputils.min.js"></script>
+    <!--[if lte IE 9]>
+        <script src="../../js/html5shiv.min.js"></script>
+        <script src="../../js/respond.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+	<div class="padding-10 space-10" style="top: 0px;">
+		<div class="ibox">
+			<!-- <div class="ibox-title border-bottom p-l-none">
+				<h5>基本信息</h5>
+				<div class="ibox-tools">
+					<a class="collapse-link" data-toggle="tooltip" data-placement="top" title="收起">
+						<i class="fa fa-caret-up"></i>
+					</a>
+				</div>
+			</div> -->
+			
+			<form class="form-horizontal m-t" id="oForm">
+			<div class="ibox-content2 p-n clearfix">
+				<div class="form-horizontal m-t" id="oForm">
+				<input type="hidden" id="iid" name="iid">
+					<div class="form-group">
+						<div class="col-sm-6">
+							<label class="col-sm-4 col-md-3 control-label text-ellipsis"><font color=red>*&nbsp;</font>计划名称：</label>
+							<div class="col-sm-8 col-md-9">
+								<input id="sname" name="sname"  class="form-control" type="text">
+							</div>
+						</div>
+						<div class="col-sm-6">
+							<label class="col-sm-4 col-md-3 control-label text-ellipsis">状态：</label>
+							<div class="col-sm-8 col-md-9">
+								<input id="istatus" name="istatus" value="未发布" ivalue="1" class="form-control" type="text" disabled/>
+							</div>
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<div class="col-xs-12">
+							<label class="col-xs-2 control-label">描述：</label>
+							<div class="col-xs-10">
+								<textarea id="sdescription" name="sdescription" class="form-control" ></textarea>
+							</div>
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<div class="col-sm-6">
+							<label class="col-sm-4 col-md-3 control-label text-ellipsis">修改时间：</label>
+							<div class="col-sm-8 col-md-9">
+								<input id="dmodified" name="dmodified" hidid="" class="form-control" type="text" disabled/>
+							</div>
+						</div>
+						<div class="col-sm-6">
+							<label class="col-sm-4 col-md-3 control-label text-ellipsis">修改人：</label>
+							<div class="col-sm-8 col-md-9">
+								<input id="imodified" name="imodified" class="form-control" type="text" disabled/>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="ibox-title border-bottom p-l-none">
+				<h5>触发器</h5>
+				<div class="ibox-tools">
+					<a class="collapse-link" data-toggle="tooltip" data-placement="top" title="收起">
+						<i class="fa fa-caret-up"></i>
+					</a>
+				</div>
+			</div>
+			
+			<div class="ibox-content p-n clearfix">
+				<div class="form-horizontal m-t">
+					<div class="form-group">
+						<div class="col-sm-6">
+							<label class="col-sm-4 col-md-3 control-label text-ellipsis">开始时间：</label>
+							<div class="col-sm-8 col-md-9 sub-head">
+								<input type="text" id="timedate1" name="tstarttime" readonly value="" placeholder="开始时间" class="form-control input-sm padding-right-30 vp-radius">
+				                <i class="fa fa-calendar text-muted"></i>
+							</div>
+						</div>
+						<div class="col-sm-6">
+							<label class="col-sm-4 col-md-3 control-label text-ellipsis">失效时间：</label>
+							<div class="col-sm-8 col-md-9 sub-head">
+								<input type="text" id="timedate" name="tendtime"  value="" placeholder="失效时间" class="form-control input-sm padding-right-30 vp-radius">
+				                <i class="fa fa-calendar text-muted"></i>
+							</div>
+						</div>
+					</div>
+					
+					<div class="form-group" id="triggertype">
+						<div class="col-xs-12">
+							<label class="col-xs-2 control-label">触发方式：</label>
+							<div class="col-xs-10">
+							    <div class="radio radio-info radio-inline">
+									<input type="radio" id="itriggermode1" value="1" name="itriggermode" checked="true"/>
+									<label for="itriggermode1">一次</label>
+								</div>
+								<div class="radio radio-info radio-inline">
+									<input type="radio" id="itriggermode2" value="2" name="itriggermode"/>
+									<label for="itriggermode2">按天</label>
+								</div>
+								<div class="radio radio-info radio-inline">
+									<input type="radio" id="itriggermode3" value="3" name="itriggermode"/>
+									<label for="itriggermode3">按周</label>
+								</div>
+								<div class="radio radio-info radio-inline">
+									<input type="radio" id="itriggermode4" value="4" name="itriggermode"/>
+									<label for="itriggermode5">按月</label>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<div class="form-group"  id="day">
+						<div class="col-xs-12">
+							<label class="col-xs-2 control-label">重复间隔：</label>
+							<div class="col-xs-10">
+							    <select id="idayvalue" name="idayvalue" class="form-control">
+									<!--<option value="1" selected="selected">1分钟</option>-->
+									<option value="5" >5分钟</option>
+									<option value="10" >10分钟</option>
+									<option value="15" selected="selected">15分钟</option>
+									<option value="30" >30分钟</option>
+									<option value="60" >1小时</option>
+									<option value="720" >12小时</option>
+									<option value="1440" >1天</option>
+								</select>
+							</div>
+						</div>
+					</div>
+					
+					<div class="form-group"  id="week">
+						<div class="col-xs-12">
+							<label class="col-xs-2 control-label"><font color=red>*&nbsp;</font>每周的：</label>
+							<div class="col-xs-10">
+								<div class="checkbox vp-m-t-no vp-m-b-no">
+									<input type="checkbox" id="sdaysofweek2" name="sdaysofweek" value="2">
+	                                <label for="sdaysofweek2" id="sdaysofweek2">周一</label>
+								</div>
+								<div class="checkbox vp-m-t-no vp-m-b-no">
+	                                <input type="checkbox" id="sdaysofweek3" name="sdaysofweek" value="3">
+	                                <label for="sdaysofweek3" id="sdaysofweek3">周二</label>
+	                            </div>
+	                            <div class="checkbox vp-m-t-no vp-m-b-no">    
+	                                <input type="checkbox" id="sdaysofweek4" name="sdaysofweek" value="4">
+	                                <label for="sdaysofweek4" id="sdaysofweek4">周三</label>
+	                            </div>
+	                            <div class="checkbox vp-m-t-no vp-m-b-no">    
+	                                <input type="checkbox" id="sdaysofweek5" name="sdaysofweek" value="5">
+	                                <label for="sdaysofweek5" id="sdaysofweek5">周四</label>
+	                            </div>
+	                            <div class="checkbox vp-m-t-no vp-m-b-no">    
+	                                <input type="checkbox" id="sdaysofweek6" name="sdaysofweek" value="6">
+	                                <label for="sdaysofweek6" id="sdaysofweek6">周五</label>
+	                            </div>
+	                            <div class="checkbox vp-m-t-no vp-m-b-no">   
+	                                <input type="checkbox" id="sdaysofweek7" name="sdaysofweek" value="7">
+	                                <label for="sdaysofweek7" id="sdaysofweek7">周六</label>
+	                            </div>
+	                            <div class="checkbox vp-m-t-no vp-m-b-no">    
+	                                <input type="checkbox" id="sdaysofweek1" name="sdaysofweek" value="1">
+	                                <label for="sdaysofweek1" id="sdaysofweek1">周天</label>
+	                            </div>
+	                            <div class="checkbox vp-m-t-no vp-m-b-no">    
+	                                <input type="checkbox" id="sdaysofweekAll" name="sdaysofweekAll" value="*">
+	                                <label for="sdaysofweekAll" id="sdaysofweekAll">全选</label>
+	                            </div>
+							</div>
+						</div>
+					</div>
+					
+					
+					<div class="form-group"  id="month">
+						<div class="col-xs-12">
+							<label class="col-xs-2 control-label"><font color=red>*&nbsp;</font>选择月：</label>
+							<div class="col-xs-10">
+							    <div class="checkbox vp-m-t-no vp-m-b-no">
+									<input type="checkbox" id="smonths1" name="smonths" value="1">
+	                                <label for="smonths1" id="smonths1">一月</label>
+								</div>
+								<div class="checkbox vp-m-t-no vp-m-b-no">
+									<input type="checkbox" id="smonths2" name="smonths" value="2">
+	                                <label for="smonths2" id="smonths2">二月</label>
+								</div>
+								<div class="checkbox vp-m-t-no vp-m-b-no">
+									<input type="checkbox" id="smonths3" name="smonths" value="3">
+	                                <label for="smonths3" id="smonths3">三月</label>
+								</div>
+								<div class="checkbox vp-m-t-no vp-m-b-no">
+									<input type="checkbox" id="smonths4" name="smonths" value="4">
+	                                <label for="smonths4" id="smonths4">四月</label>
+								</div>
+								<div class="checkbox vp-m-t-no vp-m-b-no">
+									<input type="checkbox" id="smonths5" name="smonths" value="5">
+	                                <label for="smonths5" id="smonths5">五月</label>
+								</div>
+								<div class="checkbox vp-m-t-no vp-m-b-no">
+									<input type="checkbox" id="smonths6" name="smonths" value="6">
+	                                <label for="smonths6" id="smonths6">六月</label>
+								</div>
+								<div class="checkbox vp-m-t-no vp-m-b-no">
+									<input type="checkbox" id="smonths7" name="smonths" value="7">
+	                                <label for="smonths7" id="smonths7">七月</label>
+								</div>
+								<div class="checkbox vp-m-t-no vp-m-b-no">
+									<input type="checkbox" id="smonths8" name="smonths" value="8">
+	                                <label for="smonths8" id="smonths8">八月</label>
+								</div>
+								<div class="checkbox vp-m-t-no vp-m-b-no">
+									<input type="checkbox" id="smonths9" name="smonths" value="9">
+	                                <label for="smonths9" id="smonths9">九月</label>
+								</div>
+								<div class="checkbox vp-m-t-no vp-m-b-no">
+									<input type="checkbox" id="smonths10" name="smonths" value="10">
+	                                <label for="smonths10" id="smonths10">十月</label>
+								</div>
+								<div class="checkbox vp-m-t-no vp-m-b-no">
+									<input type="checkbox" id="smonths11" name="smonths" value="11">
+	                                <label for="smonths11" id="smonths11">十一月</label>
+								</div>
+								<div class="checkbox vp-m-t-no vp-m-b-no">
+									<input type="checkbox" id="smonths12" name="smonths" value="12">
+	                                <label for="smonths12" id="smonths12">十二月</label>
+								</div>
+								<div class="checkbox vp-m-t-no vp-m-b-no">
+									<input type="checkbox" id="smonths13" name="smonthsall" value="*">
+	                                <label for="smonths13" id="smonths13">全选</label>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="form-group" id="monthType">
+						<div class="col-xs-12">
+							<label class="col-xs-2 control-label">选择天：</label>
+							<div class="col-xs-10">
+							    <div class="radio radio-info radio-inline">
+									<input type="radio" id="imonthtype1" value="1" name="imonthtype" checked="true" />
+									<label for="imonthtype1">月中的日</label>
+								</div>
+								<div class="radio radio-info radio-inline">
+									<input type="radio" id="imonthtype2" value="2" name="imonthtype" />
+									<label for="imonthtype2">月末</label>
+								</div>
+								<div class="radio radio-info radio-inline">
+									<input type="radio" id="imonthtype3" value="3" name="imonthtype" />
+									<label for="imonthtype3">月中的星期</label>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="form-group" id="monthDay">
+						<div class="col-xs-12">
+							<label class="col-xs-2 control-label"><font color=red>*&nbsp;</font>月中的日：</label>
+							<div class="col-xs-10">
+							    <div class="checkbox vp-m-t-no vp-m-b-no">
+									<input type="checkbox" id="sdaysofmonth1" name="sdaysofmonth" value="1">
+	                                <label for="sdaysofmonth1" id="sdaysofmonth1">1</label>
+								</div>
+								<div class="checkbox vp-m-t-no vp-m-b-no">
+									<input type="checkbox" id="sdaysofmonth2" name="sdaysofmonth" value="2">
+	                                <label for="sdaysofmonth2" id="sdaysofmonth2">2</label>
+								</div>
+								<div class="checkbox vp-m-t-no vp-m-b-no">
+									<input type="checkbox" id="sdaysofmonth3" name="sdaysofmonth" value="3">
+	                                <label for="sdaysofmonth3" id="sdaysofmonth3">3</label>
+								</div>
+								<div class="checkbox vp-m-t-no vp-m-b-no">
+									<input type="checkbox" id="sdaysofmonth4" name="sdaysofmonth" value="4">
+	                                <label for="sdaysofmonth4" id="sdaysofmonth4">4</label>
+								</div>
+								<div class="checkbox vp-m-t-no vp-m-b-no">
+									<input type="checkbox" id="sdaysofmonth5" name="sdaysofmonth" value="5">
+	                                <label for="sdaysofmonth5" id="sdaysofmonth5">5</label>
+								</div>
+								<div class="checkbox vp-m-t-no vp-m-b-no">
+									<input type="checkbox" id="sdaysofmonth6" name="sdaysofmonth" value="6">
+	                                <label for="sdaysofmonth6" id="sdaysofmonth6">6</label>
+								</div>
+								<div class="checkbox vp-m-t-no vp-m-b-no">
+									<input type="checkbox" id="sdaysofmonth7" name="sdaysofmonth" value="7">
+	                                <label for="sdaysofmonth7" id="sdaysofmonth7">7</label>
+								</div>
+								<div class="checkbox vp-m-t-no vp-m-b-no">
+									<input type="checkbox" id="sdaysofmonth8" name="sdaysofmonth" value="8">
+	                                <label for="sdaysofmonth8" id="sdaysofmonth8">8</label>
+								</div>
+								<div class="checkbox vp-m-t-no vp-m-b-no">
+									<input type="checkbox" id="sdaysofmonth9" name="sdaysofmonth" value="9">
+	                                <label for="sdaysofmonth9" id="sdaysofmonth9">9</label>
+								</div>
+								<div class="checkbox vp-m-t-no vp-m-b-no">
+									<input type="checkbox" id="sdaysofmonth10" name="sdaysofmonth" value="10">
+	                                <label for="sdaysofmonth10" id="sdaysofmonth10">10</label>
+								</div>
+								<div class="checkbox vp-m-t-no vp-m-b-no">
+									<input type="checkbox" id="sdaysofmonth11" name="sdaysofmonth" value="11">
+	                                <label for="sdaysofmonth11" id="sdaysofmonth11">11</label>
+								</div>
+								<div class="checkbox vp-m-t-no vp-m-b-no">
+									<input type="checkbox" id="sdaysofmonth12" name="sdaysofmonth" value="12">
+	                                <label for="sdaysofmonth12" id="sdaysofmonth12">12</label>
+								</div>
+								<div class="checkbox vp-m-t-no vp-m-b-no">
+									<input type="checkbox" id="sdaysofmonth13" name="sdaysofmonth" value="13">
+	                                <label for="sdaysofmonth13" id="sdaysofmonth13">13</label>
+								</div>
+								<div class="checkbox vp-m-t-no vp-m-b-no">
+									<input type="checkbox" id="sdaysofmonth14" name="sdaysofmonth" value="14">
+	                                <label for="sdaysofmonth14" id="sdaysofmonth14">14</label>
+								</div>
+								<div class="checkbox vp-m-t-no vp-m-b-no">
+									<input type="checkbox" id="sdaysofmonth15" name="sdaysofmonth" value="15">
+	                                <label for="sdaysofmonth15" id="sdaysofmonth15">15</label>
+								</div>
+								<div class="checkbox vp-m-t-no vp-m-b-no">
+									<input type="checkbox" id="sdaysofmonth16" name="sdaysofmonth" value="16">
+	                                <label for="sdaysofmonth16" id="sdaysofmonth16">16</label>
+								</div>
+								<div class="checkbox vp-m-t-no vp-m-b-no">
+									<input type="checkbox" id="sdaysofmonth17" name="sdaysofmonth" value="17">
+	                                <label for="sdaysofmonth17" id="sdaysofmonth17">17</label>
+								</div>
+								<div class="checkbox vp-m-t-no vp-m-b-no">
+									<input type="checkbox" id="sdaysofmonth18" name="sdaysofmonth" value="18">
+	                                <label for="sdaysofmonth18" id="sdaysofmonth18">18</label>
+								</div>
+								<div class="checkbox vp-m-t-no vp-m-b-no">
+									<input type="checkbox" id="sdaysofmonth19" name="sdaysofmonth" value="19">
+	                                <label for="sdaysofmonth19" id="sdaysofmonth19">19</label>
+								</div>
+								<div class="checkbox vp-m-t-no vp-m-b-no">
+									<input type="checkbox" id="sdaysofmonth20" name="sdaysofmonth" value="20">
+	                                <label for="sdaysofmonth20" id="sdaysofmonth20">20</label>
+								</div>
+								<div class="checkbox vp-m-t-no vp-m-b-no">
+									<input type="checkbox" id="sdaysofmonth21" name="sdaysofmonth" value="21">
+	                                <label for="sdaysofmonth21" id="sdaysofmonth21">21</label>
+								</div>
+								<div class="checkbox vp-m-t-no vp-m-b-no">
+									<input type="checkbox" id="sdaysofmonth22" name="sdaysofmonth" value="22">
+	                                <label for="sdaysofmonth22" id="sdaysofmonth22">22</label>
+								</div>
+								<div class="checkbox vp-m-t-no vp-m-b-no">
+									<input type="checkbox" id="sdaysofmonth23" name="sdaysofmonth" value="23">
+	                                <label for="sdaysofmonth" id="sdaysofmonth">23</label>
+								</div>
+								<div class="checkbox vp-m-t-no vp-m-b-no">
+									<input type="checkbox" id="sdaysofmonth24" name="sdaysofmonth" value="24">
+	                                <label for="sdaysofmonth24" id="sdaysofmonth24">24</label>
+								</div>
+								<div class="checkbox vp-m-t-no vp-m-b-no">
+									<input type="checkbox" id="sdaysofmonth25" name="sdaysofmonth" value="25">
+	                                <label for="sdaysofmonth25" id="sdaysofmonth25">25</label>
+								</div>
+								<div class="checkbox vp-m-t-no vp-m-b-no">
+									<input type="checkbox" id="sdaysofmonth26" name="sdaysofmonth" value="26">
+	                                <label for="sdaysofmonth26" id="sdaysofmonth26">26</label>
+								</div>
+								<div class="checkbox vp-m-t-no vp-m-b-no">
+									<input type="checkbox" id="sdaysofmonth27" name="sdaysofmonth" value="27">
+	                                <label for="sdaysofmonth27" id="sdaysofmonth27">27</label>
+								</div>
+								<div class="checkbox vp-m-t-no vp-m-b-no">
+									<input type="checkbox" id="sdaysofmonth28" name="sdaysofmonth" value="28">
+	                                <label for="sdaysofmonth28" id="sdaysofmonth28">28</label>
+								</div>
+								<div class="checkbox vp-m-t-no vp-m-b-no">
+									<input type="checkbox" id="sdaysofmonth29" name="sdaysofmonth" value="29">
+	                                <label for="sdaysofmonth29" id="sdaysofmonth29">29</label>
+								</div>
+								<div class="checkbox vp-m-t-no vp-m-b-no">
+									<input type="checkbox" id="sdaysofmonth30" name="sdaysofmonth" value="30">
+	                                <label for="sdaysofmonth30" id="sdaysofmonth30">30</label>
+								</div>
+								<div class="checkbox vp-m-t-no vp-m-b-no">
+									<input type="checkbox" id="sdaysofmonth31" name="sdaysofmonth" value="31">
+	                                <label for="sdaysofmonth31" id="sdaysofmonth31">31</label>
+								</div>
+								<div class="checkbox vp-m-t-no vp-m-b-no">
+									<input type="checkbox" id="sdaysofmonth32" name="sdaysofmonthAll" value="*">
+	                                <label for="sdaysofmonth32" id="sdaysofmonth32">全选</label>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="form-group"  id="monthWeekDay">
+						<div class="col-xs-12">
+							<label class="col-xs-2 control-label">月中的星期：</label>
+							<div class="col-xs-5">
+							    <select id="imonthweek" name="imonthweek" class="form-control">
+									<option value="1" selected="selected">第一个</option>
+									<option value="2" >第二个</option>
+									<option value="3" >第三个</option>
+									<option value="4" >第四个</option>
+									<option value="L" >最后一个</option>
+								</select>
+							</div>
+							<div class="col-xs-5">			
+							    <select id="imonthweekday" name="imonthweekday" class="form-control">
+									<option value="2" selected="selected">周一</option>
+									<option value="3" >周二</option>
+									<option value="4" >周三</option>
+									<option value="5" >周四</option>
+									<option value="6" >周五</option>
+									<option value="7" >周六</option>
+									<option value="1" >周日</option>
+								</select>
+							</div>
+						</div>
+					</div>
+					
+				</div>
+			</div>
+			</form>
+			
+			<div class="ibox-title border-bottom p-l-none" id="plantasktitle">
+				<h5>触发任务</h5>
+			</div>
+			
+			<div class="ibox-content2 p-n clearfix">
+			    <iframe id="plantasklist" src="plantasklist.html" style="height: 600px; width: 99%; border: 0px;"></iframe>
+			</div>
+		</div>
+	</div>
+</body>
+    <!-- 全局js -->
+    <script src="../../js/jquery-1.11.3.min.js"></script>
+	<!--[if IE 8]>
+	<script type="text/javascript" src="../../js/jquery-1.9.1.min.js"></script>
+	<![endif]-->
+    <script src="../../js/bootstrap.min.js?v=3.3.6"></script>
+    <!-- 自定义js -->
+    <script src="../../js/content.js?v=1.0.0"></script>
+    <!-- 日期控件 -->
+    <script src="../../js/plugins/datapicker/bootstrap-datepicker.js"></script>
+    <script src="../../js/plugins/datapicker/bootstrap-datetimepicker.min.js"></script>
+    <script src="../../js/plugins/datapicker/bootstrap-datetimepicker.zh-CN.js"></script>
+    <!-- layer弹出层 -->
+    <script src="../../js/plugins/layer/layer.min.js"></script>
+    <script src="../../js/plugins/layui/layui.js"></script>
+    <!-- 下拉选择列表 -->
+    <script src="../../js/plugins/chosen/chosen.jquery.js"></script>
+    <!-- jQuery 表单验证-->
+    <script src="../../js/plugins/validate/jquery.validate.min.js"></script>
+    <script src="../../js/plugins/validate/messages_zh.min.js"></script>
+    <!-- zTree模拟树表 -->
+    <script src="../../js/plugins/zTree/jquery.ztree.all.min.js"></script>
+    <script src="../../js/vpsoft/TreeTable.js"></script>
+    <script src="../../js/vpsoft/common.js"></script>
+    <script src="../../js/vpsoft/form.js"></script>
+    <script src="../../js/plugins/iCheck/icheck.min.js"></script>
+</html>
+<script>
+    var iid_ = 0;
+    var planid = $('#vpeditform', parent.document).attr("iid");
+    var istatus = "1";
+	$(document).ready(function () {
+		$('#timedate1').datetimepicker({
+			format: 'yyyy-mm-dd hh:ii:ss',
+		    autoclose: true,
+		    minView: 0,
+		    language : 'zh-CN',
+		    minuteStep:1
+		});
+		$('#timedate').datetimepicker({
+			format: 'yyyy-mm-dd hh:ii:ss',
+		    autoclose: true,
+		    minView: 0,
+		    language : 'zh-CN',
+		    minuteStep:1
+		});
+		
+		$('#day').hide();
+		$('#week').hide();
+		$('#month').hide();
+		$('#monthType').hide();
+		$('#monthDay').hide();
+		$('#monthWeekDay').hide();
+    	$(":radio[name='itriggermode']").click(function(){
+    		var index = $(":radio[name='itriggermode']").index($(this));
+    	    if(index == 0){
+    			$('#day').hide();
+    			$('#week').hide();
+    			$('#month').hide();
+    			$('#monthType').hide();
+    			$('#monthDay').hide();
+    			$('#monthWeekDay').hide();
+    	    }else if(index == 1){
+    	    	$('#day').show();
+    			$('#week').hide();
+    			$('#month').hide();
+    			$('#monthType').hide();
+    			$('#monthDay').hide();
+    			$('#monthWeekDay').hide();
+    	    }else if(index == 2){
+    	    	$('#day').hide();
+    			$('#week').show();
+    			$('#month').hide();
+    			$('#monthType').hide();
+    			$('#monthDay').hide();
+    			$('#monthWeekDay').hide();
+    	    }else if(index == 3){
+    	    	$('#day').hide();
+    			$('#week').hide();
+    			$('#month').show();
+    			$('#monthType').show();
+    			$('#monthDay').show();
+    			$('#monthWeekDay').hide();
+    	    }
+    	});
+    	$(":radio[name='imonthtype']").click(function(){
+    		var index = $(":radio[name='imonthtype']").index($(this));
+    		if(index == 0){
+    			$('#day').hide();
+    			$('#week').hide();
+    			$('#month').show();
+    			$('#monthType').show();
+    			$('#monthDay').show();
+    			$('#monthWeekDay').hide();
+    	    }else if(index == 1){
+    	    	$('#day').hide();
+    			$('#week').hide();
+    			$('#month').show();
+    			$('#monthType').show();
+    			$('#monthDay').hide();
+    			$('#monthWeekDay').hide();
+    	    }else if(index == 2){
+    	    	$('#day').hide();
+    			$('#week').hide();
+    			$('#month').show();
+    			$('#monthType').show();
+    			$('#monthDay').hide();
+    			$('#monthWeekDay').show();
+    	    }
+    	});
+		
+		$('.i-checks').iCheck({
+			checkboxClass: 'text-primary fa fa-fw fa-square-o'
+		});
+		
+		if(planid != '' && planid != undefined && planid != '0'){
+			$('#plantasktitle').show();
+			$('#plantasklist').show();
+			vpPostAjax('/schedule/plan/get', { iid: $('#vpeditform', parent.document).attr("iid"), userid: '1' }, "POST", function(rst) {
+				var plan = rst.data;
+				$("#iid").val(plan.iid);
+				$("#sname").val(plan.sname);
+				if(plan.istatus==1){
+					istatus = "1";
+				    $("#istatus").val("未发布");
+				    $("#istatus").attr("ivalue","1");
+				}else{
+					istatus = "0";
+					$("#istatus").val("已发布");
+					$("#istatus").attr("ivalue","0");
+				}
+				$("#sdescription").val(plan.sdescription);
+				$("#dmodified").val(plan.dmodified);
+				$("#imodified").val(plan.sloginname);
+				$('#timedate1').val(plan.tstarttime);
+				$('#timedate').val(plan.tendtime);
+				
+				$("input:radio[name=itriggermode][value=" + plan.itriggermode + "]").attr("checked",true);
+                if(plan.itriggermode == 1){
+        			$('#day').hide();
+        			$('#week').hide();
+        			$('#month').hide();
+        			$('#monthType').hide();
+        			$('#monthDay').hide();
+        			$('#monthWeekDay').hide();
+        	    }else if(plan.itriggermode == 2){
+        	    	$('#day').show();
+        	    	$("#idayvalue").val(plan.idayvalue); 
+        			$('#week').hide();
+        			$('#month').hide();
+        			$('#monthType').hide();
+        			$('#monthDay').hide();
+        			$('#monthWeekDay').hide();
+        	    }else if(plan.itriggermode == 3){
+        	    	$('#day').hide();
+        			$('#week').show();
+        			$(":checkbox[name='sdaysofweek']").each(function() {
+        				if(plan.sdaysofweek.indexOf("*")>-1){
+        					$(this).attr('checked', true);
+        					$("#sdaysofweekAll").attr('checked', true);
+        				}else{
+	        				var strs = plan.sdaysofweek.split(",");
+	        				for (i=0; i<strs.length; i++){ 
+		        				if($(this).val() == strs[i]){
+		        		            $(this).attr('checked', true);
+		        				}
+	        				}
+        				}
+        		    });
+        			
+        			$('#month').hide();
+        			$('#monthType').hide();
+        			$('#monthDay').hide();
+        			$('#monthWeekDay').hide();
+        	    }else if(plan.itriggermode == 4){
+        	    	$('#day').hide();
+        			$('#week').hide();
+        			$('#month').show();
+        			$(":checkbox[name='smonths']").each(function() {
+        				if(plan.smonths.indexOf("*")>-1){
+        					$(this).attr('checked', true);
+        					$("#smonths13").attr('checked', true);
+        				}else{
+	        				var strs = plan.smonths.split(",");
+	        				for (i=0; i<strs.length; i++){ 
+		        				if($(this).val() == strs[i]){
+		        		            $(this).attr('checked', true);
+		        				}
+	        				}
+        				}
+        		    });
+        			$("input:radio[name=imonthtype][value=" + plan.imonthtype + "]").attr("checked",true);
+                    $('#monthType').show();
+        			if(plan.imonthtype == 1){
+            			$('#monthDay').show();
+            			$(":checkbox[name='sdaysofmonth']").each(function() {
+            				if(plan.sdaysofmonth.indexOf("*")>-1){
+            					$(this).attr('checked', true);
+            					$("#sdaysofmonth32").attr('checked', true);
+            				}else{
+    	        				var strs = plan.sdaysofmonth.split(",");
+    	        				for (i=0; i<strs.length; i++){ 
+    		        				if($(this).val() == strs[i]){
+    		        		            $(this).attr('checked', true);
+    		        				}
+    	        				}
+            				}
+            		    });
+            			$('#monthWeekDay').hide();
+        			}else if(plan.imonthtype == 2){
+        				$('#monthDay').hide();
+            			$('#monthWeekDay').hide();
+        			}else if(plan.imonthtype == 3){
+        				$('#monthDay').hide();
+            			$('#monthWeekDay').show();
+            			$("#imonthweek").val(plan.imonthweek);
+            			$("#imonthweekday").val(plan.imonthweekday); 
+        			}
+        	    }
+			});
+		}else{
+			$('#plantasktitle').hide();
+			$('#plantasklist').hide();
+			vpPostAjax('/schedule/plan/get', { iid: 0, userid: '1' }, "POST", function(rst) {
+				var plan = rst.data;
+				$('#timedate1').val(plan.tstarttime);
+				$('#timedate').val();
+			});	
+		}
+		
+		$('#btnbutton', parent.document).html('<button class="btn btn-sm btn-primary" id="saveBtn">保存</button>&nbsp;');
+		
+		$('#btnbutton', parent.document).click(function() {	
+			var sname = $('#sname').val();
+			var checked = $(":radio[name='itriggermode']:checked").val();
+			var smonths = $(":checkbox[name='smonths']:checked").val();
+			var imonthtype = $(":radio[name='imonthtype']:checked").val();
+			var sdaysofmonth = $(":checkbox[name='sdaysofmonth']:checked").val();
+			if(sname==''||sname==undefined){
+				layer.msg('名称不能为空！', { icon: 5, time: 2000 });
+			}
+			else if(checked=='3'){
+				var sdaysofweek = $(":checkbox[name='sdaysofweek']:checked").val();
+				if(sdaysofweek==''||sdaysofweek==undefined){
+					layer.msg('每周输入不能为空！', { icon: 5, time: 2000 });
+				}else{
+					$(this).parent().find("#frminfo").contents().find("#oForm").submit();
+				}
+			}
+			else if(checked=='4'){
+				if(imonthtype==1||imonthtype==2||imonthtype==3){
+					var imonthweek = $("#imonthweek").val();
+					if(smonths==''||smonths==undefined){
+						layer.msg('选择月不能为空！', { icon: 5, time: 2000 });
+					}
+					else if ((sdaysofmonth==''||sdaysofmonth==undefined)&&imonthtype==1){
+						layer.msg('月中的日不能为空！', { icon: 5, time: 2000 });
+					}
+					else{
+						$(this).parent().find("#frminfo").contents().find("#oForm").submit();
+					}
+				}
+				else{
+					$(this).parent().find("#frminfo").contents().find("#oForm").submit();
+				}
+			}
+			else{
+				$(this).parent().find("#frminfo").contents().find("#oForm").submit();
+			}
+			
+		});
+	});
+	
+	//按周  全选/取消全选
+	$(":checkbox[name='sdaysofweekAll']").click(function(){
+	    if ($(this).is(':checked')) {
+	    	//$("[name=sdaysofweek]").removeAttr("checked");
+	    	//$("[name=sdaysofweek]").attr("checked","checked");
+	    	$("[name=sdaysofweek]").prop("checked",true);
+	    }else{
+	    	$("[name=sdaysofweek]").prop("checked",false);
+	    	//$("[name=sdaysofweek]").removeAttr("checked");
+	    }
+	});
+	
+	$("input[name='sdaysofweek']").change(function(){
+	    if($("input[name='sdaysofweek']").not("input:checked").size() <= 0){
+	        //如果其它的复选框全部被勾选了，那么全选勾中
+	        $('#sdaysofweekAll').prop('checked',true);
+	    }else{        
+	        $('#sdaysofweekAll').prop('checked',false);
+	    }
+	});
+	
+	//选择月 全选/取消全选
+	$(":checkbox[name='smonthsall']").click(function(){
+	    if ($(this).is(':checked')) {
+	    	//$("[name=smonths]").attr("checked",true);   //只有第一次起作用
+	    	$("[name=smonths]").prop("checked",true);
+	    }else{
+	    	//$("[name=smonths]").attr("checked",false);
+	    	$("[name=smonths]").prop("checked",false);    //只有第一次起作用
+	    }
+	});
+	
+	$("input[name='smonths']").change(function(){
+	    if($("input[name='smonths']").not("input:checked").size() <= 0){
+	        //如果其它的复选框全部被勾选了，那么全选勾中
+	        $('#smonths13').prop('checked',true);
+	    }else{        
+	        $('#smonths13').prop('checked',false);
+	    }
+	});
+	
+	//月中的日  全选/取消全选
+	$(":checkbox[name='sdaysofmonthAll']").click(function(){
+	    if ($(this).is(':checked')) {
+	    	$("[name=sdaysofmonth]").prop("checked",true);
+	    }else{
+	    	$("[name=sdaysofmonth]").prop("checked",false);
+	    }
+	});
+	
+	$("input[name='sdaysofmonth']").change(function(){
+	    if($("input[name='sdaysofmonth']").not("input:checked").size() <= 0){
+	        //如果其它的复选框全部被勾选了，那么全选勾中
+	        $('#sdaysofmonth32').prop('checked',true);
+	    }else{
+	        $('#sdaysofmonth32').prop('checked',false);
+	    }
+	});
+	
+	var callbackfunc = "";
+	function saveForm(callback) {
+		callbackfunc = callback;
+		$("#oForm").submit();
+	}
+	
+	$("#oForm").validate({
+		submitHandler : function(form) {
+			try
+			{				
+				$("#saveBtn", parent.document).attr('disabled', "true");
+				var oFormData = $('#oForm').serializeJSON();
+				oFormData["istatus"] = $("#istatus").attr("ivalue");
+				vpPostAjax('/schedule/plan/save', oFormData, "POST", function(rst) {
+					if(rst.success){
+						$("#iid").val(rst.iid);
+						planid = rst.iid;
+						parent.reload();
+						$('#plantasktitle').show();
+						$('#plantasklist').show();
+						$('#plantasklist').attr('src', $('#plantasklist').attr('src'));
+					}
+				});
+			}
+			catch (e)
+			{
+				layer.msg('保存表单数据失败:' + e, { icon: 2, time: 2000 });
+			}
+			$("#saveBtn", parent.document).removeAttr('disabled');
+			return false;
+		}
+	});
+	
+	function toTaskList(obj) {
+		iid_ = 0;
+		var title = '任务';
+		if (obj) {
+			title = "";
+			iid_ = "";
+		}
+		var param = {};
+		param["btn"] = new Array(["确定"]);
+
+		parent.openWindow('tasklist.html', title, param, function(index, layero, ibtn) {
+			try
+			{
+				$(layero).find("iframe")[0].contentWindow.saveForm(function(data) {
+					reload();
+					parent.layer.close(index);
+				});
+			}
+			catch (e)
+			{
+				layer.msg(e, { icon: 2, time: 2000 });
+			}
+		});
+	}
+	
+	function toolEvent(){
+		
+	}
+</script>

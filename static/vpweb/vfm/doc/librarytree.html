@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<HTML>
+<HEAD>
+    <TITLE> ZTREE DEMO - Simple Data</TITLE>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+   <link rel="shortcut icon" href="img/favicon.ico">
+    <link href="../../css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="../../css/font-awesome.min.css?v=4.7.0" rel="stylesheet">
+    <link href="../../css/animate.css" rel="stylesheet">
+    
+    <link href="../../css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="../../css/common.css" rel="stylesheet">
+    <link href="../../css/vp.css" rel="stylesheet">
+    
+    <link rel="stylesheet" href="../../css/plugins/zTree/metroStyle/metroStyle.css" type="text/css">
+    <script type="text/javascript" src="../../js/plugins/zTree/jquery-1.4.4.min.js"></script>
+    <script type="text/javascript" src="../../js/plugins/zTree/jquery.ztree.core.js"></script>
+    <script type="text/javascript" src="../../js/plugins/zTree/jquery.ztree.excheck.js"></script>
+    <script type="text/javascript" src="../../js/plugins/zTree/jquery.ztree.exedit.js"></script>
+	<style type="text/css">
+	
+		::-webkit-scrollbar {
+		    width:6px;
+		    height:6px;
+		}
+		::-webkit-scrollbar-button {
+		    display: none;
+		}
+		::-webkit-scrollbar-track {
+		    background:none;
+		}
+		::-webkit-scrollbar-track-piece {
+		    
+		}
+		::-webkit-scrollbar-thumb{
+		    background:#ccc;
+		    border-radius:3px;
+		}
+		
+		.btnFixed {
+		    position: fixed;
+		    bottom: -5px;
+		    left: 5px;
+		    right: 5px;
+		    padding-top: 15px;
+		    border-top: 1px solid #ddd;
+		    background: #fff;
+		    z-index: 100;
+		}
+	</style>
+    <script src="../../../vpcommon/config.js"></script>
+    <script src="../../../vpcommon/vputils.min.js"></script>
+    
+	<!-- 全局js -->
+    <script src="../../js/jquery-1.11.3.min.js"></script>
+	<!--[if IE 8]>
+	<script type="text/javascript" src="../../js/jquery-1.9.1.min.js"></script>
+	<![endif]-->
+    <script src="../../js/bootstrap.min.js?v=3.3.6"></script>
+    <!-- 自定义js -->
+    <script src="../../js/content.js?v=1.0.0"></script>
+    <!-- 日期控件 -->
+    <script src="../../js/plugins/datapicker/bootstrap-datepicker.js"></script>
+    <!-- layer弹出层 -->
+    <script src="../../js/plugins/layer/layer.min.js"></script>
+    <script src="../../js/plugins/layui/layui.js"></script>
+    <!-- 下拉选择列表 -->
+    <script src="../../js/plugins/chosen/chosen.jquery.js"></script>
+    <!-- zTree模拟树表 -->
+    <script src="../../js/plugins/zTree/jquery.ztree.all.min.js"></script>
+    <script src="../../js/vpsoft/TreeTable.js"></script>
+    <script src="../../js/vpsoft/common.js"></script>
+    <script src="../../js/vpsoft/form.js"></script>
+    <script src="../../js/plugins/iCheck/icheck.min.js"></script>
+
+    <SCRIPT type="text/javascript">
+    	var treeType = getParameter("treeType");
+    	var treeObj;
+        var setting = {
+            view: {
+				enable : true,  
+				showLine : true, 
+                selectedMulti: false
+            },
+            check: {
+            	enable: true,
+                chkStyle: "radio",  //单选框
+                radioType: "all"   //对所有节点设置单选
+            },
+            data: {
+                simpleData: {enable: true }
+            },
+			callback : {  
+				onClick : zTreeOnClick,
+				onCheck: zTreeonCheck
+			},  
+            edit: {
+                enable: false
+            }
+        };
+        
+        $(document).ready(function(){
+        	refreshTree();
+        });
+		
+		function zTreeOnClick(event, treeId, treeNode) {
+			if(treeNode.icheck==false||treeNode.icheck=="false"){
+				return;
+			}
+			if(treeNode.checked == true ){
+				if(parent.window.appdoclist && treeType == 'chosenFolder'){
+					$('#names', parent.document).attr('ifolderid','0');
+					$('#names', parent.document).val('');
+				} else {
+					$('#ifolderid', parent.document).val('0');
+					$('#sfoldername', parent.document).val('');
+				}
+				treeObj.checkNode(treeNode, false, false);
+			}else{
+				if(parent.window.appdoclist && treeType == 'chosenFolder'){
+					$('#names', parent.document).attr('ifolderid',treeNode.id);
+					$('#names', parent.document).val(treeNode.nodepath);
+				} else {
+					if(treeType == 'chosenFolder'){
+						$('#ifolderid', parent.document).val(treeNode.id);
+					} else {
+						$('#ifolderid', parent.document).val(treeNode.irellibraryid);
+					}
+					$('#sfoldername', parent.document).val(treeNode.nodepath);
+				}
+				treeObj.checkNode(treeNode, true, true);
+			}
+		}
+		
+		function zTreeonCheck(event, treeId, treeNode) {
+			if(treeNode.checked == true ){
+				if(parent.window.appdoclist && treeType == 'chosenFolder'){
+					$('#names', parent.document).attr('ifolderid',treeNode.id);
+					$('#names', parent.document).val(treeNode.nodepath);
+				} else {
+					if(treeType == 'chosenFolder'){
+						$('#ifolderid', parent.document).val(treeNode.id);
+					} else {
+						$('#ifolderid', parent.document).val(treeNode.irellibraryid);
+					}
+					$('#sfoldername', parent.document).val(treeNode.nodepath);
+				}
+			}else{
+				if(parent.window.appdoclist && treeType == 'chosenFolder'){
+					$('#names', parent.document).attr('ifolderid','0');
+					$('#names', parent.document).val('');
+				} else {
+					$('#ifolderid', parent.document).val('0');
+					$('#sfoldername', parent.document).val('');
+				}
+			}
+			
+		}
+		
+		function refreshTree(){
+			treeType = getParameter("treeType");
+			var ico = '../../images/node.png'; //'../../css/plugins/zTree/zTreeStyle/img/diy/9.png';
+			vpPostAjax('/document/libraryTree', {treeType: treeType }, "POST", function(rst) {
+				var vpnode = new Array();
+				$.each(rst.data, function (i, item) { 
+					if (item.iparent != '0') {
+						ico = '../../images/node.png'; //'../../css/plugins/zTree/zTreeStyle/img/diy/2.png';
+					}
+					vpnode.push( { id:item.iid, pId:item.iparent, name:item.sname, irellibraryid:item.irellibraryid,open: true,isParent: true,icheck: item.icheck,nodepath: item.nodepath, iconOpen:'../../images/node.png', iconClose:'../../images/node.png', icon: ico  } );
+				});
+				treeObj = $.fn.zTree.init($("#libraryTree"), setting, vpnode);
+				var nodes = treeObj.transformToArray(treeObj.getNodes());
+                for (var i=0, l=nodes.length; i < l; i++) {
+                    if (nodes[i].icheck==false||nodes[i].icheck=='false'){
+                        treeObj.setChkDisabled(nodes[i], true);
+                    }
+                }
+			});
+			if(parent.window.appdoclist){ //
+				if(treeType == 'chosenFolder'){
+					var btnHtml = '<button class="btn btn-sm btn-primary" disabled id="saveBtn">确认</button>&nbsp;';
+					$('#formBtn').removeClass('hide');
+					$('#formBtn').html(btnHtml);
+					$('#formBtn button').removeAttr('disabled');
+					$('#formBtn').attr('style','bottom: 0px; display: block;');
+					var height = $("body").height()-60;
+					$("#libraryTree").height(height);
+					$('#saveBtn').click(function() {	
+						parent.window.appdoclist.confirmChosen();
+					});
+				} else {
+					var height = $("body").height();
+					$("#libraryTree").height(height);
+				}
+			} 
+		}
+    </SCRIPT>
+</HEAD>
+
+<body class="white-bg" style="width:99%">	
+	<div id="treeDiv" class="full-height vp-overflow-y">
+		<ul id="libraryTree" class="ztree" ></ul>
+	</div>
+	<div class="hide btnFixed text-center" id="formBtn">
+	
+	</div>
+</body>
+</HTML>

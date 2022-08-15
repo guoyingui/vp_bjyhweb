@@ -1,0 +1,81 @@
+@CHARSET "UTF-8";
+.modal.left .modal-dialog,  
+.modal.right .modal-dialog {  
+    position: fixed;  
+    margin: auto;  
+    height: 100%;  
+    -webkit-transform: translate3d(0%, 0, 0);  
+        -ms-transform: translate3d(0%, 0, 0);  
+         -o-transform: translate3d(0%, 0, 0);  
+            transform: translate3d(0%, 0, 0);  
+}  
+
+.modal.left .modal-content,  
+.modal.right .modal-content {  
+    height: 100%;  
+    overflow-y: auto;  
+}  
+  
+.modal.left .modal-body,  
+.modal.right .modal-body {  
+    padding: 15px 15px 15px;
+}  
+
+/*Left*/  
+.modal.left.fade .modal-dialog{  
+    left: -320px;  
+    -webkit-transition: opacity 0.3s linear, left 0.3s ease-out;  
+       -moz-transition: opacity 0.3s linear, left 0.3s ease-out;  
+         -o-transition: opacity 0.3s linear, left 0.3s ease-out;  
+            transition: opacity 0.3s linear, left 0.3s ease-out;  
+}  
+  
+.modal.left.fade.in .modal-dialog{  
+    left: 0;  
+}  
+      
+/*Right*/  
+.modal.right.fade .modal-dialog {  
+	right:-600px;
+    -webkit-transition: opacity 0.3s linear, right 0.5s ease-out;  
+       -moz-transition: opacity 0.3s linear, right 0.5s ease-out;  
+         -o-transition: opacity 0.3s linear, right 0.5s ease-out;  
+            transition: opacity 0.3s linear, right 0.5s ease-out;  
+}  
+.modal.right.fade .modal-dialog.modal-sm {  
+	right:-300px;
+    -webkit-transition: opacity 0.3s linear, right 0.3s ease-out;  
+       -moz-transition: opacity 0.3s linear, right 0.3s ease-out;  
+         -o-transition: opacity 0.3s linear, right 0.3s ease-out;  
+            transition: opacity 0.3s linear, right 0.3s ease-out;  
+}  
+  
+.modal.right.fade .modal-dialog.modal-lg{
+	right:-900px;
+	-webkit-transition: opacity 0.3s linear, right 1s ease-out;  
+       -moz-transition: opacity 0.3s linear, right 1s ease-out;  
+         -o-transition: opacity 0.3s linear, right 1s ease-out;  
+            transition: opacity 0.3s linear, right 1s ease-out;  
+}
+.modal.right.fade.in .modal-dialog {  
+    right: 0;  
+}  
+.modal.right .modal-dialog .modal-header{
+	display: none;
+}
+.bootstrap-dialog.right .modal-content, .bootstrap-dialog.left .modal-content{
+	position: relative;
+}
+.bootstrap-dialog.buttons-top .modal-content .modal-footer{
+	display: block;
+    position: absolute;
+    top: 0px;
+    width: 100%;
+}
+.modal.left.buttons-top .modal-body,  
+.modal.right.buttons-top .modal-body {  
+    padding: 65px 15px 15px;
+}
+body.modal-open{
+	overflow:auto;
+}

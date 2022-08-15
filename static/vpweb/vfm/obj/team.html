@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>任务看板 - VP应用全生命周期管理系统</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
+    <link rel="shortcut icon" href="img/favicon.ico">
+    <link href="../../css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="../../css/font-awesome.min.css?v=4.7.0" rel="stylesheet">
+    <link href="../../css/animate.css" rel="stylesheet">
+    <link href="../../css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+    <link href="../../css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+    <link href="../../css/plugins/zTree/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+	<link href="../../js/plugins/layui/css/layui.css" rel="stylesheet" media="all">
+    <!-- 自定义css -->
+    <link href="../../css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="../../css/common.css" rel="stylesheet">
+    <link href="../../css/vp.css" rel="stylesheet">
+    <script src="../../../vpcommon/config.js"></script>
+    <script src="../../../vpcommon/vputils.min.js"></script>
+
+    <!--[if lte IE 9]>
+        <script src="../../js/html5shiv.min.js"></script>
+        <script src="../../js/respond.js"></script>
+    <![endif]-->
+	<style>
+
+	</style>
+</head>
+<style>
+	.fa-fw {
+		font-size: 24px;
+	}
+	.text-fail {
+		color: #bbb;
+	}	
+	.vptree, .vpcontent {
+		overflow: auto; 
+	    border-bottom: 0;
+		border: 1px solid #ccc;
+		margin: 10px 0;
+		padding-bottom: 5px;
+	}
+
+	.layui-table-view {
+		border: 0px;
+	}
+
+	.layui-table-page {
+		margin-top: -10px;
+		border: 1px solid #ccc;
+	}
+</style>
+
+<body class="wight-bg">
+	<div class="tabs-container clearfix">
+		<div class="col-xs-3">
+			<div class="ibox-title m-t-xxs clearfix">
+				<h5 class="pull-left" id="rolegroupcount">角色</h5>
+			</div>
+
+			<div class="ibox-content p-n m-t-sm">
+				<ul class="nav nav-tabs member-tabs" id="vptree" style="overflow:auto;height: 486px;">
+					
+				</ul>
+			</div>
+
+		</div>
+		<div class="col-xs-9">
+			<div class="ibox-title clearfix">
+				<h5>成员</h5>
+				<div class="ibox-tools" id="relationmenu">
+					<a id="vpadd" opr="add" class="text-primary" data-toggle="tooltip" data-placement="bottom" title="新增" onclick="toSearchUserForNamerole('idefaultvalue');"><i class="fa fa-plus-circle"></i></a>
+					<a id="vpdel" opr="delete" class="text-primary" data-toggle="tooltip" data-placement="bottom" title="删除关联"><i class="fa fa-user-times text-danger" style="font-size: 17px;"></i></a>
+				</div>
+			</div>
+			<div class="ibox-content p-n m-t-sm">
+				<div class="vp-overflow-x vpcontent">
+					<ul id="vptreetable" class="ztree" lay-filter="vpclick"></ul>
+					<script type="text/html" id="vpbar">
+						{{# if(d.iflag=="0"){ }}
+							<a lay-event="btnunpub"><i class="fa fa-times fa-fw text-danger" data-toggle="tooltip" title="删除"></i></a>
+						{{#}else{ }}
+							
+						{{# }}}
+					</script>
+				</div>
+				<div class="layui-table-page" id="vppagebar">
+				  
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+    <!-- 全局js -->
+    <script src="../../js/jquery-1.11.3.min.js"></script>
+	<!--[if IE 8]>
+	<script type="text/javascript" src="../../js/jquery-1.9.1.min.js"></script>
+	<![endif]-->
+    <script src="../../js/bootstrap.min.js?v=3.3.6"></script>
+    <!-- 自定义js -->
+    <script src="../../js/content.js?v=1.0.0"></script>
+    <!-- 日期控件 -->
+    <script src="../../js/plugins/datapicker/bootstrap-datepicker.js"></script>
+    <!-- layer弹出层 -->
+    <script src="../../js/plugins/layer/layer.min.js"></script>
+    <script src="../../js/plugins/layui/layui.js"></script>
+    <!-- 下拉选择列表 -->
+    <script src="../../js/plugins/chosen/chosen.jquery.js"></script>
+    <!-- zTree模拟树表 -->
+    <script src="../../js/plugins/zTree/jquery.ztree.all.min.js"></script>
+    <script src="../../js/vpsoft/TreeTable.js"></script>
+    <script src="../../js/vpsoft/common.js"></script>
+    <script src="../../js/vpsoft/form.js"></script>
+    <script src="../../js/plugins/iCheck/icheck.min.js"></script>
+    <script src="../../js/vpsoft/getUrlParam.js"></script>   
+     
+	<!--选择用户-->
+	<script src="../../js/vpsoft/chosenEntity.js?v=1.0.0" charset="utf-8"></script>
+    <script>
+    var roleid = 0;
+    var iprincipal = 0;
+    // 需要添加滚动条的元素
+    showScroll('.workbox-list');
+	var height = $("body").height()-$(".ibox-title").height() - 50;
+	$(".vptree").height(height);
+	$(".vpcontent").height(height);
+	
+	var olisttable = ListTable({ el: 'vptreetable', vpurl: '/objteam/page', checkbox: true, 
+		toolbar: false, toolbarwidth: 60, toolbarevent: 'viewEdit',
+		param:  { ientityid: getParameter("entityid"), roleid:roleid}
+	});
+	olisttable.parseEl();
+	
+	$(document).ready(function() {
+		loadRole();
+		$('#vpadd').hide();
+		$('#vpdel').hide();
+		
+		$("#vptree>li>a").click(function() {
+			roleid = $(this).attr("roleid");
+			iprincipal = $(this).attr("iprincipal");
+			if(roleid == 0 || roleid == undefined){
+				$('#vpadd').hide();
+				$('#vpdel').hide();
+			}else{
+				if(iprincipal == 0){
+				    $('#vpadd').show();
+				    $('#vpdel').show();
+				}else{
+					$('#vpadd').hide();
+					$('#vpdel').hide();
+				}
+			}
+			
+			olisttable = ListTable({ el: 'vptreetable', vpurl: '/objteam/page', checkbox: true, 
+				toolbar: false, toolbarwidth: 60, toolbarevent: 'viewEdit',
+				param:  { ientityid: getParameter("entityid"), roleid:roleid}
+			});
+			olisttable.parseEl();
+		});
+    });
+
+	function loadRole() {
+		var str = '<li class="active">'
+				+ '  <a data-toggle="tab" roleid="0" href="#" aria-expanded="true">'
+				+ '  <i class="fa fa-user-circle-o" aria-hidden="true"></i><b>全部</b></a>'
+				+ '</li>';
+		var params = {ientityid: getParameter("entityid")};
+		vpPostAjax('/cfgrole/getbyentity', params, "GET", function(rst) {
+			$.each(rst.data, function (i, item) { 
+				str += '<li class>'
+					+ '  <a data-toggle="tab" roleid="'+item.iid+'" iprincipal="' + item.iprincipal + '" href="#" aria-expanded="true">'
+					+ '  <i class="fa fa-user-circle-o" aria-hidden="true"></i><b>'+item.sname+'</b></a>'
+					+ '</li>';
+			});
+		});
+		
+		$("#vptree").html(str);
+	}
+	
+	function viewEdit(){
+		
+	}
+	
+	$("#vpadd").click(function() {
+		
+	});
+	
+	$("#vpdel").click(function() {
+		var checkStatus = olisttable.getTable().checkStatus("vptable");
+		var idlist = "";
+		for(var i=0; i<checkStatus.data.length; i++){
+			if (i != 0) {			
+				idlist += ',';
+			}
+			idlist += checkStatus.data[i].iid;
+		}
+		
+		//批量删除
+		vpPostAjax('/objteam/delete', { ids: idlist }, "POST", function(rst) {
+			try {
+				olisttable.reload();    //列表数据重新加载
+			}
+			catch(exception) {
+				layer.msg(msg004 + callback, { icon: 2, time: 2000 });
+			}	
+		});
+	});
+	
+	//调用
+	function toSearchUserForNamerole(objid){
+		toSearch(objid, 7, true);
+	}
+
+	//选择框
+	function toSearch(objid, entityID, ff) {
+		var cfg = new Object();
+		cfg.entityID = entityID;
+		cfg.multiple = ff;
+		var array = new Array();
+		try {
+			var uname = $('#' + objid).val();
+			var uid = $('#' + objid).attr('hidID');
+			if (null != uid && '' != uid) {
+				var uids = uid.split(',');
+				var unames = uname.split(',');
+				for (var i = 0, len = uids.length; i < len; i++) {
+					var map = {};
+					map['id'] = uids[i];
+					map['name'] = unames[i];
+					array.push(map);
+				}
+			}
+			cfg.checkedObj = array;
+		} catch (e) {
+		}
+		
+		if (objid.indexOf("roleID") != -1) {// 根据角色选择用户
+			cfg.condition = "id in (select userid from org_userroleinfo where roleid=" + objid.replace("roleID", "") + ")";
+		} else {
+			cfg.condition = "";
+		}
+		// cfg.width = "90%";//设置弹框宽度
+		cfg.height = "99%";//设置弹框高度
+		Chosen.chosenEntity(cfg, function(data) {
+			var ids = "";
+			var names = "";
+			if (data.length > 0) {
+				for (var i = 0; i < data.length; i++) {
+					if (i == 0) {
+						ids = data[0].id;
+						names = data[0].name;
+					} else {
+						ids = ids + "," + data[i].id;
+						names = names + "," + data[i].name;
+					}
+				}
+				$('#' + objid).val(names);
+				//$('#' + objid).attr("hidID", ids);
+				
+				var params = { userIds:ids, roleid:roleid, enid:UrlParm.parm("entityid"), eniid:UrlParm.parm("iid") };
+				//保存选择用户数据
+				vpPostAjax('/objteam/save', params, "POST", function(rst) {
+					console.log(rst);
+					if(rst.success){
+						olisttable.parseEl();
+					}
+				});
+			} else {
+				$('#' + objid).val('');
+			}
+		});
+	}
+    </script>
+</html>

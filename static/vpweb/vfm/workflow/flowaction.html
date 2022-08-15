@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>工作流</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
+    <link rel="shortcut icon" href="img/favicon.ico">
+    <link href="../../css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="../../css/font-awesome.min.css?v=4.7.0" rel="stylesheet">
+    <link href="../../css/animate.css" rel="stylesheet">
+    <link href="../../css/plugins/datapicker/datepicker3.css"	rel="stylesheet">
+    <link href="../../css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+
+    <!-- zTree树表 -->
+    <link href="../../css/plugins/zTree/zTreeStyle/zTreeStyle.css"	rel="stylesheet">
+    <!-- layUI表格 -->
+    <link rel="stylesheet" href="../../js/plugins/layui/css/layui.css"	media="all">
+    <link href="../../css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="../../css/common.css" rel="stylesheet">
+    <link href="../../css/vp.css" rel="stylesheet">
+    <script src="../../../vpcommon/config.js"></script>
+    <script src="../../../vpcommon/vputils.min.js"></script>
+    <!--[if lte IE 9]>
+    <script src="../../js/html5shiv.min.js"></script>
+    <script src="../../js/respond.js"></script>
+    <![endif]-->
+</head>
+<body>
+    <div class="col-sm-12">
+        <div class="ibox">
+            <!--<div class="form-group m-b-sm" style="height:10px;">
+                <div class="col-xs-12 radio" style="text-align:left;margin:0px;padding:5px;left: 5px;">
+                    <i id="add" class="fa fa-plus fa-fw text-info" data-toggle="tooltip" title="新增动作"></i>
+                    <i id="del" class="fa fa-times fa-fw text-danger" data-toggle="tooltip" title="删除动作"></i>
+                </div>
+            </div>-->
+            <div class="ibox-title p-l-none">
+                <div class="ibox-tools" id="vptoolbar">
+
+                </div>
+            </div>
+            <div class="ibox-content p-n m-t-sm vp-overflow-x" style="display: block;">
+                <div class="vp-overflow-x vpcontent">
+                    <table lay-size="sm" class="layui-hide" id="tableSort" lay-filter="vpclick"></table>
+                </div>
+                <div class="layui-table-page" id="vppagebar">
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<!-- 全局js -->
+<script src="../../js/jquery-1.11.3.min.js"></script>
+<!--[if IE 8]>
+<script type="text/javascript" src="../../js/jquery-1.9.1.min.js"></script>
+<![endif]-->
+<script src="../../js/bootstrap.min.js?v=3.3.6"></script>
+<!-- 自定义js -->
+<script src="../../js/content.js?v=1.0.0"></script>
+<!-- 日期控件 -->
+<script src="../../js/plugins/datapicker/bootstrap-datepicker.js"></script>
+<!-- layer弹出层 -->
+<script src="../../js/plugins/layer/layer.min.js"></script>
+<script src="../../js/plugins/layui/layui.js"></script>
+<!-- 下拉选择列表 -->
+<script src="../../js/plugins/chosen/chosen.jquery.js"></script>
+<!-- zTree模拟树表 -->
+<script src="../../js/plugins/zTree/jquery.ztree.all.min.js"></script>
+<script src="../../js/plugins/validate/jquery.validate.min.js"></script>
+<script src="../../js/vpsoft/TreeTable.js"></script>
+<script src="../../js/vpsoft/common.js"></script>
+<script src="../../js/vpsoft/form.js"></script>
+<script src="../../js/plugins/iCheck/icheck.min.js"></script>
+<script src="../../js/vue.js"></script>
+<script>
+    var otool = RelationTool({ el: 'vptoolbar', primary:'vpadd', data: [
+        { id: 'vpadd', faclass: 'fa-plus', title: '新增' },
+        { id: 'vpdel', faclass: 'fa-times fa-fw text-danger', title: '删除' }
+    ] });
+    otool.parseEl();
+
+    $(document).on('click','#vpadd',function(){
+        parent.layer.open({
+            type: 2,
+            shade: false,
+            title: '新增流程动作',
+            btn: ['保存'],
+            area: ['80%', '96%'], //宽高
+            content: ["flowactionform.html"],
+            success: function(layero, index){
+                layero.find('.layui-layer-btn').css('text-align', 'center');
+            },
+            yes: function(index, layero){
+                $(layero).find("iframe")[0].contentWindow.saveform(function(){
+                    vppage();
+                });
+
+            }
+        });
+    });
+
+    var flowid = $('#vpeditform', parent.document).attr("iid");
+    $(document).on('click','#vpdel',function(){
+        var arr = [];
+        var checkStatus = layui.table.checkStatus("tableSort");
+        for(var i=0;i<checkStatus.data.length;i++){
+            if(checkStatus.data.length>0){
+                arr.push(checkStatus.data[i].iid);
+            }
+        }
+        if(arr.length>0){
+            vpAjax(getWorkflowPath()+'/rest/flowaction/delete', { ids: arr.join(),iflowid:flowid}, "POST", function(rst) {
+                try {
+                    if(rst=='error'){
+                        layer.msg("删除失败！该动作已经被引用", { icon: 2, time: 2000 });
+                    }
+                    vppage();
+                }
+                catch(exception) {
+                    layer.msg("刷新列表失败！", { icon: 2, time: 2000 });
+                }
+            });
+        }else{
+            layer.msg("请至少选择一条数据！", { icon: 2, time: 2000 });
+        }
+    });
+
+    
+    var vobj = new Object();
+    vppage();
+    function vppage(){
+        vobj['iflowid'] = flowid;
+        vpAjax(getWorkflowPath()+'/rest/flowaction/page', vobj, "GET", function(data) {
+            layui.use(['laypage','table'], function(){
+                var laypage = layui.laypage;
+
+                laypage.render({
+                    elem: 'vppagebar',
+                    count: data.count,
+                    limit: data.limit,
+                    curr: data.curr,
+                    limits: [10,20, 30, 50],
+
+                    layout: ['count', 'first', 'prev', 'page', 'next', 'last', 'limit', 'skip'],
+                    jump: function(obj, first) {
+                        if (!first) {
+                            vobj['limit'] = obj.limit;
+                            vobj['curr'] = obj.curr;
+                            vppage();
+                        }
+                    }
+                });
+
+                var table = layui.table;
+                table.render({
+                    elem: '#tableSort'
+                    ,page: false
+                    ,data:data.result
+                    ,limit: data.limit
+                    ,height: 'full-130'
+                    ,cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                    ,cols: [[
+                        {type:'checkbox'}
+                        //,{field:'iid', title: 'id', sort: true,event:"click", width: 120}
+                        ,{field:'stype', title: '类型', sort: true,event:"click", width: 70}
+                        ,{field:'sname', title: '名称',event:"click", width: 150}
+                        ,{field:'scontent', title: '实现类/URL',event:"click"}
+                    ]]
+                });
+
+                table.on('tool(vpclick)',function(obj){
+                    doListEvent(obj);
+                });
+            });
+        });
+    }
+
+	function doListEvent(obj){ 
+		parent.layer.open({
+            type: 2,
+            shade: false,
+            title: '修改流程动作',
+            btn: ['保存'],
+            area: ['80%', '96%'], //宽高
+            content: ["flowactionform.html?iid="+obj.data.iid],
+            success: function(layero, index){
+                layero.find('.layui-layer-btn').css('text-align', 'center');
+            },
+            yes: function(index, layero){
+                $(layero).find("iframe")[0].contentWindow.saveform(function(){
+                    vppage();
+                });
+
+            }
+        });
+	}
+</script>
+</body>
+</html>

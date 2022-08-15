@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>内容差异比较页面</title>
+    <link href="../vpstatic/favicon.ico" rel="icon" type="image/x-icon" />
+</head>
+<body>
+    <div class="file-box clearfix">
+        <div class="full-left js-old-version">
+            <div class="box l-j">
+                <div class="header">旧版本:</div>
+                <div class="content">
+                </div>
+            </div>
+        </div>
+        <div class="full-left js-diff-version">
+            <div class="box c-j">
+                <div class="header">差异分析</div>
+                <div class="content"></div>
+            </div>
+        </div>
+        <div class="full-left js-new-version">
+            <div class="box r-j">
+                <div class="header">新版本:</div>
+                <div class="content"></div>
+            </div>
+        </div>
+    </div>
+    <link rel="stylesheet" type="text/css" href="plugins/font-awesome/css/font-awesome.min.css"/>    
+    <link rel="stylesheet" type="text/css" href="plugins/toastr/2.1.0/toastr.min.css" />
+    <link rel="stylesheet" type="text/css" href="plugins/magnify/css/jquery.magnify.min.css" />
+    <link rel="stylesheet" type="text/css" href="plugins/magnify/css/magnify.ext.css" />
+    <link rel="stylesheet" type="text/css" href="css/htmldiff.css" />
+    <script type="text/javascript" src="../vpcommon/config.js"></script>
+    <script type="text/javascript" src="../vpcommon/vputils.min.js"></script>
+    <script type="text/javascript" src="../vpstatic/plugins/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="plugins/toastr/2.1.0/toastr.min.js"></script>
+    <script type="text/javascript" src="plugins/magnify/js/jquery.magnify.min.js"></script>
+    <script type="text/javascript" src="js/htmldiff.js"></script>
+    <script type="text/javascript" src="js/load.js"></script>
+    <script type="text/javascript">
+       var $newT = $('.js-new-version'), $oldT = $('.js-old-version');
+       initData($oldT, $newT, vp.cookie.getUrlParams('entityid'), vp.cookie.getUrlParams('iids'), function(){
+            var $diff = $('.js-diff-version');
+            $diff.find('.content').html('<img style="margin-left:48%" src="images/loading.gif">');
+            if(typeof Worker === "undefined"){
+               $diff.find('.content').html(getHTMLDiff($oldT.find('.content').html(), $newT.find('.content').html()));
+               imagePreview('img.chtech-img');
+            } else{
+                var worker = new Worker('js/htmldiff.js');
+                worker.postMessage({
+                    'newVersion': $newT.find('.content').html(),
+                    'oldVersion': $oldT.find('.content').html()
+                });
+                worker.onmessage = function (evt) {
+                    $diff.find('.content').html(evt.data);
+                    imagePreview('img.chtech-img');
+                };
+            }
+       });
+
+       $('.full-left .box').dblclick(function(params) {
+            var _t = $(this);
+            var _p = _t.parent();
+            var _l = _r = 0;
+            var b_w = $('body').width();
+            var p_w = _p.width();
+            var fb = $('.full-left .box');
+            if(_t.hasClass("l-j")) {
+                _l = 0;
+                _r = b_w - p_w;
+            }else if(_t.hasClass("r-j")) {
+                _l = b_w - p_w;
+                _r = 0;
+            }else {
+                _l = _r = b_w - (p_w * 2);
+            }
+            _p.before('<div class="pop-box" style="left:'+ _l +'px;right: '+ _r +'px">'+ _p.html() +'</div>');
+            $('.pop-box').animate({ left: 0,right: 0 }, 400);
+            fb.css({ display: "none" });
+            $('.pop-box').dblclick(function (params) {
+                var _this = this;
+                $(_this).animate({ left: _l + "px", right: _r + "px" }, 400);
+                setTimeout(function(params) {
+                    $(_this).remove();
+                    fb.css({ display: "block" });
+                }, 400);
+            })
+    });
+    </script>
+</body>
+</html>

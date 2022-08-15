@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>任务看板 - VP应用全生命周期管理系统</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
+    <link rel="shortcut icon" href="img/favicon.ico">
+    <link href="../../css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="../../css/font-awesome.min.css?v=4.7.0" rel="stylesheet">
+    <link href="../../css/animate.css" rel="stylesheet">
+    <link href="../../css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+    <link href="../../css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+    <link href="../../css/plugins/zTree/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+	<link href="../../js/plugins/layui/css/layui.css" rel="stylesheet" media="all">
+    <!-- 自定义css -->
+    <link href="../../css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="../../css/common.css" rel="stylesheet">
+    <link href="../../css/vp.css" rel="stylesheet">
+    <script src="../../../vpcommon/config.js"></script>
+    <script src="../../../vpcommon/vputils.min.js"></script>
+
+    <!--[if lte IE 9]>
+        <script src="../../js/html5shiv.min.js"></script>
+        <script src="../../js/respond.js"></script>
+    <![endif]-->
+
+	<style>
+
+	</style>
+</head>
+
+<body class="wight-bg">
+    <div class="">
+		<div class="col-sm-12">
+			<div class="ibox">
+				<div class="ibox-title p-l-none">					
+					<div class="ibox-tools" id="vptoolbar">
+					
+					</div>
+				</div>
+				<div class="ibox-content p-n m-t-sm vp-overflow-x" style="display: block;">
+					 <div class="vp-overflow-x vpcontent">
+						<ul id="vptreetable" class="ztree" lay-filter="vpclick"></ul>
+						<script type="text/html" id="vpbar">
+							{{# if(d.flowver==""){ }}
+								<a lay-event="btnpub"><i class="fa fa-check-circle fa-fw text-success" data-toggle="tooltip" title="发布"></i></a>
+							{{#}else{ }}
+								
+							{{# }}}
+						</script>
+					</div>
+					<div class="layui-table-page" id="vppagebar">
+					  
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+    <!-- 全局js -->
+    <script src="../../js/jquery-1.11.3.min.js"></script>
+	<!--[if IE 8]>
+	<script type="text/javascript" src="../../js/jquery-1.9.1.min.js"></script>
+	<![endif]-->
+    <script src="../../js/bootstrap.min.js?v=3.3.6"></script>
+    <!-- 自定义js -->
+    <script src="../../js/content.js?v=1.0.0"></script>
+    <!-- 日期控件 -->
+    <script src="../../js/plugins/datapicker/bootstrap-datepicker.js"></script>
+    <!-- layer弹出层 -->
+    <script src="../../js/plugins/layer/layer.min.js"></script>
+    <script src="../../js/plugins/layui/layui.js"></script>
+    <!-- 下拉选择列表 -->
+    <script src="../../js/plugins/chosen/chosen.jquery.js"></script>
+    <!-- zTree模拟树表 -->
+    <script src="../../js/plugins/zTree/jquery.ztree.all.min.js"></script>
+    <script src="../../js/vpsoft/TreeTable.js"></script>
+    <script src="../../js/vpsoft/common.js"></script>
+    <script src="../../js/vpsoft/form.js"></script>
+    <script src="../../js/plugins/iCheck/icheck.min.js"></script>
+    <script src="../../js/vpsoft/getUrlParam.js"></script>    
+
+</body>
+<script>
+/*
+var otool = RelationTool({ el: 'vptoolbar', primary:'vpadd', data: [ 
+			{ id: 'vpadd', faclass: 'fa-plus', title: '新增' }
+	] });
+otool.parseEl();
+*/
+var olisttable = ListTable({ el: 'vptreetable', vpurl: '/vfm/flow/cfghandle.jsp', checkbox: true, toolbar: true, toolbarwidth: 60, toolbarevent: 'viewEdit',
+		param:  { method: 'listVer', flowid: $('#vpeditform', parent.document).attr("iid") }
+	});
+olisttable.parseEl();
+
+$("#vptoolbar>a").click(function() {
+	if ($(this).attr("id") == 'vpadd') {
+		viewEdit();
+	}
+});
+
+function viewEdit(obj) {
+	console.log(obj);
+	var title = '新建';
+	var iid=0;
+	if (obj) {
+		title = obj.data.sname;
+		iid= obj.data.iid;
+		console.log(obj.data);
+		if(obj.event=='btnunpub'){
+			var param = {iid:iid,ientityid:$('#vpeditform', parent.document).attr("iid")};
+			   vpPostAjax('/cfgentrelation/del', param, 'POST', function(rst) {
+				   if(rst.success){  
+						//parent.layer.close(index);
+						parent.layer.msg('删除成功！', { icon: 1, time: 2000 });
+						olisttable.parseEl();
+						//$(".tooltip.fade.top.in").remove();
+					}else{
+						parent.layer.msg('删除失败，！'+rst.msg, { icon: 2, time: 2000 });
+					}
+			   });
+		}else{
+			openview(iid, title, obj.data.flowmodelid, obj.data.flowver, obj.data.entityid);
+		}
+	}else{
+		openview(iid, title, '', '', '');
+	}
+}
+
+function openview(iid, title, modelid, ver, entid){
+
+	var param = {};
+	param["btn"] = new Array("保存","关闭");
+	parent.parent.layer.open({
+		type: 2, // 可传入的值有：0（信息框，默认）1（页面层）2（iframe层）3（加载层）4（tips层）。 若你采用layer.open({type: 1})方式调用，则type为必填项（信息框除外）
+		maxmin: true,
+		title: title,
+		area: ['70%', '600px'],
+		resize: false,
+		btn: [],
+		btnAlign: 'c',
+		shift: 2,
+		shade: 0.3,
+		content: [ '../vfm/flow/cfg_flowdesig.html?flowid='+iid+"&modelid="+modelid+"&flowver="+ver+"&entityid="+entid ], //iframe的url，no代表不显示滚动条
+		yes: function(index, layero) {
+			
+		}
+	});
+	/*
+	parent.openWindow('cfg_flowdesig.html?flowid='+'&iid='+iid, title, param, function(layerindex,layero,index) {
+		 if(index==1){
+	    	 var resData = $(layero).find("iframe")[0].contentWindow.saveViewInfo();
+	    	   if(resData){
+			    if(iid==0){
+			    	parent.layer.close(layerindex);
+			    }
+	    	   }
+	    	   olisttable.parseEl();
+	    }else if(index==2){
+	    	parent.layer.close(layerindex);
+	    }
+	});
+	*/
+}
+</script>
+</html>

@@ -1,0 +1,105 @@
+body{
+	color:#353c44;
+	font-size:12px;
+}
+.component-name{
+	background:transparent;
+	border-top:1px solid #fff;
+	
+	height:100%;
+	width:100%;
+	
+}
+
+.checker{
+	width:40px;
+	text-align:center;
+}
+.drag-unit{
+	cursor:move;
+	margin:0px;
+	padding:0px;
+}
+.cursor-default{
+	cursor:default;
+}
+.drag-unit table{
+	border-collapse:collapse;
+}
+.drag-unit td{	
+}
+#header-table{
+	border-collapse:collapse;
+}
+
+#header-table td{
+	
+	border-left:1px solid #d0d0d0;
+	border-bottom:1px solid #d0d0d0;
+	/*font-weight:bold;
+	font-size:15px;*/
+	height:24px;
+	
+	background:url(/project/images/changenav_titlebg.gif);
+	padding-left:5px;
+	padding-right:5px;
+}
+.level1 .level-div{
+	width:5px;
+	height:10px;
+	float:left;
+	border:0px solid #000;
+}
+.level2 .level-div{
+	width:20px;
+	height:10px;
+	float:left;
+	border:0px solid #000;
+}
+.level3 .level-div{
+	width:35px;
+	height:10px;
+	float:left;
+	border:0px solid #000;
+}
+
+.level1 .name-div{
+	width:210px;
+	border:0px solid #000;
+	overflow:hidden;
+}
+.level2 .name-div{
+	width:195px;
+	border:0px solid #000;
+	overflow:hidden;
+}
+.level3 .name-div{
+	width:180px;
+	border:0px solid #000;
+	overflow:hidden;
+}
+
+.level1 td{
+	color:red;
+}
+.level2 td{
+	color:green;
+}
+.level3 td{
+	color:blue;
+}
+.nav-row td{
+	background-color:#fff;
+	border-bottom:1px solid #ededed;
+	border-left:1px solid #ededed;
+	border-right:1px solid #ededed;
+	height:23px;
+	padding-left:5px;
+	padding-right:5px;
+}
+.ui-state-highlight { 	border:1px dashed #777777!important;background-color:#FAFAD2!important; }
+
+
+.hidden-td{
+	display:none;
+}

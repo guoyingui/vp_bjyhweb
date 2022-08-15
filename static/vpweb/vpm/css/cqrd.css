@@ -1,0 +1,229 @@
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 5px;
+	background-color: #f5f5f5;
+}
+td {
+	font: 12px/1.2em arial sans-serif;
+	text-decoration: none;
+}
+img {
+	cursor:pointer;
+}
+textarea {
+	font-size:12px;
+}
+a:link       { color: #000000; text-decoration: none }
+a:visited    { color: #000000; text-decoration: none }
+a:hover      { color: #990000; text-decoration: underline }
+a:active     { color: #990000; text-decoration: underline }
+form{
+	margin-bottom: 0px;
+}
+.table1{
+	width:100%;
+	height:24;
+	border:0;
+	cellpadding:0;
+	cellspacing:0;
+	background:url("/project/images/system/bg_tool.gif");
+}
+.table2{
+	width:100%;
+	border:0;
+	cellpadding:1;
+	cellspacing:1;
+}
+.table3{
+	width:100%;
+	border:0;
+	cellpadding:0;
+	cellspacing:0;
+}
+.table4{
+	width:100%;
+	border:0;
+}
+.tr1{
+	background-color: f5f5f5;
+	height: 2;
+}
+.tr2{
+	background-color: f5f5f5;
+	height: 30;
+}
+.tr3{
+	background-color: f5f5f5;
+	height: 25;
+}
+.tdx{
+	background-color: D2D5DD;
+}
+.tdx1{
+	background-color: e2e5ee;
+}
+.tdx2{
+	background-color: eee;
+}
+.tdx3{
+	background-color: FEC;
+}
+.tdx_th{
+	background-color: D2D5DD;
+	font-size: 14px;
+	font-weight: bold;
+}
+.btn-1{
+	display: inline-block;
+	border: 1px solid #bbb;
+	border-radius: 3px;
+	width: 33px;
+	height: 18px;
+	padding-left: 9px;
+	padding-top: 3px;
+	background-color: #ddd;
+}
+.btn-1:hover{
+	border:1px #000 solid;
+	background-color: #eee;
+	cursor: pointer;
+}
+.check-box{
+	margin: 5px 7px;
+}
+.icon-status{
+	float:left;
+	display: block;
+	height: 15px;
+	width: 15px;
+	border-radius:15px;
+}
+.icon-delay1{	
+/*	background-color: #00ff00;*/
+	background-image: url("../second/report/cqrd/image/milestone_1.png");
+	background-repeat: no-repeat;
+}
+.icon-delay2{
+	background-image: url("../second/report/cqrd/image/milestone_2.png");
+	background-repeat: no-repeat;
+/*	background-color: yellow;*/
+}
+.icon-delay3{
+	background-image: url("../second/report/cqrd/image/milestone_3.png");
+	background-repeat: no-repeat;
+/*	background-color: #ff0000;*/
+}
+.icon-delay4{
+	background-image: url("../second/report/cqrd/image/milestone_4.png");
+	background-repeat: no-repeat;
+/*	border:1px solid #000;
+	background-color: #fff;*/
+}
+.icon-delay5{
+	background-color: #00ff00;
+}
+.delay1{
+	background-color: #00ff00;
+}
+.delay2{
+	background-color: #FEFF00;
+}
+.delay3{
+	background-color: #ff0000;
+}
+.stdiv{
+	height: 75px;
+	width: 110px;
+	float: left;
+	position: relative;
+}
+.stdiv_mid{
+	height: 5px;
+	width: 100%;
+	background-color: #000;
+}
+.stdiv_tb{
+	height: 30px;
+	width: 90%;
+	overflow:hidden; 
+	text-overflow:ellipsis;
+	padding-top: 5px;
+}
+.stdiv_tbn{
+	height: 25px;
+	width: 90%;
+	overflow:hidden; 
+	text-overflow:ellipsis;
+	padding-top: 10px;
+}
+.st_status{
+	position: absolute;
+	left: 40px;
+	top: 29px;
+}
+.hide{
+	display: none;
+}
+.icon-del{
+	cursor: pointer;
+}
+.tab-input{
+	border:1px solid #eee;
+	width: 100%;
+	height: 100%;
+	background-color: #fff;
+}
+.opt{
+	cursor: pointer;
+	margin-right: 10px;
+}
+.type0{
+	background: #0fe;
+}
+.type1,.type2{
+	background: #aaa;
+}
+.lay-div{
+	width: 100%;
+	float: left;
+	border: 1px #eee solid;
+}
+.type-div{
+	height: 25px;
+	background-color: #00f;
+	padding-left: 5px;
+}
+.type-span{
+	width: 80px;
+	height: 20px;
+	margin-left: 10px;
+	background-color: #fff;
+	display: inline-block;
+	cursor: pointer;
+}
+.type-span-act{
+	background-color: yellow;
+}
+.text-break{
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+	display: inline-block;
+}
+.light1{
+	background-image: url("/project/images/flag/greenPoint.gif");
+}
+.light2{
+	background-image: url("/project/images/flag/yellowPoint.gif");
+}
+.light3{
+	background-image: url("/project/images/flag/redPoint.gif");
+}
+.light-div{
+	margin-left: 10px;
+	width: 15px;
+	height: 12px;
+	display: inline-block;
+}

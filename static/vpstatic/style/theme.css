@@ -1,0 +1,195 @@
+/* 
+    全局菜单主题颜色自定义 
+*/
+
+/* 顶部导航背景色*/
+#demoid .top-silder,
+#demoid .top-silder .ant-menu{
+    /* background: #0d3a68; */
+    /* background: #e5e6ea; */
+}
+/*顶部导航更多下拉层的背景色及文字颜色*/
+#demoid .top-silder > div > div .ant-dropdown.ant-dropdown-placement-bottomLeft,
+#demoid .top-silder > div > div .ant-dropdown.ant-dropdown-placement-bottomRight {
+    /* background: rgba(0, 33, 64, .8); */
+   
+}
+#app .layout-sider, .pro-app-box .layout-sider, .dev-app-box .layout-sider{
+    background: #466771 !important;
+}
+/*顶部导航右侧用户信息文字颜色*/
+
+/*导航文字颜色*/
+#demoid .sider .ant-menu,
+#demoid .top-silder .more,
+#demoid .sider .title-status a,
+#demoid .commos-silder .ant-menu,
+#demoid .commos-silder .ant-menu a
+ {
+    color: #fff;
+    /* color: #666; */
+ }
+/* 右侧导航样式 */
+#demoid .theme-title .ant-dropdown-link {
+    
+}
+
+/*左侧导航logo背景色*/
+#demoid .sider .user-img,.sider .slogo {
+    background: #d6dde4;  
+}
+#demoid .sider .user-img{
+    max-width: 100%;
+    height: 50px;
+    vertical-align: middle;
+    background: url(../images/header_logo.png) #fff 5px 5px no-repeat;
+    background-size: 70%;
+    background-position: 20px;
+}
+#demoid .sider .user-img .clearfix {
+    display: none;
+}
+/*左侧导航背景色*/
+#demoid .sider .ant-menu{
+    background: none;
+}
+#app #demoid .layout-sider
+{
+    /* background: #cb030d !important; */
+    /* background: #F5F9FC !important; */
+    /* background-color: #52ACFF;   */
+    /* background-image: linear-gradient(180deg, #a6d6b9ed 10%, #a3c8de 100%); */
+    background-color: #466771  !important;
+    /* background-image: linear-gradient(32deg, #2994bd 0%, #41a76a 100%); */
+    
+    
+    /* background: rgb(193, 228, 243) */
+}
+/*左侧下拉背景色 */
+#demoid .sider .ant-menu-sub{
+    /* background: #F5F9FC !important; */
+    /* background: rgb(209, 232, 243) */
+}
+
+#demoid .sider .slogo{
+    background: white;
+    height: 50px;
+}
+
+#demoid .sider .slogo img{
+    display: none;
+   
+}
+/*导航滑过时的背景色*/
+#demoid .top-silder .more:hover,
+#demoid .commos-silder .ant-menu .ant-menu-item:hover,
+#demoid .commos-silder .ant-menu .ant-menu-item-active,
+#demoid .commos-silder .ant-menu .ant-menu-item-selected,
+/* #demoid .commos-silder .ant-menu .ant-menu-submenu-active, */
+#demoid .commos-silder .ant-menu .ant-menu-submenu-title:hover,
+#demoid .sider .ant-menu .vertical-li.ant-menu-submenu-selected
+{
+    background: #093c54 !important;
+    border-radius: 8px;
+    margin: 0 10px;
+    /* background: #d0ecf8; */
+}
+#demoid .commos-silder .ant-menu .ant-menu-submenu-active{
+    background: transparent;
+}
+/* 导航首页字体颜色 */
+.main-container .headFixed .text-primary{
+    color: #000000;
+}
+/* 待办已办发起参与鼠标放上去颜色修改 */
+.pr .workbench .title-a a:hover{
+    color: #093c54;
+}
+/*当前导航文字或滑过时的颜色*/
+#demoid .top-silder .more:hover,
+#demoid .commos-silder .ant-menu .ant-menu-item:hover,
+#demoid .commos-silder .ant-menu .ant-menu-item-active,
+#demoid .commos-silder .ant-menu .ant-menu-item-active a,
+#demoid .commos-silder .ant-menu .ant-menu-item-selected,
+#demoid .commos-silder .ant-menu .ant-menu-submenu-active,
+#demoid .commos-silder .ant-menu .ant-menu-item-selected a,
+#demoid .commos-silder .ant-menu .ant-menu-submenu-title:hover,
+#demoid .top-silder .ant-dropdown.ant-dropdown-placement-bottomLeft .dropdown-menu-list li:hover a,
+#demoid .top-silder .ant-dropdown.ant-dropdown-placement-bottomLeft .dropdown-menu-list>div.menu:hover a,
+#demoid .top-silder .ant-dropdown.ant-dropdown-placement-bottomRight .dropdown-menu-list>div.menu:hover a,
+#demoid .top-silder .ant-dropdown.ant-dropdown-placement-bottomRight .dropdown-menu-list li:hover a,
+#demoid .sider .ant-menu .vertical-li.ant-menu-submenu-selected {
+    color: #fff !important;
+    /* color: #4792f5 */
+} 
+/* 选中导航文字颜色 */
+#demoid .sider .ant-menu .ant-menu-submenu-selected
+{
+    color: #fff !important;
+    /* color: #4792f5 */
+}
+.ant-menu-sub.ant-menu-inline > .ant-menu-item, .ant-menu-sub.ant-menu-inline > .ant-menu-submenu > .ant-menu-submenu-title{
+    font-weight: normal;
+}
+
+.workbench .tool-content .tool-list:hover, .workbench .tool-content .new-add:hover,
+.ant-btn-dashed:active {
+    /* border: 1px dashed #00662c !important;
+    background: #00662c !important;
+    color: #fff !important;  
+    border-radius: 3px; */
+    border: 1px dashed #87caa4 !important;
+    background: #87caa4 !important;
+    color: #fff !important;
+    border-radius: 3px;
+}
+
+.f14 {
+    font-size: 15px;
+}
+.f12 {
+    font-size: 13px;
+}
+
+.ant-btn-dashed:hover, .ant-btn-dashed:focus {
+    background: #004B1C;
+    border-color: #004B1C;
+    color: #fff;
+}
+
+.workbench .tool-content .new-add, .workbench .tool-content .tool-list{
+    color: #f7f7f7;
+    background-color: #ffffff ;
+    border-color: #ffffff ;
+    border: 1px dashed #ffffff  !important;
+    border-radius: 3px;
+}
+
+.vpicon {
+    font-weight: bold;
+}
+.ibox-content .vpicon-collar{
+    color: #093c54;
+}
+.theme-title .shandle:hover, 
+.theme-title .shandle.active{
+    background: #466771;
+}
+.theme-title .vpicon-user,
+.theme-title .text-left,
+.theme-title .anticon-down{
+    color: #666666;
+}
+
+.icon-box:hover,.anticon-menu-fold:hover{
+    color:#00662c !important;
+}
+
+/*  模态框中：去掉多选框全选按钮 */
+.ant-table-header .ant-table-thead .ant-checkbox-wrapper { 
+    display:none !important;
+}
+
+.tool .m-b-sm {
+    margin-bottom: 8px;
+}

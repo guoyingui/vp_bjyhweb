@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>任务看板 - VP应用全生命周期管理系统</title>
+	<meta name="keywords" content="">
+	<meta name="description" content="">
+	<meta http-equiv="Pragma" content="no-cache">
+	<meta http-equiv="Cache-control" content="no-cache">
+	<meta http-equiv="Cache" content="no-cache">
+	<link rel="shortcut icon" href="img/favicon.ico">
+	<link href="../../css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+	<link href="../../css/font-awesome.min.css?v=4.7.0" rel="stylesheet">
+	<link href="../../css/animate.css" rel="stylesheet">
+	<link href="../../css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+	<link href="../../css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+	<!-- zTree树表 -->
+	<link href="../../css/plugins/zTree/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+	<!-- layUI表格 -->
+	<link rel="stylesheet" href="../../js/plugins/layui/css/layui.css" media="all">
+	<link href="../../css/style.css?v=4.1.0" rel="stylesheet">
+	<link href="../../css/common.css" rel="stylesheet">
+	<link href="../../css/vp.css" rel="stylesheet">
+	<script src="../../../vpcommon/config.js"></script>
+	<script src="../../../vpcommon/vputils.min.js"></script>
+	<!--[if lte IE 9]>
+        <script src="../../js/html5shiv.min.js"></script>
+        <script src="../../js/respond.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+	<div class="padding-10 space-10" style="top: 0px;">
+		<div class="ibox">
+			<div class="ibox-title border-bottom p-l-none">
+				<h5>基本信息</h5>
+				<div class="ibox-tools">
+					<a class="collapse-link" data-toggle="tooltip" data-placement="top" title="收起">
+						<i class="fa fa-caret-up"></i>
+					</a>
+				</div>
+			</div>
+			<div class="ibox-content p-n clearfix">
+				<form class="form-horizontal m-t" id="oForm">
+					<input type="hidden" id="iid" name="iid">
+				    <input type="hidden" id="parentid" name="parentid">
+
+					<div class="form-group">
+						<div class="col-sm-12">
+							<label class="col-sm-2 col-md-3 control-label text-ellipsis">编号：</label>
+							<div class="col-sm-10 col-md-9">
+								<input id="scode" name="scode" class="form-control" type="text">
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-sm-12">
+							<label class="col-sm-2 col-md-3 control-label text-ellipsis">名称：</label>
+							<div class="col-sm-10 col-md-9">
+								<input id="sname" name="sname" class="form-control" type="text">
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-sm-12">
+							<label class="col-sm-2 col-md-3 control-label text-ellipsis">描述：</label>
+							<div class="col-sm-10 col-md-9">
+								<textarea id="sdescription" name="sdescription" class="form-control"></textarea>
+							</div>
+						</div>
+					</div>
+					<div class="form-group layui-form" lay-filter="status">
+						<div class="col-xs-12">
+							<label class="col-sm-2 col-md-3 control-label text-ellipsis">类别：</label>
+							<div class="col-xs-9" id="classdiv">
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-sm-6">
+							<label class="col-sm-4 col-md-3 control-label text-ellipsis">开始状态：</label>
+							<div class="col-sm-8 col-md-9">
+								<select id="istatstatusid" name="istatstatusid" class="form-control">
+								</select>
+							</div>
+						</div>
+						<div class="col-sm-6 ">
+							<label class="col-sm-4 col-md-3 control-label text-ellipsis">结束状态：</label>
+							<div class="col-sm-8 col-md-9">
+								<select id="iendstatusid" name="iendstatusid" class="form-control">
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="form-group ">
+						<div>
+							<label class="col-sm-2 col-md-1 control-label text-ellipsis">默认处理人：</label>
+							<div class="col-sm-10 col-md-11">
+								<select id="ihandler" name="ihandler" class="form-control">
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="form-group ">
+						<div>
+							<label class="col-sm-2 col-md-1 control-label text-ellipsis">变迁后动作：</label>
+							<div class="col-sm-10 col-md-11">
+								<input id="sclassname" name="sclassname" class="form-control" type="text">
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</body>
+<!-- 全局js -->
+<script src="../../js/jquery-1.11.3.min.js"></script>
+<!--[if IE 8]>
+	<script type="text/javascript" src="../../js/jquery-1.9.1.min.js"></script>
+	<![endif]-->
+<script src="../../js/bootstrap.min.js?v=3.3.6"></script>
+<!-- 自定义js -->
+<script src="../../js/content.js?v=1.0.0"></script>
+<!-- 日期控件 -->
+<script src="../../js/plugins/datapicker/bootstrap-datepicker.js"></script>
+<!-- layer弹出层 -->
+<script src="../../js/plugins/layer/layer.min.js"></script>
+<!-- 下拉选择列表 -->
+<script src="../../js/plugins/chosen/chosen.jquery.js"></script>
+<!-- jQuery 表单验证-->
+<script src="../../js/plugins/validate/jquery.validate.min.js"></script>
+<script src="../../js/plugins/validate/messages_zh.min.js"></script>
+<!-- zTree模拟树表 -->
+<script src="../../js/plugins/zTree/jquery.ztree.all.min.js"></script>
+<script src="../../js/vpsoft/TreeTable.js"></script>
+<script src="../../js/vpsoft/common.js"></script>
+<script src="../../js/vpsoft/form.js"></script>
+<script src="../../js/plugins/iCheck/icheck.min.js"></script>
+<script src="../../js/vpsoft/getUrlParam.js"></script>
+
+</html>
+<script>
+
+	$(document).ready(function () {
+		$('.i-checks').iCheck({
+			checkboxClass: 'text-primary fa fa-fw fa-square-o'
+		});
+		var accesslevel = -1;
+		$("#parentid").val(UrlParm.parm("ientityid"));
+		vpPostAjax('/cfgentvari/get', { iid: UrlParm.parm("iid"), ientityid: UrlParm.parm("ientityid") }, "POST", function (rst) {
+			console.log(rst);
+			var json = rst.data;
+			//accesslevel = rst.accesslevel;
+			if (rst.data.entitylist != undefined) {
+				if (rst.data.entitylist.length > 0) {
+					$.each(rst.data.entitylist, function (i, item) {
+						var sname = rst.data.entitylist[i].sname;
+						var iid = rst.data.entitylist[i].iid;
+
+						if (rst.data.istatstatusid == iid) {
+							$("#istatstatusid").append("<option value='" + iid + "' selected>" + sname + "</option>");
+						} else {
+							$("#istatstatusid").append("<option value='" + iid + "'>" + sname + "</option>");
+						}
+						if (rst.data.iendstatusid == iid) {
+							$("#iendstatusid").append("<option value='" + iid + "' selected>" + sname + "</option>");
+						} else {
+							$("#iendstatusid").append("<option value='" + iid + "'>" + sname + "</option>");
+						}
+					});
+
+				}
+			}
+			if (rst.data.classlist != undefined) {
+				if (rst.data.classlist.length > 0) {
+					$.each(rst.data.classlist, function (i, item) {
+						var sname = rst.data.classlist[i].sname;
+						var iid = rst.data.classlist[i].iid;
+						if (("," + rst.data.sclassid + ",").indexOf(iid) >= 0) {
+							$("#classdiv").append("<div class='checkbox checkbox-info checkbox-inline'><input type='checkbox' id='iclassidRadio" + i + "' value='" + iid + "' checked='true' name='sclassid'><label for='iclassidRadio" + i + "'>" + sname + "</label></div>");
+						} else {
+							$("#classdiv").append("<div class='checkbox checkbox-info checkbox-inline'><input type='checkbox' id='iclassidRadio" + i + "' value='" + iid + "' name='sclassid'><label for='iclassidRadio" + i + "'>" + sname + "</label></div>");
+						}
+					});
+
+				}
+			}
+			if (rst.data.handlerlist != undefined) {
+				$("#ihandler").append("<option value='' selected>--请选择--</option>");
+				if (rst.data.handlerlist.length > 0) {
+					$.each(rst.data.handlerlist, function (i, item) {
+						var sname = rst.data.handlerlist[i].sname;
+						var iid = rst.data.handlerlist[i].iid;
+						if (rst.data.ihandler == iid) {
+							$("#ihandler").append("<option value='" + iid + "' selected>" + sname + "</option>");
+						} else {
+							$("#ihandler").append("<option value='" + iid + "'>" + sname + "</option>");
+						}
+					});
+
+				}
+			}
+
+			if (rst.data.sname != undefined) {
+				document.getElementById("scode").value = rst.data.scode;
+				document.getElementById("sname").value = rst.data.sname;
+				document.getElementById("sclassname").value = rst.data.sclassname;
+				document.getElementById("sdescription").value = rst.data.sdescription;
+			}
+
+		});
+
+		$('#btnbutton', parent.document).html('<button class="btn btn-sm btn-primary" disabled id="saveBtn">保存</button>&nbsp;');
+		if (accesslevel == 1) {
+			$('#btnbutton button', parent.document).removeAttr('disabled');
+		}
+
+		$('#btnbutton', parent.document).click(function () {
+			$(this).parent().find("#frminfo").contents().find("#oForm").submit();
+		});
+
+	});
+
+	function saveform() {
+		if ($("#scode").val() == "") {
+			layer.msg('请填写编号！', { icon: 2, time: 2000 });
+			return false;
+		}
+		if ($("#sname").val() == "") {
+			layer.msg('请填写名称！', { icon: 2, time: 2000 });
+			return false;
+		}
+
+		var isUnique = true;
+		vpPostAjax('/vfmcheck/isUnique', { code: 'cfg_entity_statuschangle', iid: $("#iid").val(), data: [ 
+				{ field: 'scode', fieldvalue: document.getElementById("scode").value }
+				, { field: 'iparentid', fieldvalue: $("#parentid").val() } ] }, 'POST', function(rst) {
+			isUnique = !rst;
+		});
+
+		if(!isUnique){
+			parent.layer.msg("编号已经存在，请重新输入!", {icon: 5,time: 2000});
+			return false;
+		}
+
+		var objiclassidValue = [];
+		var objiclassid = document.getElementsByName("sclassid");
+		for (var j = 0; j < objiclassid.length; j++) {
+			if (objiclassid[j].checked) {
+				objiclassidValue.push(objiclassid[j].value);
+			}
+		}
+
+		var dataObj = new Object();
+
+		dataObj.iid = UrlParm.parm("iid");
+		dataObj.scode = $("#scode").val();
+		dataObj.sname = $("#sname").val();
+		dataObj.sclassname = $("#sclassname").val();
+		dataObj.sclassid = objiclassidValue.toString();
+		dataObj.istatstatusid = $("#istatstatusid").val();
+		dataObj.iendstatusid = $("#iendstatusid").val();
+		dataObj.sdescription = $("#sdescription").val();
+		dataObj.ihandler = $("#ihandler").val();
+
+		var action = '/cfgentvari/update';
+		if (dataObj.iid == 0) {
+			action = '/cfgentvari/add';
+			dataObj.ientityid = UrlParm.parm("ientityid");
+		}
+
+		vpPostAjax(action, dataObj, 'POST', function (rst) {
+			console.log(rst);
+			if (rst.success) {
+				parent.layer.msg('保存成功！', { icon: 1, time: 2000 });
+			} else {
+				parent.layer.msg('保存失败，！' + rst.msg, { icon: 2, time: 2000 });
+			}
+		});
+	}
+
+
+
+</script>

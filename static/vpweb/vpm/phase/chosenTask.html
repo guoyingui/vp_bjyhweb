@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>任务看板 - VP应用全生命周期管理系统</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
+    <link rel="shortcut icon" href="img/favicon.ico">
+    <link href="../../css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="../../css/font-awesome.min.css?v=4.7.0" rel="stylesheet">
+    <link href="../../css/animate.css" rel="stylesheet">
+    <link href="../../css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+    <link href="../../css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+    <link href="../../css/plugins/zTree/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+	<link href="../../css/plugins/chosen/chosen.css" rel="stylesheet">
+    <link href="../../css/plugins/iCheck/custom.css" rel="stylesheet">
+    <link href="../../js/plugins/layui/css/layui.css"  rel="stylesheet" media="all">
+    <!-- 自定义css -->
+    <link href="../../css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="../../css/common.css" rel="stylesheet">
+    <link href="../../css/vp.css" rel="stylesheet">
+    <script src="../../../vpcommon/config.js"></script>
+    <script src="../../../vpcommon/vputils.min.js"></script>
+
+    <!--[if lte IE 9]>
+        <script src="../../js/html5shiv.min.js"></script>
+        <script src="../../js/respond.js"></script>
+    <![endif]-->
+
+	<style>
+		.ztree div.divTd {
+			min-width: 70px;
+		}
+		.nav-tabs li.active>a {
+			border: 0px;
+			color: #1890ff;
+		}
+		#vppagebar {
+			border-top: 0px;
+		}
+
+	</style>
+</head>
+
+<body class="gray-bg">
+    <div class="sub-navigator clearfix">
+        <input type="hidden" id="entityid" name="entityid">
+        <input type="hidden" id="projectid" name="projectid">
+        <input type="hidden" id="projectname" name="projectname">
+        <div style="float: left;width: 35%;">
+                      项目名称：
+			<select id="project" class="chosen-select" style="width: 60%;" tabindex="1">
+                     
+            </select>
+        </div>
+        
+        <div style="float: left;width: 35%;">
+			对象类型：
+			<select id="objtype" class="chosen-select" style="width: 55%;" tabindex="1">
+                  
+            </select>
+        </div>
+        
+        <div class="sub-head " style="float: left;width: 30%;" id="vpsearch">    
+               
+        </div>
+    </div>
+    <div class="padding-10" id="vpcontainer" style="padding-top:45px; ">
+        <div class="clearfix white-bg padding-10 animated fadeInRight vp-pr">
+            <div class="vp-overflow-x vpcontent">
+                <ul id="vptreetable" class="ztree" lay-filter="vpclick"></ul>
+            </div>
+			<div class="layui-table-page" id="vppagebar">
+			  
+			</div>
+        </div> 
+    </div>
+
+    <!-- 全局js -->
+    <script src="../../js/jquery-1.11.3.min.js"></script>
+	<!--[if IE 8]>
+	<script type="text/javascript" src="../../js/jquery-1.9.1.min.js"></script>
+	<![endif]-->
+    <script src="../../js/bootstrap.min.js?v=3.3.6"></script>
+    <!-- 自定义js -->
+    <script src="../../js/content.js?v=1.0.0"></script>
+    <!-- 日期控件 -->
+    <script src="../../js/plugins/datapicker/bootstrap-datepicker.js"></script>
+    <!-- layer弹出层 -->
+    <script src="../../js/plugins/layer/layer.min.js"></script>
+    <script src="../../js/plugins/layui/layui.js"></script>
+    <!-- 下拉选择列表 -->
+    <script src="../../js/plugins/chosen/chosen.jquery.js"></script>
+    <!-- zTree模拟树表 -->
+    <script src="../../js/plugins/zTree/jquery.ztree.all.min.js"></script>
+    <script src="../../js/vpsoft/TreeTable.js"></script>
+    <script src="../../js/vpsoft/common.js"></script>
+    <script src="../../js/vpsoft/form.js"></script>
+    <script src="../../js/plugins/iCheck/icheck.min.js"></script>
+</body>
+<script>
+
+var entityid = getParameter("entityid");
+var projectid = getParameter("projectid");
+var destentityid = entityid;
+var projectname = "";
+
+var flag = getParameter("flag");
+if (flag == 'src' && entityid == '7'){
+	var html = '<option value="10" hassubinfo="true">任务计划</option>';
+} else {
+	var html = '<option value="9" hassubinfo="true">高层计划</option>';
+}
+
+$('#objtype').append(html);
+$('#objtype').attr('disabled','disabled');
+var config = {'.chosen-select': {} }
+vpPostAjax(getVpmPath()+'/vfrm/phase/getSelectOption', {scode:'project', entityid: entityid, projectid: projectid, formType: flag}, 'POST', function(rst) {
+	if(rst.success){
+		var html = '';
+		var list = rst.list;
+		$.each(list, function(i, item) {
+			if(i==0){
+				html+= '<option value="'+item.iid+'" entityid="'+item.ientityid+'" hassubinfo="true" selected>'+item.sname+'</option>';
+				entityid=item.ientityid;
+		 		projectid=item.iid;
+		 		projectname=item.sname;
+		 		//alert(projectname);
+		 		$('#entityid').val(entityid);
+				$('#projectid').val(projectid);
+				$('#projectname').val(projectname);
+			}else{
+				html+= '<option value="'+item.iid+'" entityid="'+item.ientityid+'" hassubinfo="true">'+item.sname+'</option>';
+			}
+		});
+		$('#project').append(html);
+		if (flag == 'src' && destentityid == '6'){//项目群选择被镜像任务时，可选择有权限的项目或项目群
+			$('#project').removeAttr('disabled');
+		} else { // 当前项目且不可选
+			$('#project').attr('disabled','disabled');
+		}
+	}else{
+		layer.msg("加载项目列表下拉框数据异常", {icon: 2,time: 2000});
+	}
+});	
+
+for (var selector in config) {
+    $(selector).chosen(config[selector]);
+}
+//筛选数据类型
+$(document).on('click','.active-result',function(){
+ 	var index=$(this).attr("data-option-array-index");
+ 	if($(this).closest("#project_chosen").attr("id")=="project_chosen"){
+ 		entityid=$("#project>option:eq("+index+")").attr('entityid');
+ 		projectid=$("#project>option:eq("+index+")").val();
+ 		projectname=$("#project>option:eq("+index+")").text();
+ 		$('#entityid').val(entityid);
+		$('#projectid').val(projectid);
+		$('#projectname').val(projectname);
+ 		var param = new Object();
+		param['entityid']=entityid;
+		param['projectid']=projectid;
+		reload(param);
+ 	}
+});
+
+var osearch = Search({ el: 'vpsearch', id: 'quicksearch' });
+osearch.parseEl();
+var olisttable = ListTable({ el: 'vptreetable', vpurl: getVpmPath()+'/vfrm/phase/getTaskList', radio: true, 
+	toolbar: false, toolbarevent: 'doListEvent',
+	param:  { entityid: entityid, projectid: projectid, formType: flag, destentityid: destentityid}
+});
+olisttable.parseEl();
+
+var resArr=[];
+//列表事件
+function doListEvent(obj){ // obj.data 当前行数据  obj.event event参数对应的值  obj.tr 当前行tr的DOM对象
+  if(obj.event === 'click'){
+  	//选中点击行
+  	resArr= [obj.data];
+  	var checkCell = obj.tr.find(".layui-unselect.layui-form-radio");
+    if (checkCell.length>0) {
+        checkCell.click();
+    } 
+  }else if(obj.event === 'radio'){//点击单选框
+  	resArr= [obj.data];
+  }
+}
+function getData(){
+	return resArr;
+}
+</script>
+</html>

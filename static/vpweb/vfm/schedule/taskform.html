@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>任务</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
+    <link rel="shortcut icon" href="img/favicon.ico">
+    <link href="../../css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="../../css/font-awesome.min.css?v=4.7.0" rel="stylesheet">
+    <link href="../../css/animate.css" rel="stylesheet">
+    <link href="../../css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+    <link href="../../css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+    <!-- zTree树表 -->
+    <link href="../../css/plugins/zTree/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+    <!-- layUI表格 -->
+    <link rel="stylesheet" href="../../js/plugins/layui/css/layui.css"  media="all">
+    <link href="../../css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="../../css/common.css" rel="stylesheet">
+    <link href="../../css/vp.css" rel="stylesheet">
+    <script src="../../../vpcommon/config.js"></script>
+    <script src="../../../vpcommon/vputils.min.js"></script>
+    <!--[if lte IE 9]>
+        <script src="../../js/html5shiv.min.js"></script>
+        <script src="../../js/respond.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+	<div class="padding-10 space-10" style="top: 0px;">
+		<div class="ibox">
+			<div class="ibox-title border-bottom p-l-none">
+				<h5>基本信息</h5>
+				<div class="ibox-tools">
+					<a class="collapse-link" data-toggle="tooltip" data-placement="top" title="收起">
+						<i class="fa fa-caret-up"></i>
+					</a>
+				</div>
+			</div>
+			<div class="ibox-content p-n clearfix">
+				<form class="form-horizontal m-t" id="oForm">
+				<input type="hidden" id="iid" name="iid">
+					<div class="form-group">
+						<div class="col-sm-12">
+							<label class="col-sm-2 col-md-3 control-label text-ellipsis"><font color=red>*&nbsp;</font>任务名称：</label>
+							<div class="col-sm-10 col-md-9">
+								<input id="sname" name="sname"  class="form-control" type="text">
+							</div>
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<div class="col-xs-12">
+							<label class="col-xs-2 control-label">描述：</label>
+							<div class="col-xs-10">
+								<textarea id="sdescription" name="sdescription" class="form-control" ></textarea>
+							</div>
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<div class="col-sm-12">
+							<label class="col-sm-2 col-md-3 control-label text-ellipsis"><font color=red>*&nbsp;</font>类名或者URL：</label>
+							<div class="col-sm-10 col-md-9">
+								<input id="sclassname" name="sclassname"  class="form-control" type="text">
+							</div>
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<div class="col-sm-6">
+							<label class="col-sm-4 col-md-3 control-label text-ellipsis">状态：</label>
+							<div class="col-sm-8 col-md-9">
+							    <input id="istatus" name="istatus" value="未关联" ivalue="1" class="form-control" type="text" disabled/>
+							</div>
+						</div>
+						<div class="col-sm-6">
+							<label class="col-sm-4 col-md-3 control-label text-ellipsis">系统计划：</label>
+							<div class="col-sm-8 col-md-9">
+								<input id="isystem" name="isystem"  value="否" itasktype="1"  class="form-control" type="text"  disabled/>
+							</div>
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<div class="col-sm-6">
+							<label class="col-sm-4 col-md-3 control-label text-ellipsis">修改时间：</label>
+							<div class="col-sm-8 col-md-9">
+								<input id="dmodified" name="dmodified" hidid="" class="form-control" type="text" disabled/>
+							</div>
+						</div>
+						<div class="col-sm-6">
+							<label class="col-sm-4 col-md-3 control-label text-ellipsis">修改人：</label>
+							<div class="col-sm-8 col-md-9">
+								<input id="imodified" name="imodified" class="form-control" type="text" disabled/>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</body>
+    <!-- 全局js -->
+    <script src="../../js/jquery-1.11.3.min.js"></script>
+	<!--[if IE 8]>
+	<script type="text/javascript" src="../../js/jquery-1.9.1.min.js"></script>
+	<![endif]-->
+    <script src="../../js/bootstrap.min.js?v=3.3.6"></script>
+    <!-- 自定义js -->
+    <script src="../../js/content.js?v=1.0.0"></script>
+    <!-- 日期控件 -->
+    <script src="../../js/plugins/datapicker/bootstrap-datepicker.js"></script>
+    <!-- layer弹出层 -->
+    <script src="../../js/plugins/layer/layer.min.js"></script>
+    <!-- 下拉选择列表 -->
+    <script src="../../js/plugins/chosen/chosen.jquery.js"></script>
+    <!-- jQuery 表单验证-->
+    <script src="../../js/plugins/validate/jquery.validate.min.js"></script>
+    <script src="../../js/plugins/validate/messages_zh.min.js"></script>
+    <!-- zTree模拟树表 -->
+    <script src="../../js/plugins/zTree/jquery.ztree.all.min.js"></script>
+    <script src="../../js/vpsoft/TreeTable.js"></script>
+    <script src="../../js/vpsoft/common.js"></script>
+    <script src="../../js/vpsoft/form.js"></script>
+    <script src="../../js/plugins/iCheck/icheck.min.js"></script>
+    
+    <script src="../../js/vpsoft/getUrlParam.js?v=1.0.0"></script>
+</html>
+<script>
+    var planid = UrlParm.parm("iplanid_");
+    if(planid == undefined || planid == 'undefined'){
+    	planid = "";
+    }
+    var taskid = $('#vpeditform', parent.document).attr("iid");
+    
+	$(document).ready(function () {
+		$('.i-checks').iCheck({
+			checkboxClass: 'text-primary fa fa-fw fa-square-o'
+		});
+
+		if(planid == '' || planid == undefined || planid == '0'){
+			if(taskid != '' && taskid != undefined && taskid != '0'){
+				vpPostAjax('/schedule/task/get', { iid: taskid, userid: '1' }, "POST", function(rst) {
+					var task = rst.data;
+					$("#iid").val(task.iid);
+					$("#sname").val(task.sname);
+					$("#sdescription").val(task.sdescription);
+					$("#sclassname").val(task.sclassname);
+					if(task.istatus==1){
+					    $("#istatus").val("未关联");
+					    $("#istatus").attr("ivalue","1");
+					}else{
+						$("#istatus").val("已关联");
+						$("#istatus").attr("ivalue","0");
+					}
+					if(task.isystem==1){
+					    $("#isystem").val("否");
+					    $("#isystem").attr("itasktype","1");
+					}else{
+						$("#isystem").val("是");
+						$("#isystem").attr("itasktype","0");
+					}
+					$("#dmodified").val(task.dmodified);
+					$("#imodified").val(task.sloginname);
+				});
+			}
+		}
+		
+		$('#btnbutton', parent.document).html('<button class="btn btn-sm btn-primary" id="saveBtn">保存</button>&nbsp;');
+		
+		$('#btnbutton', parent.document).click(function() {	
+			var sname = $('#sname').val();
+			var sclassname = $('#sclassname').val();
+			if(sname==null||sname==undefined||sname==''){
+				layer.msg('名称不能为空！', { icon: 5, time: 2000 });
+			}
+			else if (sclassname==null||sclassname==undefined||sclassname==''){
+				layer.msg('类名或者URL不能为空！', { icon: 5, time: 2000 });
+			}
+			else{
+				$(this).parent().find("#frminfo").contents().find("#oForm").submit();
+				parent.closeDrawer('#vpeditform');
+			}
+		});
+	});
+	
+	var callbackfunc = "";
+	function saveForm(callback) {
+		callbackfunc = callback;
+		$("#oForm").submit();
+	}
+	
+	$("#oForm").validate({
+		submitHandler : function(form) {
+			try
+			{
+				var oFormData = $('#oForm').serializeJSON();
+				oFormData["isystems"] = $("#isystem").attr("itasktype");
+				oFormData["istatuss"] = $("#istatus").attr("ivalue");
+				oFormData["iplanid"] = planid;				
+				$("#saveBtn", parent.document).attr('disabled', "true");
+				var sname = $('#sname').val();
+				var sclassname = $('#sclassname').val();
+				if(sname==null||sname==undefined||sname==''){
+					layer.msg('名称不能为空！', { icon: 5, time: 2000 });
+					$("#saveBtn", parent.document).removeAttr('disabled');
+				}
+				else if (sclassname==null||sclassname==undefined||sclassname==''){
+					layer.msg('类名或者URL不能为空！', { icon: 5, time: 2000 });
+					$("#saveBtn", parent.document).removeAttr('disabled');
+				}
+				else{
+					vpPostAjax('/schedule/task/save', oFormData, "POST", function(rst) {
+					if(rst.success){
+						$("#iid").val(rst.iid);
+						//parent.parent.reload();
+						parent.reload();
+						eval(callbackfunc)();
+					}
+					});
+					$("#saveBtn", parent.document).removeAttr('disabled');
+					$(this).parent().find("#frminfo").contents().find("#oForm").submit();
+					parent.layer.close();
+				}
+			}
+			catch (e)
+			{
+				//layer.msg('取表单数据失败', { icon: 2, time: 2000 });
+			}
+			return false;
+		}
+	});
+	debugger
+	if(parent.window.sysaccess == 1){
+		$("#saveBtn", window.parent.document).remove();
+	}
+</script>

@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="author" content="vpsoft">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>登录</title>
+    <meta name="keywords" content="登录">
+    <meta name="description" content="登录">
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon" />
+    <link href="css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="css/font-awesome.min.css?v=4.7.0" rel="stylesheet">
+    <link href="css/animate.css" rel="stylesheet">
+    <link href="css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="css/common.css" rel="stylesheet">
+    <!--[if lte IE 9]>
+        <script src="js/html5shiv.min.js"></script>
+        <script src="js/respond.js"></script>
+    <![endif]-->
+</head>
+
+<body class="gray-bg">
+    <div class="main full-height overflow-hid">
+    <div class="padding-20 animated fadeInRight">
+        <div class="row">
+            <div class="col-sm-3">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <span class="label label-success pull-right">月</span>
+                        <h5>需求缺陷统计</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <h2 class="no-margins">40 886,200</h2>
+                        <div class="stat-percent font-bold text-success">12% <i class="fa fa-bolt"></i>
+                        </div>
+                        <small>同比</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <span class="label label-info pull-right">全年</span>
+                        <h5>任务统计</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <h2 class="no-margins">275,800</h2>
+                        <div class="stat-percent font-bold text-info">20% <i class="fa fa-level-up"></i>
+                        </div>
+                        <small>日均完成数</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <span class="label label-primary pull-right">今天</span>
+                        <h5>缺陷统计</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <h2 class="no-margins">106,120</h2>
+                        <div class="stat-percent font-bold text-navy">44% <i class="fa fa-level-up"></i>
+                        </div>
+                        <small>日均新增</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <span class="label label-danger pull-right">最近一个月</span>
+                        <h5>工作项完成率</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <h2 class="no-margins">80%</h2>
+                        <div class="stat-percent font-bold text-danger">38% <i class="fa fa-level-down"></i>
+                        </div>
+                        <small>12月</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>数据报告</h5>
+                        <div class="pull-right">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-xs btn-white active">天</button>
+                                <button type="button" class="btn btn-xs btn-white">月</button>
+                                <button type="button" class="btn btn-xs btn-white">年</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="row">
+                            <div class="col-sm-9">
+                                <div class="flot-chart">
+                                    <div class="flot-chart-content" id="flot-dashboard-chart"></div>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <ul class="stat-list">
+                                    <li>
+                                        <h2 class="no-margins">2,346</h2>
+                                        <small>需求总数</small>
+                                        <div class="stat-percent">48% <i class="fa fa-level-up text-navy"></i>
+                                        </div>
+                                        <div class="progress progress-mini">
+                                            <div style="width: 48%;" class="progress-bar"></div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <h2 class="no-margins ">4,422</h2>
+                                        <small>任务总数</small>
+                                        <div class="stat-percent">60% <i class="fa fa-level-down text-navy"></i>
+                                        </div>
+                                        <div class="progress progress-mini">
+                                            <div style="width: 60%;" class="progress-bar"></div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <h2 class="no-margins ">9,180</h2>
+                                        <small>缺陷总数</small>
+                                        <div class="stat-percent">22% <i class="fa fa-bolt text-navy"></i>
+                                        </div>
+                                        <div class="progress progress-mini">
+                                            <div style="width: 22%;" class="progress-bar"></div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row">
+
+            <div class="col-sm-12">
+
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="ibox float-e-margins">
+                            <div class="ibox-title">
+                                <h5>项目列表</h5>
+                                <div class="ibox-tools">
+                                    <a class="collapse-link">
+                                        <i class="fa fa-caret-up"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="ibox-content">
+                                <table class="table table-hover no-margins">
+                                    <thead>
+                                        <tr>
+                                            <th>状态</th>
+                                            <th>日期</th>
+                                            <th>用户</th>
+                                            <th>值</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><small>进行中...</small>
+                                            </td>
+                                            <td><i class="fa fa-clock-o"></i> 11:20</td>
+                                            <td>青衣5858</td>
+                                            <td class="text-navy"> <i class="fa fa-level-up"></i> 24%</td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="label label-warning">已取消</span>
+                                            </td>
+                                            <td><i class="fa fa-clock-o"></i> 10:40</td>
+                                            <td>徐子崴</td>
+                                            <td class="text-navy"> <i class="fa fa-level-up"></i> 66%</td>
+                                        </tr>
+                                        <tr>
+                                            <td><small>进行中...</small>
+                                            </td>
+                                            <td><i class="fa fa-clock-o"></i> 01:30</td>
+                                            <td>姜岚昕</td>
+                                            <td class="text-navy"> <i class="fa fa-level-up"></i> 54%</td>
+                                        </tr>
+                                        <tr>
+                                            <td><small>进行中...</small>
+                                            </td>
+                                            <td><i class="fa fa-clock-o"></i> 02:20</td>
+                                            <td>武汉大兵哥</td>
+                                            <td class="text-navy"> <i class="fa fa-level-up"></i> 12%</td>
+                                        </tr>
+                                        <tr>
+                                            <td><small>进行中...</small>
+                                            </td>
+                                            <td><i class="fa fa-clock-o"></i> 09:40</td>
+                                            <td>荆莹儿</td>
+                                            <td class="text-navy"> <i class="fa fa-level-up"></i> 22%</td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="label label-primary">已完成</span>
+                                            </td>
+                                            <td><i class="fa fa-clock-o"></i> 04:10</td>
+                                            <td>栾某某</td>
+                                            <td class="text-navy"> <i class="fa fa-level-up"></i> 66%</td>
+                                        </tr>
+                                        <tr>
+                                            <td><small>进行中...</small>
+                                            </td>
+                                            <td><i class="fa fa-clock-o"></i> 12:08</td>
+                                            <td>范范范二妮</td>
+                                            <td class="text-navy"> <i class="fa fa-level-up"></i> 23%</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="ibox float-e-margins">
+                            <div class="ibox-title">
+                                <h5>项目BUG统计</h5>
+                                <div class="ibox-tools">
+                                    <a class="collapse-link">
+                                        <i class="fa fa-caret-up"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div id="pieCharts" class="ibox-content">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+    </div>
+    <!-- 全局js -->
+    <script src="js/jquery-1.11.3.min.js"></script>
+	<!--[if IE 8]>
+	<script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
+	<![endif]-->
+    <script src="js/bootstrap.min.js?v=3.3.6"></script>
+    <!-- 自定义js -->
+    <script src="js/content.js?v=1.0.0"></script>
+    <!-- G2图表只兼容IE9 -->
+    <script src="js/plugins/assets/g2.min.js"></script>
+    <script src="js/plugins/assets/data-set.min.js"></script>
+    <script>
+    // 需要添加滚动条的元素
+    showScroll('.main')
+    // 柱图
+  var data = [
+    { year: '1月', sales: 38 },
+    { year: '2月', sales: 52 },
+    { year: '3月', sales: 61 },
+    { year: '4月', sales: 145 },
+    { year: '5月', sales: 48 },
+    { year: '6月', sales: 78 },
+    { year: '7月', sales: 68 },
+    { year: '8月', sales: 99 },
+    { year: '9月', sales: 138 },
+    { year: '10月', sales: 108 },
+    { year: '11月', sales: 65 },
+    { year: '12月', sales: 81 },
+  ];
+  var chart = new G2.Chart({
+    container: 'flot-dashboard-chart',
+    forceFit: true,
+    height: 270
+  });
+  chart.source(data);
+  chart.scale('sales', {
+    tickInterval: 20
+  });
+  chart.interval().position('year*sales');
+  chart.render();
+
+  // 饼图
+  var { DataView } = DataSet;
+  var data = [
+    { item: '新建', count: 40 },
+    { item: '进行中', count: 21 },
+    { item: '已解决', count: 17 },
+    { item: '测试中', count: 13 },
+    { item: '已关闭', count: 9 }
+  ];
+  var dv = new DataView();
+  dv.source(data).transform({
+    type: 'percent',
+    field: 'count',
+    dimension: 'item',
+    as: 'percent'
+  });
+  var chart = new G2.Chart({
+    container: 'pieCharts',
+    forceFit: true,
+    height: 275,
+    padding: [ 0, 30, 0, 0]
+  });
+  chart.source(dv, {
+    percent: {
+      formatter: val => {
+        val = (val * 100) + '%';
+        return val;
+      }
+    }
+  });
+  chart.legend({
+    position: 'right',
+    offsetY: 0,
+    offsetX: -100
+  });
+  chart.coord('theta', {
+    radius: 0.75,
+    innerRadius: 0.6
+  });
+  chart.tooltip({
+    showTitle: false,
+    itemTpl: '<li><span style="background-color:{color};" class="g2-tooltip-marker"></span>{name}: {value}</li>'
+  });
+  // 辅助文本
+  chart.guide().html({
+    position: [ '50%', '50%' ],
+    html: '<div style="color:#8c8c8c;font-size: 14px;text-align: center;width: 10em;">总数<br><span style="color:#8c8c8c;font-size:20px">15,781</span></div>',
+    alignX: 'middle',
+    alignY: 'middle'
+  });
+  chart.intervalStack()
+    .position('percent')
+    .color('item')
+    .tooltip('item*percent', (item, percent) => {
+      percent = percent * 100 + '%';
+      return {
+        name: item,
+        value: percent
+      };
+    })
+    .style({
+      lineWidth: 1,
+      stroke: '#fff'
+    });
+  chart.render();
+</script>
+
+</body>
+
+</html>

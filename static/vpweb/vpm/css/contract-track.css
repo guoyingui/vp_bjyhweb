@@ -1,0 +1,142 @@
+.body{
+	color:#353c44;
+}
+.incomePayPlanTabSty
+{
+	border:1px solid;
+	border-color:#616a71;
+	border-collapse:collapse;
+}
+.planTdTitleSty
+{
+	vertical-align:middle;
+	padding:2px 3px 2px 3px;
+	font-family:宋体;
+	font-size:12px;
+	--border-color:#DDDDDD;
+	background-color:#d8e2ec;
+	word-break:keep-all;
+}
+.planTdSty
+{
+	vertical-align:middle;
+	padding:2px 3px 2px 3px;
+	font-family:宋体;
+	font-size:12px;
+	--border-color:#DDDDDD;
+	word-break:keep-all;
+}
+.track_track_top_title{
+   height:20px;
+   background:url(/project/images/interact/gjt_bg.gif);
+   font-size:13px;
+   font-weight:bold;
+   padding:6px 0 0 10px;
+}
+.task_gzbg_textbox{
+  width:99%;
+  height:35px;
+  border:1px #bababa solid;
+  overflow:auto;
+  color:#999999;
+}
+.task_gzbg_textbox_input{
+  width:99%;
+  height:35px;
+  border:1px #616a71 solid;
+  overflow:auto;
+}
+.open,.close{
+	cursor:pointer;
+	/*width:12px;
+	height:10px;
+	background:url("size.gif");*/
+	width:16px;
+	height:16px;
+	background:url("/project/images/contract/bt_ht_zdh.gif");
+              /* no-repeat;collapsed_onepic.gif*/
+}
+.open{
+	/*background-position:top;
+	background-position:0 0;*/
+	background:url("/project/images/contract/bt_ht_zdh.gif");
+	float:right;
+}
+.close{
+	/*background-position:bottom;
+	background-position:0 -10px;/* 左右 上下*/
+	background:url("/project/images/contract/bt_ht_zxh.gif");
+	float:right;
+}
+.contractMsgTitle{
+	padding-right:3px;
+	border-top:1px solid;
+	border-top-color:#616a71;
+}
+.buttonMove2 {
+   	border:1px solid #328dc2;
+	background-image: url(/project/images/btn_hover.gif);
+    padding-top:2px;
+    margin-top:1px;
+    cursor:pointer;
+    font-size:12px;
+    height:21px;
+    color:#FFF;
+}
+.buttonOut2 {
+   	background-image: url(/project/images/btn.gif);
+   	border:1px solid #328dc2;
+    padding-top:2px;
+    margin-top:1px;
+    cursor:pointer;
+    font-size:12px;
+    height:21px;
+    color:#FFF;
+}
+.button_qxMove {
+   	border:1px solid #d17d00;
+	background-image: url(/project/images/btn_qx_hover.gif);
+    padding-top:2px;
+    margin-top:1px;
+    cursor:pointer;
+    font-size:12px;
+    height:21px;
+    color:#FFF;
+}
+.button_qxOut {
+   	background-image: url(/project/images/btn_qx.gif);
+   	border:1px solid #d17d00;
+    padding-top:2px;
+    margin-top:1px;
+    cursor:pointer;
+    font-size:12px;
+    height:21px;
+    color:#FFF;
+}
+.htgztable{
+	color:#353c44;
+}
+.htgztable td{
+    padding:3px 5px;
+}
+.htgztabletr1{
+	border-bottom:1px #c6c7cf solid;
+}
+.htgztabletr2{
+	border:1px #c6c7cf solid;
+	border-top-style:none;
+}
+.htgztabletr3{
+	border-right:1px #c6c7cf solid;
+}
+.htgztab_linkfont{
+	color:#1c61ac; 
+}
+.htgztab_linkfont a:link,.htgztab_linkfont a:visited{
+	color:#1c61ac; 
+	text-decoration:none;
+}
+.htgztab_linkfont a:hover{
+	color:#990000; 
+	text-decoration:none;
+}

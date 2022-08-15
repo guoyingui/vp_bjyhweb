@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>待处理的流程- VP应用全生命周期管理系统</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
+    <link rel="shortcut icon" href="img/favicon.ico">
+    <link href="../../css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="../../css/font-awesome.min.css?v=4.7.0" rel="stylesheet">
+    <link href="../../css/animate.css" rel="stylesheet">
+    <link href="../../css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+    <link href="../../css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+    <link href="../../css/plugins/zTree/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+	<link href="../../js/plugins/layui/css/layui.css" rel="stylesheet" media="all">
+    <!-- 自定义css -->
+    <link href="../../css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="../../css/common.css" rel="stylesheet">
+    <link href="../../css/vp.css" rel="stylesheet">
+    <script src="../../../vpcommon/config.js"></script>
+    <script src="../../../vpcommon/vputils.min.js"></script>
+    
+    
+    <!--[if lte IE 9]>
+    <script src="../../js/html5shiv.min.js"></script>
+    <script src="../../js/respond.js"></script>
+    <![endif]-->
+	<style>
+		.ztree div.divTd {
+			min-width: 70px;
+		}
+		.nav-tabs li.active>a {
+			border: 0px;
+			color: #1890ff;
+		}
+
+	</style>
+</head>
+<body>
+<div class="ibox m-b-xxl" style="margin-bottom: 5px;">
+	<div class="tabs-container p-t-lg">
+		<ul class="nav nav-tabs topFixed-tab">
+			<li class="active"><a data-toggle="tab" href="editor-taskhandler.html"
+				aria-expanded="true">处理者</a></li>
+			<li class=""><a data-toggle="tab" href="editor-taskform.html"
+				aria-expanded="false">步骤表单配置</a></li>
+		 	<!--<li class=""><a data-toggle="tab" href="editor-taskaction.html"-->
+				<!--aria-expanded="false">动作</a></li>-->
+			<li class=""><a data-toggle="tab" href="editor-tasktime.html"
+				aria-expanded="false">时限</a></li>
+		</ul>
+	</div>
+	<div class="ibox-content">
+		<div id="frm" style="height:1000px;">
+			<iframe id="taskIframe" src="" style="border: 0px; width: 100%; height: 104%;padding-top:20px;"></iframe>
+		</div>
+	</div>
+</div>
+ <!-- 全局js -->
+    <script src="../../js/jquery-1.11.3.min.js"></script>
+	<!--[if IE 8]>
+	<script type="text/javascript" src="../../js/jquery-1.9.1.min.js"></script>
+	<![endif]-->
+    <script src="../../js/bootstrap.min.js?v=3.3.6"></script>
+    <!-- 自定义js -->
+    <script src="../../js/content.js?v=1.0.0"></script>
+    <!-- 日期控件 -->
+    <script src="../../js/plugins/datapicker/bootstrap-datepicker.js"></script>
+    <!-- layer弹出层 -->
+    <script src="../../js/plugins/layer/layer.min.js"></script>
+    <script src="../../js/plugins/layui/layui.js"></script>
+    <!-- 下拉选择列表 -->
+    <script src="../../js/plugins/chosen/chosen.jquery.js"></script>
+    <!-- zTree模拟树表 -->
+    <script src="../../js/plugins/zTree/jquery.ztree.all.min.js"></script>
+    <script src="../../js/plugins/validate/jquery.validate.min.js"></script>
+    <script src="../../js/vpsoft/TreeTable.js"></script>
+    <script src="../../js/vpsoft/common.js"></script>
+    <script src="../../js/vpsoft/getUrlParam.js"></script>
+    <script src="../../js/vpsoft/form.js"></script>
+    <script src="../../js/plugins/iCheck/icheck.min.js"></script>
+	<script src="../../js/vue.js"></script>
+	<script src="../../js/vpsoft/chosenEntity.js?v=1.0.0" charset="utf-8"></script>
+	<script type="text/javascript">
+	var flowkey = UrlParm.parm("flowkey");
+	var stepkey = UrlParm.parm("stepkey");
+	var steptype = UrlParm.parm("steptype");
+	var stepname = UrlParm.parm("stepname");
+	
+	$(".nav-tabs>li").click(function(){
+		var stepurl ="?stepkey="+stepkey+"&steptype="+steptype+"&stepname="+stepname+"&flowkey="+flowkey;
+		stepurl = encodeURI(stepurl);
+		$(this).parent().find(".layui-this").removeClass("layui-this");
+		$(this).addClass("layui-this");
+		$(this).parent().find(".active").removeClass("active");
+		$(this).addClass("active");
+		$("#taskIframe").attr("src", $(this).find("a").attr("href")+stepurl);
+		return false;
+	});
+	$(".nav-tabs>li").eq(0).click();
+	</script>
+</body>
+</html>

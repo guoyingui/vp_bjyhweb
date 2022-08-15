@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="author" content="vpsoft">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>登录</title>
+    <link href="../../css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="../../css/font-awesome.min.css?v=4.7.0" rel="stylesheet">
+    <link href="../../css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+    <link href="../../css/animate.css" rel="stylesheet">
+    <link href="../../css/style.css" rel="stylesheet">
+    <link href="../../css/vp.css" rel="stylesheet">
+    <link href="../../css/common.css" rel="stylesheet">
+    <link href="../../css/plugins/zTree/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+    
+    <link href="../../css/plugins/zTree/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+	<link href="../../js/plugins/layui/css/layui.css" rel="stylesheet" media="all">
+	<!-- 自定义css -->
+    <link href="../../css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="../../css/common.css" rel="stylesheet">
+    <link href="../../css/vp.css" rel="stylesheet">
+    <script src="../../../vpcommon/config.js"></script>
+    <script src="../../../vpcommon/vputils.min.js"></script>
+	
+    <!--[if lte IE 9]>
+        <script src="../../js/html5shiv.min.js"></script>
+        <script src="../../js/respond.js"></script>
+    <![endif]-->
+</head>
+<style>
+	.fa-fw {
+		font-size: 24px;
+	}
+	.text-fail {
+		color: #bbb;
+	}
+	.vpbutton {
+		position: fixed; z-index: 100; border-top: 1px solid #ddd; background: #fff;  margin-left: -20px; height: 50px; line-height: 50px;
+		text-align: center;
+	}
+	.btn {
+		margin-top: 5px; 
+	}
+</style>
+
+<body class="white-bg">
+	<div class="ibox-title p-l-none">					
+		<div class="ibox-tools" id="vptoolbar">
+		
+		</div>
+	</div>
+    <div class="clearfix animated white-bg fadeInRight vp-pr" >
+        <div class="vp-overflow-x " id="listdiv">
+            <ul id="vptreetable" class="ztree" lay-filter="vpclick"></ul>
+            <!-- 
+            <script type="text/html" id="vpbar">
+				<a lay-event="download"><i class="fa fa-download text-info" data-toggle="tooltip" title="下载"></i></a>
+				<a lay-event="view"><i class="fa fa-eye text-info" data-toggle="tooltip" title="预览"></i></a>
+			</script>
+			 -->
+			 <script type="text/html" id="vpbar">
+				{{# if(d.iaccesslevel=="1"||d.iaccesslevel=="2"||d.iaccesslevel=="3"){ }}
+					<a lay-event="download"><i class="fa fa-download text-info" data-toggle="tooltip" title="下载"></i></a>
+				{{# } }}
+			</script>
+        </div>
+		<div class="layui-table-page" id="vppagebar" >
+		  
+		</div>
+	</div> 
+</body>
+<!-- 全局js -->
+    <script src="../../js/jquery-1.11.3.min.js"></script>
+	<!--[if IE 8]>
+	<script type="text/javascript" src="../../js/jquery-1.9.1.min.js"></script>
+	<![endif]-->
+    <script src="../../js/bootstrap.min.js?v=3.3.6"></script>
+    <!-- 自定义js -->
+    <script src="../../js/content.js?v=1.0.0"></script>
+    <!-- 日期控件 -->
+    <script src="../../js/plugins/datapicker/bootstrap-datepicker.js"></script>
+    <!-- layer弹出层 -->
+    <script src="../../js/plugins/layer/layer.min.js"></script>
+    <script src="../../js/plugins/layui/layui.js"></script>
+    <!-- 下拉选择列表 -->
+    <script src="../../js/plugins/chosen/chosen.jquery.js"></script>
+    <!-- zTree模拟树表 -->
+    <script src="../../js/plugins/zTree/jquery.ztree.all.min.js"></script>
+    <script src="../../js/vpsoft/TreeTable.js"></script>
+    <script src="../../js/vpsoft/common.js"></script>
+    <script src="../../js/vpsoft/form.js"></script>
+    <script src="../../js/plugins/iCheck/icheck.min.js"></script>
+    <!--选择用户-->
+	<script src="../../js/vpsoft/chosenEntity.js?v=1.0.0" charset="utf-8"></script>
+    <script>
+    	var documentid = $('#vpeditform', parent.document).attr('documentid');
+    	var ilibraryid = $('#vpeditform', parent.document).attr('ilibraryid');
+    	var ifolderid = $('#ifolderid', parent.document).val();
+    	var entityrole = true;
+    	if(parent.window.appdoclist){ //
+    		documentid = getParameter("documentid");
+    		ilibraryid = getParameter("ilibraryid");
+    		ifolderid = getParameter("ifolderid");
+    		entityrole = getParameter("entityrole");
+    	}
+    	var otool;
+    	if(entityrole==true || entityrole=='true'){
+    		otool = RelationTool({ el: 'vptoolbar', primary:'vpadd', data: [ 
+    			{ id: 'vpadd', faclass: 'fa-plus', title: '添加新版本' }
+    		] });
+    		otool.parseEl();
+    	}
+		
+		var olisttable = ListTable({ el: 'vptreetable', vpurl: '/document/page', checkbox: false, toolbar: true, toolbarwidth: 80, toolbarevent: 'viewEdit',
+			param:  { documentid: documentid ,pageType: 'docVersion'}
+		});
+		olisttable.parseEl();
+		
+		$("#vptoolbar").find("div,a").click(function() {
+			if ($(this).attr("id") == 'vpadd') {
+				addNewVersion();
+			} else {
+				
+			} 
+		});
+		
+		function viewEdit(obj) {
+			console.log(obj);
+			if (obj) {
+				if(obj.event=='download'){
+					if(parent.window.appdoclist){ 
+						parent.window.appdoclist.downloadhisfile(obj.data.fileid);
+			    	}
+				}else if(obj.event=='view'){
+					
+				}
+			}
+		}
+		
+		function addNewVersion(){
+			if(parent.window.appdoclist){ //
+				parent.window.appdoclist.addVersion(documentid, entityrole);
+	    	} else {
+	    		var openurl = 'docversionform.html';
+				parent.layer.open({
+			        type: 2, 
+			        maxmin: true,
+					title: '新增版本',
+			        btn: ['确定', '取消'],
+			        btnAlign:'c',
+			        area: ['90%', '90%'],
+			        resize: false,
+			        shift: 2,
+			        shade: 0.3,
+			        content: [openurl], //iframe的url，no代表不显示滚动条
+			        success: function(layero, index){
+		        		$(layero.find('.layui-layer-btn')).show();
+		        		layero.find('.layui-layer-btn').css('text-align', 'center');
+			        },
+			        yes: function(layerindex, layero){
+			        	var frame = $(layero).find("iframe")[0].contentWindow.document;
+			        	
+			        	var verObj = new Object();
+			        	verObj.saveType = 'docVersion';
+			        	verObj.documentid = documentid;
+			        	var sdescription = $(frame).find('#sdescription').val();
+			        	verObj.sdescription = sdescription;
+			        	var sendmsg = "0";
+			        	if($(frame).find('#sendmsg').is(':checked')){
+			        		sendmsg = "1";
+			        	}
+			        	verObj.sendmsg = sendmsg;
+			        	var list = [];
+			    		var items = $(frame).find('#uploadfile_list').find('.vp-pr.p-xxs');
+			    		if(items){
+			    			var file = '';
+			    			$.each(items, function(i, item) {
+			    				file = new Object();
+			    				file.fileid = $(this).attr('fileid');
+			    				file.filename = $(this).attr('filename');
+			    				list.push(file);
+			    			});
+			    		}else{
+			    			parent.layer.msg("请先上传文档!", {icon: 2,time: 2000});
+			    			return false;
+			    		}
+			    		verObj.filelist = list;
+						console.log(verObj);
+						vpPostAjax('/document/save', verObj, "POST", function(rst) {
+							try {
+								if(rst.success){
+									parent.layer.close(layerindex);	
+									reload();
+								}
+							}
+							catch(exception) {
+								parent.layer.msg("刷新列表失败！", { icon: 2, time: 2000 });
+							}	
+						});
+						
+			        },
+			        end: function(){ //此处用于演示
+			            
+			        }
+			    });
+	    	}
+		}
+    </script>
+</html>

@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<HTML>
+<HEAD>
+    <TITLE> ZTREE DEMO - Simple Data</TITLE>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="../../css/plugins/zTree/metroStyle/metroStyle.css" type="text/css">
+    <script type="text/javascript" src="../../js/plugins/zTree/jquery-1.4.4.min.js"></script>
+    <script type="text/javascript" src="../../js/plugins/zTree/jquery.ztree.core.js"></script>
+    <script type="text/javascript" src="../../js/plugins/zTree/jquery.ztree.excheck.js"></script>
+    <script type="text/javascript" src="../../js/plugins/zTree/jquery.ztree.exedit.js"></script>
+	<style type="text/css">
+	
+	</style>
+    <script src="../../../vpcommon/config.js"></script>
+    <script src="../../../vpcommon/vputils.min.js"></script>
+	<!-- 全局js -->
+    <script src="../../js/jquery-1.11.3.min.js"></script>
+	<!--[if IE 8]>
+	<script type="text/javascript" src="../../js/jquery-1.9.1.min.js"></script>
+	<![endif]-->
+    <script src="../../js/bootstrap.min.js?v=3.3.6"></script>
+    <!-- 自定义js -->
+    <script src="../../js/content.js?v=1.0.0"></script>
+    <!-- 日期控件 -->
+    <script src="../../js/plugins/datapicker/bootstrap-datepicker.js"></script>
+    <!-- layer弹出层 -->
+    <script src="../../js/plugins/layer/layer.min.js"></script>
+    <script src="../../js/plugins/layui/layui.js"></script>
+    <!-- 下拉选择列表 -->
+    <script src="../../js/plugins/chosen/chosen.jquery.js"></script>
+    <!-- zTree模拟树表 -->
+    <script src="../../js/plugins/zTree/jquery.ztree.all.min.js"></script>
+    <script src="../../js/vpsoft/TreeTable.js"></script>
+    <script src="../../js/vpsoft/common.js"></script>
+    <script src="../../js/vpsoft/form.js"></script>
+    <script src="../../js/plugins/iCheck/icheck.min.js"></script>
+
+    <SCRIPT type="text/javascript">
+    	var _this = this;
+    	var rootnode = {};
+    	var ilibraryid = $('#ilibraryid', parent.document).val();
+    	var irelentityid = $('#irelentityid', parent.document).val();
+    	var irelobjectid = $('#irelobjectid', parent.document).val();
+    	var isflow = false;
+    	var entityrole = false;
+    	if(parent.window.appdoclist || ilibraryid == "" || ilibraryid == undefined){ 
+    		ilibraryid = getParameter("ilibraryid");
+    		irelentityid = getParameter("irelentityid");
+    		irelobjectid = getParameter("irelobjectid");
+    		isflow = getParameter("isflow");
+    		entityrole = getParameter("entityrole");
+    	}
+        var setting = {
+            view: {
+				enable : true,  
+				showLine : true, 
+				expandSpeed: "fast",
+				//showIcon: showIconForTreeRight,  
+                addHoverDom: addHoverDom,
+                removeHoverDom: removeHoverDom,
+                selectedMulti: false
+            },
+            check: {
+                enable: false
+            },
+            data: {
+                simpleData: {
+                    enable: true
+                }
+            },
+    	    callback : {  
+				onClick : zTreeOnClickRight,  
+				beforeRemove: beforeRemove,
+				beforeEditName: beforeEditName,
+				onRemove: zTreeOnRemove,  
+				onExpand: expanNode
+			},  
+            edit: {
+                enable: false
+            },
+        };
+		
+		function expanNode(event, treeId, treeNode){
+			console.log(treeId,treeNode);
+			var treeObj = $.fn.zTree.getZTreeObj(treeId);
+			var len = treeObj.transformToArray(treeNode).length-1;
+			if(treeNode.irellibraryid > 0 && treeNode.ilibraryid < 0 && len == 0){
+				vpPostAjax('/document/getTreeDataByLibID', {  ilibraryid: treeNode.irellibraryid }, "POST", function(rst) {
+					console.log(rst);
+					if(rst.success){
+						var jsonArray = new Array();
+						var ico = '../../images/node.png'; //'../../css/plugins/zTree/zTreeStyle/img/diy/2.png';
+						var isParent = true;
+						$.each(rst.list, function (i, item) { 
+							if(item.isparent == 'false'){
+								isParent = false;
+							} else {
+								isParent = true;
+							}
+							console.log(isParent);
+							jsonArray.push( { 
+								id:item.iid, pId:item.iparent, name:item.sfoldername, ilibraryid:item.ilibraryid,irellibraryid:item.irellibraryid,
+								open:true,isParent:true, iconOpen:'../../images/node.png', iconClose:'../../images/node.png', icon: ico 
+							} );
+						});
+						treeObj.addNodes(treeNode,jsonArray);  
+					} else {
+						layer.msg('加载数据异常', { icon: 2, time: 2000 });
+					}
+				});
+			}
+		}
+		function addOneSubNode(iid,iparent,sfoldername,ilibraryid,irellibraryid,treeNode){
+			var treeId = "folderTree";
+			var treeObj = $.fn.zTree.getZTreeObj(treeId);
+			var len = treeObj.transformToArray(treeNode).length-1;
+			if(treeNode.irellibraryid > 0 && len == 0){ //库没有异步加载子节点
+				expanNode(null, treeId, treeNode); //存储库展开节点
+			} else{
+				var jsonArray = new Array();
+				var ico = '../../images/node.png';
+				jsonArray.push( { 
+					id: iid, pId: iparent, name: sfoldername, ilibraryid: ilibraryid,irellibraryid: irellibraryid,
+					open:false,isParent:true, iconOpen:'../../images/node.png', iconClose:'../../images/node.png', icon: ico 
+				} );
+				treeObj.addNodes(treeNode,jsonArray); 
+			}
+		}
+		function refreshNode(iid,iparent,sfoldername,ilibraryid,irellibraryid,treeNode) {
+			treeNode.name = sfoldername;
+		    $("#"+treeNode.tId+"_span").html(sfoldername);
+		    $("#"+treeNode.tId+"_a").attr('title',sfoldername);
+		}
+		function setEditBtn(treeId, treeNode) { 
+			//return treeNode.level > 0;
+			return false;
+		}
+		
+		function setRemoveBtn(treeId, treeNode) { 
+			//return treeNode.level > 0;
+			return false;
+		}
+        
+        $(document).ready(function(){
+        	refreshTree();
+        });
+
+		function showIconForTreeRight(treeId, treeNode) {  
+			return !treeNode.isParent;  
+		};
+
+        var newCount = 1;
+        function addHoverDom(treeId, treeNode) {
+        	/* alert("entityrole："+entityrole);
+        	alert("isflow："+isflow); */
+        	if(isflow == true || isflow == 'true' || entityrole == false || entityrole == 'false'){
+        		return;
+        	}
+        	//console.log(treeNode);
+        	var newTitle = "新建文件夹";
+        	var editTitle = "编辑文件夹";
+        	var delTitle = "删除文件夹";
+        	if((treeNode.pId == 0 || treeNode.pId == null) && treeNode.ilibraryid < 0){// 新建存储库节点
+        		newTitle = "新建存储库";
+        	}
+        	if(treeNode.ilibraryid < 0 && treeNode.irellibraryid > 0){ //操作存储库节点
+        		editTitle = "编辑存储库";
+        		delTitle = "删除存储库";
+        	}
+            var sObj = $("#" + treeNode.tId + "_span");
+            if(treeNode.name.length>9){
+            	$("#" + treeNode.tId + "_span").text(treeNode.name.substring(0,7)+"...");
+            }
+            if ($("#addBtn_"+treeNode.tId).length>0) return;
+			var addStr = "<span class='button add' id='addBtn_" + treeNode.tId
+				+ "' title='"+newTitle+"' onfocus='this.blur();'></span>";
+			sObj.after(addStr);
+			var btn = $("#addBtn_"+treeNode.tId);
+            if (btn){
+            	btn.bind("click", function(){
+    				formView('0', newTitle, treeNode.id, treeNode.ilibraryid, treeNode.irellibraryid,treeNode);
+                    return false;
+                });
+            } 
+            /* if ($("#setBtn_"+treeNode.tId).length>0) return;
+			var setStr = "<span class='button ico_open' id='setBtn_" + treeNode.tId
+					   + "' title='设置权限' onfocus='this.blur();'></span>";
+			sObj.after(setStr);
+			btn = $("#setBtn_"+treeNode.tId);
+	        if (btn){
+	        	btn.bind("click", function(){
+	        		setFolderAccess(treeId, treeNode);
+	                return false;
+	            });
+	        }  */
+			if (treeNode.level > 0) {	
+				if ($("#editBtn_"+treeNode.tId).length>0) return;
+				var editStr = "<span class='button edit' id='editBtn_" + treeNode.tId
+					+ "' title='"+editTitle+"' onfocus='this.blur();'></span>";
+				sObj.after(editStr);
+				btn = $("#editBtn_"+treeNode.tId);
+	            if (btn){
+	            	btn.bind("click", function(){
+	    				formView(treeNode.id, treeNode.name, treeNode.pId, treeNode.ilibraryid, treeNode.irellibraryid,treeNode);
+	                    return false;
+	                });
+	            } 
+	            
+	            if ($("#removeBtn_"+treeNode.tId).length>0) return;
+				var editStr = "<span class='button remove' id='removeBtn_" + treeNode.tId
+					+ "' title='"+delTitle+"' onfocus='this.blur();'></span>";
+				sObj.after(editStr);
+				btn = $("#removeBtn_"+treeNode.tId);
+	            if (btn){
+	            	btn.bind("click", function(){
+	    				deleteFolder(treeId, treeNode);
+	                    return false;
+	                });
+	            } 
+			}
+			$(sObj).parent().css("background-color", "#e8e8e8f5");
+        };
+        function removeHoverDom(treeId, treeNode) {
+        	var sObj = $("#" + treeNode.tId + "_span");
+            $("#addBtn_"+treeNode.tId).unbind().remove();
+            $("#editBtn_"+treeNode.tId).unbind().remove();
+            $("#removeBtn_"+treeNode.tId).unbind().remove();
+            /* $("#setBtn_"+treeNode.tId).unbind().remove(); */
+            $(sObj).parent().css("background-color", "#ffffff")
+        };
+		function zTreeOnClickRight(event, treeId, treeNode) {
+			console.log(treeNode.name);
+			if(treeNode.pId > 0){
+				removeHoverDom(treeId,{tId:'folderTree_1'});
+			}
+			$("#nodeDocument", parent.document).val(treeNode.id);
+			if(parent.window.appdoclist){
+				parent.window.appdoclist.loadDocumentList(treeNode.id,treeNode.ilibraryid);
+			}
+			else if (parent.loadDocumentList != undefined) {
+				parent.loadDocumentList();
+			}
+			return false;
+		}
+		
+		function zTreeOnRename(event, treeId, treeNode, isCancel) {
+			return false;
+		}
+		
+		function beforeEditName(treeId, treeNode) {  
+			return false;
+		}
+		function setFolderAccess(treeId, treeNode){
+			if(parent.window.appdoc){
+				parent.window.appdoc.setFolderAccess(treeNode,_this);
+			}
+		}
+		function zTreeOnRemove(event, treeId, treeNode) {  
+			
+		}
+		function beforeRemove(treeId, treeNode) {
+			return confirm("确认删除 节点 -- " + treeNode.name + " 吗？");  
+		}
+		function deleteFolder(treeId, treeNode){
+			console.log(treeNode);
+			if(parent.window.appdoc){
+				parent.window.appdoc.deleteNode(treeNode,_this);
+			} else {
+				parent.layer.confirm("确认删除节点【" + treeNode.name + "】吗？",{btn: ['确定', '取消'],title:"提示"},function(){
+					deleteData(treeNode);
+				});
+			}
+		}
+		function deleteData(treeNode){
+			vpPostAjax('/document/delete', {  delType:'folder',ids: treeNode.id ,ilibraryid: treeNode.irellibraryid }, "POST", 
+				function(rst) {
+					//refreshTree();
+					var treeObj = $.fn.zTree.getZTreeObj("folderTree");
+					treeObj.removeNode(treeNode);  
+					var node = treeObj.getNodes(); //可以获取所有的父节点
+				    var nodes = treeObj.transformToArray(node); //获取树所有节点
+				    if(nodes.length <=1){
+				    	$('#chosenLibrary', parent.document).removeClass('hide');
+				    }
+				}
+			);
+		}
+		function formView(iid, name, iparent, ilibraryid, irellibraryid,treeNode){
+			$('#sfoldername', parent.document).val(name);
+			if(parent.window.appdoc){
+				parent.window.appdoc.openNodeWindow(iid,iparent,ilibraryid,irellibraryid,rootnode.ilibraryid,treeNode,_this);
+			} else {
+				openFolder(iid, name, iparent,ilibraryid);
+			}
+		}
+		
+		function openFolder(iid, name, iparent,ilibraryid){
+			var title = "";
+			if(iid=='0'){
+				title = "新建文件夹";
+			}else{
+				title = "编辑文件夹>"+name;
+			}
+			parent.layer.open({
+		        type: 2, 
+		        //maxmin: true,
+				title: title,
+		        btn: ['确定', '取消'],
+		        btnAlign:'c',
+		        area: ['80%', '80%'],
+		        resize: false,
+		        shift: 2,
+		        shade: 0.3,
+		        content: ['folderform.html?iid=' + iid], //iframe的url，no代表不显示滚动条
+		        success: function(layero, index){
+	        		$(layero.find('.layui-layer-btn')).show();
+	        		layero.find('.layui-layer-btn').css('text-align', 'center');
+		        },
+		        yes: function(index, layero){
+		        	var frame = $(layero).find("iframe")[0].contentWindow.document;
+		        	var sfoldername = $(frame).find('#sfoldername').val();
+		        	var oFormData = new Object();
+					oFormData['saveType']='folder';
+					oFormData['sfoldername']=sfoldername;
+					oFormData['iid']=iid;
+					oFormData['iparent']=iparent;
+					oFormData['ilibraryid']=ilibraryid;
+		        	vpPostAjax('/document/save', oFormData , "POST", function(rst) {
+						try {
+							refreshTree();
+							parent.layer.close(index);	
+						}
+						catch(exception) {
+							parent.layer.msg('保存失败', { icon: 2, time: 2000 });
+						}	
+					});
+		        },
+		        end: function(){ //此处用于演示
+		            
+		        }
+		    });
+		}
+		function refreshTree(){
+			var objpara = { ilibraryid:ilibraryid, irelentityid:irelentityid, irelobjectid:irelobjectid };
+			console.log(objpara);
+			vpPostAjax('/document/folderTree', objpara , "POST", function(rst) {
+				var vpnode = new Array();
+				var ico = '../../images/node.png'; //'../../css/plugins/zTree/zTreeStyle/img/diy/9.png';
+				if(rst.showChosenBtn && rst.ilibraryid > 0){
+					$('#chosenLibrary', parent.document).removeClass('hide');
+				}
+				$('#ilibraryid', parent.document).val(rst.ilibraryid);
+				if(rst.data.length<1){
+					var obj = {ilibraryid:rst.ilibraryid,sfoldername:'/',saveType:'folder',iparent:'0'};
+					vpPostAjax('/document/save', obj , "POST", function(res) {
+						try {
+							if(res.success){
+								$('#nodeDocument', parent.document).val(res.iid);
+								refreshTree();
+							}
+						}
+						catch(exception) {
+							layer.msg(msg004, { icon: 2, time: 2000 });
+						}	
+					});
+				}else{
+					var rootid = '0';
+					var defaultOpen = true;
+					var isParent = false;
+					if(rst.ilibraryid < 0 && rst.irellibraryid <= 0){
+						defaultOpen = false;
+					}
+					$.each(rst.data, function (i, item) {
+						isParent = true;
+						if(!item.isParent){
+							isParent = false;
+						}
+						if(item.iparent=='0'){
+							rootid = item.iid;
+							rootnode.id = item.iid;
+							rootnode.pId = item.iparent;
+							rootnode.name = item.sfoldername;
+							rootnode.ilibraryid = item.ilibraryid;
+							rootnode.irellibraryid = item.irellibraryid;
+							rootnode.level = 0;
+							rootnode.tId = "folderTree_1";
+						}
+						if (item.iparent != '0') {
+							ico = '../../images/node.png'; //'../../css/plugins/zTree/zTreeStyle/img/diy/2.png';
+						}
+						vpnode.push( { 
+							id:item.iid, pId:item.iparent, name:item.sfoldername,iaccesslevel:item.iaccesslevel, ilibraryid:item.ilibraryid,irellibraryid:item.irellibraryid,
+							open:defaultOpen,isParent:true, iconOpen:'../../images/node.png', iconClose:'../../images/node.png', icon: ico 
+						} );
+					});
+					var treeObj = $.fn.zTree.init($("#folderTree"), setting, vpnode);
+					if(rootnode.ilibraryid < 0){
+						var node = treeObj.getNodes(); //可以获取所有的父节点
+					    var nodes = treeObj.transformToArray(node); //获取树所有节点
+			            for (var i = 0; i < nodes.length; i++) { //设置节点展开
+			            	if(nodes[i].level == 0){
+			            		treeObj.expandNode(nodes[i], true, false, true);
+			            	} else {
+			            		treeObj.expandNode(nodes[i], false, false, false);
+			            	}
+			            }
+					}
+					addHoverDom("", rootnode);
+					$('#nodeDocument', parent.document).val(rootid);
+					if(parent.window.appdoclist){
+						parent.window.appdoclist.loadDocumentList(rootid,rootnode.ilibraryid);
+					}
+					else if (parent.loadDocumentList != undefined) {
+						parent.loadDocumentList();
+					}
+				}
+			});
+		}
+    </SCRIPT>
+</HEAD>
+
+<BODY>
+<ul id="folderTree" class="ztree"></ul>
+</BODY>
+</HTML>

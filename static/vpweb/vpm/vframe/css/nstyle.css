@@ -1,0 +1,248 @@
+body,h1,h2,h3,h4,span,dl,dt,dd,li,ul,ol,p,div,input,img,a,form,fieldset,legend,button,table,tbody,tr,td,textarea{ 
+	margin:0; 
+	padding:0; 
+	border:0; 
+	list-style:none;
+}
+body{
+	font-family:Tahoma,Arial,"Î¢ÈíÑÅºÚ","ËÎÌå";
+	font-size:12px;
+	color:#3e3e3e;
+}
+/* ------ tabs ------ */
+.Right_tabs{
+	position:relative;
+	height:30px;
+	overflow:hidden;
+	background:url(../images/ntab/ul_bg.png) repeat-x;
+	width:100%;
+	margin:0%;
+}
+.Right_tabs .tabs_more{
+	height:30px;
+	float:left;
+	line-height:30px;
+	font-family:'Î¢ÈíÑÅºÚ';
+	font-size:12px;
+	width:80px;
+	text-align:center;
+	background:url(../images/ntab/tabs_more.png) no-repeat 60px center;
+	cursor:pointer;
+}
+.tab_wrapper{
+	height:30px;
+	overflow:hidden;
+	float:left;
+}
+.tab_wrapper li{
+	width:72px;
+	height:30px;
+	line-height:30px;
+	text-align:center;
+	float:left;
+	background:none;
+	font-size:12px;
+	cursor:pointer;
+}
+.tab_wrapper li.current{
+	background:url(../images/ntab/right_menu_bg.png) no-repeat;
+	color:#87c8ff;
+	font-weight:bold;
+}
+
+
+/* ------ tools ------ */
+.save_icons{
+	width:96%;
+	height:32px;
+	background:#f7f7f7;
+	margin:5px 2% 2px;
+	line-height:32px;
+	color:#4c4c4c;
+	font-size:12px;
+}
+.save_icons span.current{
+	background-image:url(../images/ntool/save_pressed_icons.png);
+	color:#87c8ff;
+	font-weight:bold;
+}
+.save{
+	padding:0 10px 0 30px;
+	background:url(../images/ntool/save_icons.png) no-repeat 5px 0px;
+	margin:0 5px;
+	height:32px;
+	display:inline-block;
+	cursor:pointer;
+}
+.save_close{
+	padding:0 10px 0 30px;
+	background:url(../images/ntool/save_icons.png) no-repeat 5px -32px;
+	margin:0 5px;
+	height:32px;
+	display:inline-block;
+	cursor:pointer;
+}
+.save_submit{
+	padding:0 10px 0 30px;
+	background:url(../images/ntool/save_icons.png) no-repeat 5px -64px;
+	margin:0 5px;
+	height:32px;
+	display:inline-block;
+	cursor:pointer;
+}
+
+/* ------ form selection ------ */
+.series_projects{
+	width:98%;
+	margin:0 1%;
+	height:435px;
+	overflow-y:auto;
+}
+.project_big_li{
+	width:96%;
+	min-width:1000px;
+	margin:0 2%;
+	font-family:'Tahoma','ËÎÌå';
+}
+.project_big_li .project_info{
+	display:block;
+	background:url(../images/nform/project_icons.png) no-repeat 25px 0;
+	height:40px;
+	padding-left:58px;
+	line-height:40px;
+	border-bottom:1px solid #ececec;
+	cursor:pointer;
+}
+.project_big_li.current .project_info{
+	color:#ff6c00;
+	font-weight:bold;
+	background-image:url(../images/nform/project_pressed_icons.png);
+}
+.project_big_li .project_details{
+	width:96%;
+	min-width:960px;
+	margin:0 auto;
+	display:none;
+}
+.project_big_li.current .project_details{
+	display:block;
+}
+
+/* ------ form elements ------ */
+.project_details .item_one{
+	background: #ffffff;
+	height:30px;
+	line-height:30px;
+	margin-top:10px;
+	overflow:hidden;
+}
+.project_details .item_one .left{
+	float:left;
+	width:45%;
+	margin-left:13px;
+}
+.project_details .item_one .right{
+	float:right;
+	width:45%;
+	margin-right:13px;
+}
+.project_details .item_one .text{
+	width:85px;
+	text-align:right;
+	display:inline-block;
+	float:left;
+}
+.project_details .item_one input{
+	width:70%;
+	padding:0 5px;
+	height:28px;
+	border:1px solid #d2d2d2;
+	float:left;
+}
+.project_details .item_one .icons{
+	width:30px;
+	height:30px;
+	float:left;
+	background:url(../images/nform/project_details_icon.png) no-repeat;
+	cursor:pointer;
+}
+.project_details .add_attachment{
+	height:30px;
+	line-height:30px;
+	margin-top:10px;
+	overflow:hidden;
+}
+.project_details .add_attachment .text{
+	width:85px;
+	text-align:right;
+	display:inline-block;
+	float:left;
+	margin-left:13px;
+}
+.project_details .add_attachment .attachment{
+	float:left;
+	width:100px;
+	cursor:pointer;
+}
+.project_details .add_attachment .icons{
+	width:30px;
+	height:30px;
+	background:url(../images/nform/project_details_icon.png) no-repeat;
+	cursor:pointer;
+	float:left;
+}
+.project_details .add_attachment .icons_text{
+	font-weight:bold;
+}
+.project_details .description{
+	height:auto;
+	overflow:hidden;
+	margin-top:5px;
+	margin-left:13px;
+}
+.project_details .description .text{
+	width:85px;
+	height:30px;
+	text-align:right;
+	display:inline-block;
+	float:left;
+}
+.project_details .description textarea{
+	height:110px;
+	width:85%;
+	float:left;
+	border:1px solid #d2d2d2;
+	resize:none;
+	padding:10px;
+	font-size:12px;
+}
+/* ------ form file ------ */
+.project_details .add_attachment{
+	height:30px;
+	line-height:30px;
+	margin-top:10px;
+	overflow:hidden;
+}
+.project_details .add_attachment .text{
+	width:85px;
+	text-align:right;
+	display:inline-block;
+	float:left;
+	margin-left:13px;
+}
+.project_details .add_attachment .attachment{
+	float:left;
+	width:100px;
+	cursor:pointer;
+}
+.project_details .add_attachment .icons{
+	width:30px;
+	height:30px;
+	background:url(../images/nform/project_details_icon.png) no-repeat;
+	cursor:pointer;
+	float:left;
+}
+.project_details .add_attachment .icons_text{
+	font-weight:bold;
+}
+

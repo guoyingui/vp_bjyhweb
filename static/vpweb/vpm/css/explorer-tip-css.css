@@ -1,0 +1,45 @@
+
+img{
+   border:0;
+   vertical-align:top;
+ }
+.llq_main{
+   width:450px;
+   height:260px;
+   background:#e5e5e5;
+   padding:35px 60px;
+ }
+ .llq_font{
+   margin-bottom:15px;
+   font-size:14px;
+   line-height:150%;
+   color:#565656;
+}
+ .llq_down{
+   height:122px;
+   text-align:center;
+   margin-bottom:20px;
+}
+.bt_box{
+   height:44px;
+   margin:15px 0;
+   text-align:center;
+ }
+.bt_yes{
+  width:142px;
+  height:44px;
+  background:url(/project/images/bt_yes.gif);
+  color:#fff;
+  font-size:14px;
+  font-weight:bold;
+  border-style:none;
+}
+.bt_no{
+  width:192px;
+  height:44px;
+  background:url(/project/images/bt_no.gif);
+  color:#fff;
+  font-size:14px;
+  font-weight:bold;
+  border-style:none;
+}

@@ -1,0 +1,293 @@
+@charset "utf-8";
+
+.new-right-box{
+  width: 100%;
+  height: 100%;
+  font-size: 14px;
+  border:1px solid #DDDFE3;
+}
+
+.new-right-box > .title{
+  padding-left: 10px;
+  line-height: 40px;
+  border-bottom: 1px solid #2b579a;
+}
+.new-right-box > .title > span{
+  width: 15px;
+  height: 15px;
+  margin-top: 12px;
+  margin-right: 10px;
+  cursor: pointer;
+}
+.new-right-box .main{
+  margin: 10px 5px 10px 10px;
+}
+.new-right-box .main .main-title{
+  line-height: 30px;
+  overflow: hidden;
+}
+.new-right-box .main .tabs-list .tab-li{
+  width: 100px;
+  text-align: center;
+  margin-right: 5px;
+  cursor: pointer;
+  border: 1px solid #EAEBED;
+  border-bottom: 0;
+  border-top-left-radius: 2px;
+  border-top-right-radius: 2px;
+  float: left!important;
+}
+
+.new-right-box .main .tab-content {
+  min-height: 300px;
+  max-height: 600px;
+}
+.new-right-box .main .tab-content{
+  display: none;
+}
+.new-right-box .main .tab-content.active{
+  display: block;
+}
+
+.new-right-box .main .main-title .menu{
+  cursor: pointer;
+  width: 25px;
+  height: 25px;
+  border: 1px solid #E0E2E8;
+}
+.new-right-box .main .main-title .menu > span{
+  display: block;
+  margin: 5px;
+}
+.new-right-box .main .main-title .menu-content{
+  position: absolute;
+  display: none;
+  overflow: hidden;
+  right: 20px;
+  top: 90px;
+  z-index: 2;
+  width: 240px;
+  height: 300px;
+  border :1px solid #DDDFE3;
+  background: #fff;
+}
+.new-right-box .main .main-title .menu-content .menu-bar{
+  position: relative;
+  height: 270px;
+  overflow: hidden;
+}
+.menu-content .menu-bar .y-line{
+  position: absolute;
+  width: 1px;
+  top: 17px;
+  left: 15px;
+  height: 235px;
+  background: #DEE1E7;
+}
+.new-right-box .main .main-title .menu-content .menu-bar .menu-bar-content{
+  overflow-y: scroll;
+  height: 230px;
+  margin-top: 14px;
+  width: 250px;
+  z-index: 3;
+  position: relative;
+}
+.menu-list {
+  list-style: none;
+  padding: 10px 0;
+  font-size: 12px
+}
+.menu-list > li{
+  line-height: 25px;
+  padding-left: 10px;
+}
+.menu-list > li > a{
+  text-decoration: none;
+  color:#333;
+}
+.menu-list > li > a:hover{
+  color:#337ab7;
+}
+
+.menu-list > li > a.active{
+  color:#337ab7;
+}
+
+.menu-list > li > a .pointer{
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  cursor: pointer;
+  margin-top: 4px;
+  margin-right:15px;
+  background: url(../images/side.gif) 3px -222px no-repeat;
+}
+.menu-list > li > a:hover .pointer{
+  background: url(../images/side.gif) 3px -244px;
+}
+.new-right-box .main .main-title .menu-content .menu-bar .circle{
+  position: absolute;
+  left: 10px;
+  width: 10px;
+  height: 10px;
+  background: url(../images/side.gif) 0 -199px no-repeat;
+  zoom: 1;
+  overflow: hidden;
+}
+
+.new-right-box .main .main-title .menu-content .menu-bar .start{
+  top: 10px;
+}
+.new-right-box .main .main-title .menu-content  .menu-bar .end{
+  bottom: 10px;
+}
+.new-right-box .main .main-title .menu-content .title{
+  line-height: 30px;
+  color: #627FB0;
+  padding: 0 10px;
+  border-bottom: 1px solid #6384B5;
+}
+
+.new-right-box .main .main-title .choose{
+  background: #F1F1F1;
+  color: #627EAC;
+}
+.new-right-box .main .content-box,
+.new-right-box .main .property-box,
+.new-right-box .main .relation-box,
+.new-right-box .main .version-box{
+  overflow: hidden;
+  padding: 10px 5px;
+  border: 1px solid #EAEBED;
+  height: auto;
+}
+
+.new-right-box .main .content-box .title{
+  overflow: hidden;
+  position: relative;
+  height:20px;
+  margin-top: 10px;
+}
+.new-right-box .main .content-box .title span{
+  display: block;
+}
+.new-right-box .main .content-box .title .icon{
+  width: 5px;
+  height: 20px;
+  background: #2b579a;
+}
+.new-right-box .main .content-box .title .text{
+  font-weight: bold;
+  width: auto;
+  background: #fff;
+  left: 5px;
+  padding-left: 10px;
+}
+.new-right-box .main .content-box .title .text,
+.new-right-box .main .content-box .title .icon{
+  position: absolute;
+}
+.new-right-box .main .content-box .title .line{
+  height: 1px;
+  width: 100%;
+  margin-top:10px;
+  background: #EDEDEF;
+}
+.new-right-box .main .content-box .content{
+  padding: 5px;
+}
+.new-right-box .main .property-box .title{
+  height: 40px;
+  background: #F2F2F2;
+  padding: 0 10px;
+  margin-bottom: 10px;
+  box-shadow: 0 0 1px #fff inset;
+  border: 1px solid #f1f1f1;
+}
+.new-right-box .main .property-box .title > span{
+  display: inline-block;
+  margin-top: 10px;
+}
+.new-right-box .main .property-box .title .state{
+  display: inline-block;
+  width: auto;
+  margin-top: 7px;
+  padding: 2px 5px;
+  color: #FE864C;
+  border: 1px solid #FE864C;
+  border-radius: 2px;
+  background: #F2F2F2;
+}
+
+.new-right-box .bottom{
+  overflow: hidden;
+  padding: 20px;
+}
+.new-right-box .bottom .button button > span{
+  padding: 0 5px;
+}
+
+/**-------box--------**/
+.box {
+    position: relative;
+    border-radius: 3px;
+    background: #ffffff;
+    border-top: 3px solid #d2d6de;
+    margin-bottom: 20px;
+    width: 100%;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+}
+.box.box-primary {
+    border-top-color: #3c8dbc;
+}
+.box-header.with-border {
+    border-bottom: 1px solid #f4f4f4;
+}
+.box-header {
+    color: #444;
+    display: block;
+    padding: 10px;
+    position: relative;
+}
+.box-header .box-title {
+    display: inline-block;
+    font-size: 16px;
+    margin: 0;
+    line-height: 1;
+}
+.box-body {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 3px;
+    border-bottom-left-radius: 3px;
+    padding: 10px;
+}
+
+/**---list box---**/
+.list-box{
+    display: none;
+    overflow: hidden;
+    z-index: 2;
+    border: 1px solid #DDDFE3;
+    background: #fff;
+}
+.list-box .list-box-header{
+    line-height: 30px;
+    color: #627FB0;
+    padding: 0 10px;
+    border-bottom: 1px solid #6384B5;
+}
+.list-box .list-box-body{
+	position: relative;
+    height: 150px;
+    overflow: hidden;
+}
+.list-box-body li{
+	line-height: 35px;
+}
+.list-box .list-box-opr{
+	text-align: center;
+	background-color: #F1F1F1;
+	line-height: 35px;
+}
+

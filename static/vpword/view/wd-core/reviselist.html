@@ -1,0 +1,217 @@
+<div class="box box-primary">
+	<div class="with-border">
+		<div class="box-tools pull-right"></div>
+	</div>
+	<div class="box-body">
+		<div class="form-inline">
+			<select id="changeType" style="width: 300px;" class="form-control" defaultValue=""></select>
+			<select id="dataType" style="width: 300px;" class="form-control" defaultValue=""></select>
+			<button type="button" class="btn btn-primary btn-sm" onclick="reviseTable.query()"><i class="fa fa-search"></i>&nbsp;查询</button>
+			<button type="button" class="btn btn-primary btn-sm" onclick="reviseTable.expExcel()" title="导出查询结果Excel文件"><i class="fa fa-file-excel-o"></i>&nbsp;导出</button>
+		</div>
+	</div>
+</div>
+<div class="panel-body reviseRecordDiv">
+    <table class="t0 table table-striped table-bordered table-hover" style="overflow:auto; white-space:nowrap;" id="reviseRecordTable"></table>
+</div>
+
+<script type="text/javascript">
+       //DataTables 1.10写法
+       var reviseTable = {
+            initGrid : function(){
+                vpUtils.dataTable($("#reviseRecordTable"),{
+                    info:true,
+                    lengthChange:false,
+                    searching:false,
+                    processing: true,
+                    serverSide: true,
+                    autoWidth:false,
+                    ordering:false,
+                    scrollX:false,
+                    scrollY: "370px",
+                    showIndex:true,
+                    pageLength: 9999,
+                    fnDrawCallback: function( settings ) {
+                        $('#reviseRecordTable_paginate').hide();
+                        if(settings && settings.json && settings.json.data.resultList){
+                            var rows = settings.json.data.resultList;
+                            if(rows.length > 0){
+                                $.each(rows,function(i,row){
+                                    $('#-r-'+row.docReviseId).on('click',function(){
+                                        var VE = window.vrmEditor;
+                                        var rightBox = new VE.RightBox({
+                                                width: 900,
+                                                //加载数据
+                                                shown : function ($el, self, $contentbody) {
+                                                    self.closeLoading();
+                                                    $contentbody.html(row.remark);
+                                                }
+                                            });
+                                            rightBox.show();
+                                    });
+                                });
+                            }
+                        }
+                    },
+                    ajax: {
+                            headers : {
+                                'Authorization': 'Bearer '+ vp.cookie.getToken(),
+                                'Content-Type': 'application/x-www-form-urlencoded',
+                                'Locale': window.LOCALE == 'zh' ? 'zh_CN' : 'en_US',
+                            },
+                            url:config.getReviseRecord(),
+                            type:"POST",
+                            dataType:'json',
+                            data:function(d){
+                                d.current = (d.start)/d.length+1;
+                                d.pageSize = d.length;
+                                reviseTable.searchString(d);
+                            },
+                            dataSrc:function(json) {
+                                json.recordsTotal = json.data.totalRows;
+                                json.recordsFiltered = json.data.totalRows;
+                                json.page = json.data.currentPage;
+                                json.size = json.data.numPerPage;
+                                return json.data.resultList;
+                        },
+                    },
+                    columns:[
+                        {data : 'creUserName', title : '修改人', defaultContent: '',width:'80px'},
+                        {data : 'creDttm', title : '修改时间', defaultContent: '',width:'80px',
+                            render : function (value, type, row) {
+                                return vpUtils.date.formatJavaStr(value)
+                            }
+                        },
+                        {data :	'outlineName', title : '章节名称', width: '80px',
+                            render : function (value, type, row) {
+                                var btn = '';
+                                if(value){
+                                    btn = '<a javascript="javascript:void(0);" id="-r-'+row.docReviseId+'" title="点击查看修订内容" style="cursor:pointer">'+value+'</a>';
+                                }
+                                return btn;
+                            }
+                        },
+                        {data :	'changeType', title : '变更类型', width: '100px',
+                        render : function (value, type, row) {
+                            if(value == 1){
+                                return '<label class="label label-primary">新增</label>';
+                            }else if(value == 2){
+                                return '<label class="label label-danger">修改</label>';
+                            }else if(value == 3){
+                                return '<label class="label label-default">删除</label>';
+                            }else{
+                                return '';
+                            }
+                        }},
+                        {data : 'dataType', title : '数据类型', width:'60px',
+                            render : function (value, type, row) {
+                                if(value == 1){
+                                    return '文档';
+                                }else if(value == 2){
+                                    return '标题';
+                                }else if(value == 3){
+                                    return '内容';
+                                }else{
+                                    return '';
+                                }
+                            }
+                        },
+                        {data : 'modifyRemark', title : '修改备注', defaultContent: '', width:'110px',
+                            render : function (value, type, row) {
+                                if(vpUtils.Str.getLength(value) > 20) {
+                                    return '<span title="'+value+'">'+vpUtils.Str.cutStr(value, 20)+'</span>';
+                                } else {
+                                    return value == null?"":value;
+                                }
+                            }
+                        },
+                        {data : 'tmpTrash' ,title : '操作', width: '10px',
+                            defaultContent: '',sClass:'text-center',render : function (value, type, row) {
+                            
+                                return '<a href="javascript:void(0);" class="fa fa-trash fa-lg opt-icon" title="删除修订记录" onclick =\"reviseTable.delete(\''+row.docReviseId+'\')\"></a>';
+                            
+                        }}
+                    ],
+            }, function (table) {
+                reviseTable.table = table;
+            })
+        },
+        query:function(){
+            reviseTable.table.ajax.reload();
+        },
+        
+        searchString:function(d){
+            if(reviseRecord.dialog &&reviseRecord.dialog.$outlineId){
+                d.outlineId = reviseRecord.dialog.$outlineId;
+            }
+            var changeTypeList = $('#changeType').select2('val');
+            if(changeTypeList){
+                d.changeTypes = changeTypeList.join(',');
+            }
+            var dataTypeList = $('#dataType').select2('val');
+            if(dataTypeList){
+                d.dataTypes = dataTypeList.join(',');
+            }
+            
+        },
+
+        expExcel:function(){
+            var recordsTotal = reviseTable.table.page.info().recordsTotal;
+            if(!(recordsTotal > 0)){
+                show_message('表中数据为空，无法导出！', 'warning');
+                return;
+            }
+            var changeTypeList = $('#changeType').select2('val');
+            var dataTypeList = $('#dataType').select2('val');
+            var downurl = "";
+            if(reviseRecord.dialog &&reviseRecord.dialog.$outlineId){
+                var outlineId = reviseRecord.dialog.$outlineId;
+                downurl = config.downLoadRevises()+"&changeTypes="+changeTypeList+"&dataTypes="+dataTypeList+"&outlineId="+outlineId;
+            }else{
+                downurl = config.downLoadRevises()+"&changeTypes="+changeTypeList+"&dataTypes="+dataTypeList;
+            }
+            WD_URL.rest.download(downurl);
+        },
+        
+        delete : function (docReviseId) {
+            message_dialog(
+                'Confirm', {
+                            content: '确定删除此条记录?',
+                            confirm: function () {
+                                WD_URL.rest.ajaxMask({
+                                maskEl: $(".modal-content"),
+                                url : config.deleteReviseUrl()+"&docReviseId="+docReviseId,
+                                type : 'DELETE'
+                            }, function (json) {
+                                show_message('删除成功！', 'success');
+                                reviseTable.query();
+                            })
+                        }
+                    })
+            }
+        };
+
+    $(function(){
+        //初始化select
+		vpUtils.select2($('#changeType'),{
+            data:[{id: "1", text: "新增"},{id: "2", text: "修改"},{id: "3", text: "删除"}],
+            multiple:true,
+            placeholder:"变更类型"
+        });
+        vpUtils.select2($('#dataType'),
+            {data:[{id: "1", text: "文档"},{id: "2", text: "标题"},{id: "3", text: "内容"}],
+            multiple:true,
+            placeholder:"数据类型",            
+        });
+                
+    });
+    var reviseRecord = {
+            outlineId :null,
+            dialog : null,
+            loadData:function(dialog){
+                this.dialog = dialog;
+                reviseTable.initGrid();
+            }
+        }
+
+</script>

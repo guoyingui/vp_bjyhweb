@@ -1,0 +1,30 @@
+.projectGroup .x-tree-icon
+{
+	width: 16px;
+    background: url(../../vpm/images/icon/icon08.gif);
+}
+.project .x-tree-icon
+{
+	width: 16px;
+    background: url(../../vpm/images/icon/icon09.gif);
+}
+.milestone .x-tree-icon
+{
+    width: 16px;
+    background: url(../../vpm/vframe/images/other/icon_milestone.gif);
+}
+.jfw .x-tree-icon
+{
+    width: 16px;
+    background: url(../../vpm/images/icon_object.gif);
+}
+.phase .x-tree-icon
+{
+    width: 16px;
+    background: url(../../vpm/images/icon_phase.gif);
+}
+.gcjh .x-tree-icon
+{
+    width: 16px;
+    background: url(../../vpm/images/icon_gcjh.gif);
+}

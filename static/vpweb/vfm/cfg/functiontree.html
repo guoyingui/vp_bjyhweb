@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<HTML>
+<HEAD>
+    <TITLE> ZTREE DEMO - Simple Data</TITLE>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="../../css/plugins/zTree/metroStyle/metroStyle.css" type="text/css">
+    <script type="text/javascript" src="../../js/plugins/zTree/jquery-1.4.4.min.js"></script>
+    <script type="text/javascript" src="../../js/plugins/zTree/jquery.ztree.core.js"></script>
+    <script type="text/javascript" src="../../js/plugins/zTree/jquery.ztree.excheck.js"></script>
+    <script type="text/javascript" src="../../js/plugins/zTree/jquery.ztree.exedit.js"></script>
+	<style type="text/css">
+	
+	</style>
+    <script src="../../../vpcommon/config.js"></script>
+    <script src="../../../vpcommon/vputils.min.js"></script>
+	<!-- 全局js -->
+    <script src="../../js/jquery-1.11.3.min.js"></script>
+	<!--[if IE 8]>
+	<script type="text/javascript" src="../../js/jquery-1.9.1.min.js"></script>
+	<![endif]-->
+    <script src="../../js/bootstrap.min.js?v=3.3.6"></script>
+    <!-- 自定义js -->
+    <script src="../../js/content.js?v=1.0.0"></script>
+    <!-- 日期控件 -->
+    <script src="../../js/plugins/datapicker/bootstrap-datepicker.js"></script>
+    <!-- layer弹出层 -->
+    <script src="../../js/plugins/layer/layer.min.js"></script>
+    <script src="../../js/plugins/layui/layui.js"></script>
+    <!-- 下拉选择列表 -->
+    <script src="../../js/plugins/chosen/chosen.jquery.js"></script>
+    <!-- zTree模拟树表 -->
+    <script src="../../js/plugins/zTree/jquery.ztree.all.min.js"></script>
+    <script src="../../js/vpsoft/TreeTable.js"></script>
+    <script src="../../js/vpsoft/common.js"></script>
+    <script src="../../js/vpsoft/form.js"></script>
+    <script src="../../js/plugins/iCheck/icheck.min.js"></script>
+
+    <SCRIPT type="text/javascript">
+		var accesslevel = -1;
+        var setting = {
+            view: {
+				enable : true,  
+				showLine : false, 
+				//showIcon: showIconForTreeRight,  
+                addHoverDom: addHoverDom,
+                removeHoverDom: removeHoverDom,
+                selectedMulti: false
+            },
+            check: {
+                enable: false
+            },
+            data: {
+                simpleData: {
+                    enable: true
+                }
+            },
+			callback : {  
+				onClick : zTreeOnClickRight,  
+				beforeRemove: beforeRemove,
+				beforeEditName: beforeEditName,
+				//onRename: zTreeOnRename,  
+				onRemove: zTreeOnRemove,  
+			},  
+            edit: {
+                enable: true, 
+				showRemoveBtn : setEditBtn,  
+				showRenameBtn : setRemoveBtn,  
+				showAddBtn :true, 
+				removeTitle :"删除",  
+				renameTitle :"修改" 
+            }
+        };
+
+		function setEditBtn(treeId, treeNode) { 
+			return treeNode.pId==0;
+		}
+		
+		function setRemoveBtn(treeId, treeNode) { 
+			return treeNode.pId==0;
+		}
+        
+        $(document).ready(function(){
+        	refreshTree();
+        });
+
+		function showIconForTreeRight(treeId, treeNode) {  
+			return !treeNode.isParent;  
+		};
+
+        var newCount = 1;
+        function addHoverDom(treeId, treeNode) {
+        	// console.log(treeNode);
+            var sObj = $("#" + treeNode.tId + "_span");
+			if (treeNode.level == 0) {	
+				if ($("#addBtn_"+treeNode.tId).length>0) return;
+				var addStr = "<span class='button add' id='addBtn_" + treeNode.tId
+					+ "' title='新建' onfocus='this.blur();'></span>";
+				sObj.after(addStr);
+				var btn = $("#addBtn_"+treeNode.tId);
+	            if (btn){
+	            	btn.bind("click", function(){
+	    				formView('0', '新建', treeNode.id,'0');
+	                    return false;
+	                });
+	            } 
+			}else{
+				if ($("#editBtn_"+treeNode.tId).length>0) return;
+				var editStr = "<span class='button edit' id='editBtn_" + treeNode.tId
+					+ "' title='编辑' onfocus='this.blur();'></span>";
+				sObj.after(editStr);
+				var btn = $("#editBtn_"+treeNode.tId);
+	            if (btn){
+	            	btn.bind("click", function(){
+	    				formView(treeNode.id, '新建', treeNode.pId,treeNode.ientityid);
+	                    return false;
+	                });
+	            } 
+			}
+        };
+        function removeHoverDom(treeId, treeNode) {
+            $("#addBtn_"+treeNode.tId).unbind().remove();
+            $("#editBtn_"+treeNode.tId).unbind().remove();
+        };
+		function zTreeOnClickRight(event, treeId, treeNode) {
+			$("#nodeFunction", parent.document).val(treeNode.id);
+			if(treeNode.pId == null || treeNode.pId == ''){
+				$('#isPoint', parent.document).val("1");
+				vpPostAjax('/cfgfunction/getFunctionList', {iid: treeNode.id}, "GET", function(rst) {
+                    if(rst.success){
+                    	showFunctionRow(rst.data);
+			    	}
+				});
+			}else{
+				$('#isPoint', parent.document).val("0");
+				vpPostAjax('/cfgfunction/getPointList', {iid: treeNode.id}, "GET", function(rst) {
+                    if(rst.success){
+                    	showPointRow(rst.data,treeNode.ientityid);
+			    	}
+				});
+			}
+			return false;
+		}
+		
+		function showFunctionRow(obj) {
+			$("#funtitle", parent.document).text("功能链接");
+			$('#headerTb', parent.document).empty();
+			var strTb = '';
+			strTb += '<div class="col-xs-2 ">功能名称</div>';
+			/* strTb += '<div class="col-xs-2 ">排序码</div>'; */
+			strTb += '<div class="col-xs-3 ">功能链接</div>';
+			strTb += '<div class="col-xs-4 ">功能扩展类</div>';
+			strTb += '<div class="col-xs-1 ">Reat路由</div>';
+			strTb += '<div class="col-xs-1 ">状态</div>';
+			$('#headerTb', parent.document).append(strTb);
+			
+			$('#vprow', parent.document).empty();
+			var str = '';
+			if(obj != null && obj != '' && obj.length > 0){
+				$.each(obj, function (irow, data) {
+					var sreadonly = "";
+					if (data.itype == 0) {
+						sreadonly = " readonly ";
+					}
+					str += '<div class="form-group form-item vp-pr m-b-sm vprow" irow="'+irow+'" >';
+					str += '	<div class="vp-delAdd" irow="'+irow+'" onclick="delRow(this)">';
+					str += '		<a href="#" '+( (data.itype==0)?" style=\"display: none;\"":"" )+'><i class="fa fa-minus-circle text-danger"></i></a>';
+					str += '	</div>';
+					str += '	<div class="col-xs-2">';
+					str += '		<input id="sname'+irow+'" name="sname"  hidid="'+data.iid+'" placeholder="请输入功能名称" maxlength="60" class="form-control input-sm" type="text" value="'+data.sname+'" >';
+					str += '	</div>';
+					/* str += '	<div class="col-xs-2">';
+					str += '		<input id="ssequencekey'+irow+'" name="ssequencekey" placeholder="请输入排序码" class="form-control input-sm" type="number" value="'+data.ssequencekey+'">';
+					str += '	</div>'; */
+					str += '	<div class="col-xs-3">';
+					str += '		<input id="surl'+irow+'" name="surl" placeholder="请输入功能链接路径" maxlength="120" class="form-control input-sm" type="text" value=\''+data.surl+'\'>';
+					str += '	</div>';
+					str += '	<div class="col-xs-4">';
+					str += '		<input id="sclass'+irow+'" name="sclass" placeholder="请输入功能扩展类路径" maxlength="120" class="form-control input-sm" type="text" value=\''+data.sclass+'\'>';
+					str += '	</div>';
+					
+					var ilinktype = 'fa-toggle-on fa-fw text-success';
+					var ilinktypestr = '是';
+					if(data.ilinktype == '1'){
+						ilinktype = 'fa-toggle-off fa-fw text-fail';
+						ilinktypestr = '否';
+					}
+					str += '	<div class="col-xs-1">';
+					str += '		<i id="ilinktype'+irow+'" name="ilinktype" hidid="'+data.ilinktype+'" class="fa '+ilinktype+'" onclick="toggleLinck(this)" data-toggle="tooltip" data-placement="right" title="'+ilinktypestr+'"></i>';
+					str += '	</div>';
+
+					var iflag = 'fa-toggle-on fa-fw text-success';
+					var iflagstr = '启用';
+					if(data.iflag == '1'){
+						iflag = 'fa-toggle-off fa-fw text-fail';
+						iflagstr = '禁用';
+					}
+					str += '	<div class="col-xs-1">';
+					str += '		<i  id="iflag'+irow+'" hidid="'+data.iflag+'" class="fa '+iflag+'" onclick="toggleState(this)" data-toggle="tooltip" data-placement="right" title="'+iflagstr+'"></i>';
+					str += '	</div>';
+					str += '	</div>'; 
+				});
+			}else{
+				var irow = $("#vprow").children().length;
+				str += '<div class="form-group form-item vp-pr m-b-sm vprow" irow="'+irow+'" >';
+				str += '	<div class="vp-delAdd" irow="'+irow+'" onclick="delRow(this)" >';
+				str += '		<a href="#"><i class="fa fa-minus-circle text-danger"></i></a>';
+				str += '	</div>';
+				str += '	<div class="col-xs-2">';
+				str += '		<input id="sname'+irow+'" name="sname" hidid="0" placeholder="请输入功能名称" maxlength="60" class="form-control input-sm" type="text" value="">';
+				str += '	</div>';
+				/* str += '	<div class="col-xs-2">';
+				str += '		<input id="ssequencekey'+irow+'" name="ssequencekey" placeholder="请输入排序码" class="form-control input-sm" type="text" value="">';
+				str += '	</div>'; */
+				str += '	<div class="col-xs-3">';
+				str += '		<input id="surl'+irow+'" name="surl" placeholder="请输入功能链接路径" maxlength="120" class="form-control input-sm" type="text" value="">';
+				str += '	</div>';
+				str += '	<div class="col-xs-4">';
+				str += '		<input id="sclass'+irow+'" name="sclass" placeholder="请输入功能扩展类路径" maxlength="120" class="form-control input-sm" type="text" value="">';
+				str += '	</div>';
+				str += '	<div class="col-xs-1">';
+				str += '		<i id="iflag'+irow+'" name="iflag" hidid="0" class="fa fa-toggle-on fa-fw text-success" onclick="toggleState(this)" data-toggle="tooltip" data-placement="right" title="启用"></i>';
+				str += '	</div>';
+				str += '</div>';
+			}
+			$('#vprow', parent.document).append(str);
+		}
+		
+		function showPointRow(obj,ientityid) {
+			$('#ientityid', parent.document).val(ientityid)
+
+			$("#funtitle", parent.document).text("功能权限");
+			$('#headerTb', parent.document).empty();
+			var strTb = '';
+			strTb += '<div class="col-xs-2 ">权限码</div>';
+			strTb += '<div class="col-xs-2 ">权限名称</div>';
+			/* strTb += '<div class="col-xs-2 ">排序码</div>'; */
+			
+			if(ientityid==6 || ientityid==7 ||ientityid==8){
+				strTb += '<div class="col-xs-3 ">功能链接</div>';
+				strTb += '<div class="col-xs-1 ">管控类型</div>';
+			}else{
+				strTb += '<div class="col-xs-4 ">功能链接</div>';
+			}
+			strTb += '<div class="col-xs-1 ">排序码</div>';
+			strTb += '<div class="col-xs-1 ">页签显示</div>';
+			strTb += '<div class="col-xs-1 ">Reat路由</div>';
+			strTb += '<div class="col-xs-1 ">状态</div>';
+			$('#headerTb', parent.document).append(strTb);
+			
+			$('#vprow', parent.document).empty();
+			var str = '';
+			if (obj != null && obj.length > 0){
+				$.each(obj, function (irow, data) { 
+					// console.log(data);
+					var sreadonly = "";
+					if (data.itype == 0) {
+						sreadonly = " readonly ";
+					}
+					str += '<div class="form-group form-item vp-pr m-b-sm vprow" irow="'+irow+'" >';
+					str += '	<div class="vp-delAdd" irow="'+irow+'"  onclick="delRow(this)">';
+					str += '		<a href="#" '+( (data.itype==0)?" style=\"display: none;\"":"" )+'><i class="fa fa-minus-circle text-danger"></i></a>';
+					str += '	</div>';
+					str += '	<div class="col-xs-2">';
+					str += '		<input id="skey'+irow+'" name="skey" placeholder="请输入权限码" maxlength="30" class="form-control input-sm" type="text" value="' + data.skey + '" '+sreadonly+'>';
+					str += '	</div>';
+					str += '	<div class="col-xs-2">';
+					str += '		<input id="sname'+irow+'" name="sname" hidid="'+ data.iid+'" maxlength="60" placeholder="请输入权限名称" class="form-control input-sm" type="text" value="' + data.sname + '">';
+					str += '	</div>';
+					
+					if(ientityid==6 || ientityid==7 ||ientityid==8){
+						str += '	<div class="col-xs-3">';
+						str += '		<input id="staburl'+irow+'" name="staburl" hidid="'+ data.iid+'" maxlength="120" placeholder="请输入功能链接路径" class="form-control input-sm" type="text" value=\'' + data.staburl + '\'>';
+						str += '	</div>';
+						str += '	<div class="col-xs-1">';
+						str += '		<select data-placeholder="" id="icontroltype'+irow+'" name = "icontroltype" hidid="" class="chosen-select vp-width-100" tabindex="2">';
+						str += '        <option value="0" hassubinfo="true" '+(data.icontroltype==0?'selected':'')+'>不适用</option>';   
+						str += '        <option value="1" hassubinfo="true" '+(data.icontroltype==1?'selected':'')+'>瀑布模型</option>';
+						str += '        <option value="2" hassubinfo="true" '+(data.icontroltype==2?'selected':'')+'>敏捷模型</option>';
+						str += '        <option value="3" hassubinfo="true" '+(data.icontroltype==3?'selected':'')+'>瀑布+敏捷</option>';                    
+						str += '        </select>';
+						str += '	</div>'; 
+					}else{
+						str += '	<div class="col-xs-4">';
+						str += '		<input id="staburl'+irow+'" name="staburl" hidid="'+ data.iid+'" maxlength="120" placeholder="请输入功能链接路径" class="form-control input-sm" type="text" value=\'' + data.staburl + '\'>';
+						str += '	</div>';
+					}
+					str += '	<div class="col-xs-1">';
+					str += '		<input id="ssequencekey'+irow+'" name="ssequencekey" hidid="0" maxlength="8" placeholder="请输入排序码" class="form-control input-sm" type="text" value="'+data.ssequencekey+'">';
+					str += '	</div>';	
+					var ishowtabs = 'fa-toggle-on fa-fw text-success';
+					var ishowtabsstr = '显示';
+					if(data.ishowtabs == '1'){
+						ishowtabs = 'fa-toggle-off fa-fw text-fail';
+						ishowtabsstr = '不显示';
+					}
+					str += '	<div class="col-xs-1">';
+					str += '		<i id="ishowtabs'+irow+'" name="ishowtabs" hidid="'+data.ishowtabs+'" class="fa '+ishowtabs+'" onclick="toggleTab(this)" data-toggle="tooltip" data-placement="right" title="'+ishowtabsstr+'"></i>';
+					str += '	</div>';	
+
+					var ilinktype = 'fa-toggle-on fa-fw text-success';
+					var ilinktypestr = '是';
+					if(data.ilinktype == '1'){
+						ilinktype = 'fa-toggle-off fa-fw text-fail';
+						ilinktypestr = '否';
+					}
+					str += '	<div class="col-xs-1">';
+					str += '		<i id="ilinktype'+irow+'" name="ilinktype" hidid="'+data.ilinktype+'" class="fa '+ilinktype+'" onclick="toggleLinck(this)" data-toggle="tooltip" data-placement="right" title="'+ilinktypestr+'"></i>';
+					str += '	</div>';
+
+					var iflag = 'fa-toggle-on fa-fw text-success';
+					var iflagstr = '启用';
+					if(data.iflag == '1'){
+						iflag = 'fa-toggle-off fa-fw text-fail';
+						iflagstr = '禁用';
+					}
+					str += '	<div class="col-xs-1">';
+					str += '		<i  id="iflag'+irow+'" hidid="'+data.iflag+'" class="fa '+iflag+'" onclick="toggleState(this)" data-toggle="tooltip" data-placement="right" title="'+iflagstr+'"></i>';
+					str += '	</div>';
+					str += '</div>'; 
+				});
+			}else{
+				var irow = $("#vprow").children().length;
+				str += '<div class="form-group form-item vp-pr m-b-sm vprow" irow="'+irow+'" >';
+				str += '	<div class="vp-delAdd" irow="'+irow+'" onclick="delRow(this)" >';
+				str += '		<a href="#"><i class="fa fa-minus-circle text-danger"></i></a>';
+				str += '	</div>';
+				str += '	<div class="col-xs-2">';
+				str += '		<input id="skey'+irow+'" name="skey" placeholder="请输入权限码" maxlength="30" class="form-control input-sm" type="text" value="">';
+				str += '	</div>';
+				str += '	<div class="col-xs-2">';
+				str += '		<input id="sname'+irow+'" name="sname" hidid="0" placeholder="请输入权限名称" maxlength="60" class="form-control input-sm" type="text" value="">';
+				str += '	</div>';
+				if(ientityid==6 || ientityid==7 ||ientityid==8){
+						str += '	<div class="col-xs-3">';
+						str += '		<input id="staburl'+irow+'" name="staburl" hidid="" placeholder="请输入功能链接路径" maxlength="120" class="form-control input-sm" type="text" value="">';
+						str += '	</div>';
+						str += '	<div class="col-xs-1">';
+						str += '		<select data-placeholder="" id="icontroltype'+irow+'" name = "icontroltype" hidid="" class="chosen-select vp-width-100" tabindex="2">';
+						str += '        <option value="0" hassubinfo="true" >不适用</option>';   
+						str += '        <option value="1" hassubinfo="true" >瀑布模型</option>';
+						str += '        <option value="2" hassubinfo="true" >敏捷模型</option>';
+						str += '        <option value="3" hassubinfo="true" selected>瀑布+敏捷</option>';                    
+						str += '        </select>';
+						str += '	</div>'; 
+					}else{
+						str += '	<div class="col-xs-4">';
+						str += '		<input id="staburl'+irow+'" name="staburl" hidid="" placeholder="请输入功能链接路径" maxlength="120" class="form-control input-sm" type="text" value="">';
+						str += '	</div>';
+					}
+				str += '	<div class="col-xs-1">';
+				str += '		<input id="ssequencekey'+irow+'" name="ssequencekey" hidid="0" placeholder="请输入排序码" maxlength="8" class="form-control input-sm" type="text" value="">';
+				str += '	</div>';	
+				str += '	<div class="col-xs-1">';
+				str += '		<i id="ishowtabs'+irow+'" name="ishowtabs" hidid="0" class="fa fa-toggle-on fa-fw text-success" onclick="toggleTab(this)" data-toggle="tooltip" data-placement="right" title="显示"></i>';
+				str += '	</div>';	
+				str += '	<div class="col-xs-1">';
+				str += '		<i id="ilinktype'+irow+'" name="ilinktype" hidid="0" class="fa fa-toggle-on fa-fw text-success" onclick="toggleLinck(this)" data-toggle="tooltip" data-placement="right" title="是"></i>';
+				str += '	</div>';	
+				str += '	<div class="col-xs-1">';
+				str += '		<i id="iflag'+irow+'" name="iflag" hidid="0" class="fa fa-toggle-on fa-fw text-success" onclick="toggleState(this)" data-toggle="tooltip" data-placement="right" title="启用"></i>';
+				str += '	</div>';
+				str += '</div>';
+			}
+			
+			$('#vprow', parent.document).append(str);
+		}
+		
+		function zTreeOnRename(event, treeId, treeNode, isCancel) {
+			return false;
+		}
+		function beforeEditName(treeId, treeNode) {  
+			formView(treeNode.id, treeNode.name, treeNode.pid,treeNode.ientityid);
+			return false;
+		}
+		function zTreeOnRemove(event, treeId, treeNode) {  
+			
+		}
+		function beforeRemove(treeId, treeNode) {  
+			if(treeNode.isParent){  
+				alert("请先删除子节点");  
+				return false;  
+			}         
+			return confirm("确认删除 节点 -- " + treeNode.name + " 吗？");  
+		}
+
+		function formView(id, name, iparent,ientityid) {
+			var openurl = 'functionform.html?iid='+id+'&iparent='+iparent+'&ientityid='+ientityid;
+			
+			var btn = [];
+			if (accesslevel>0) {
+				btn[0] = "保存";
+			}
+			parent.layer.open({
+		        type: 2, 
+		        maxmin: true,
+				title: name,
+		        btn: btn,
+		        btnAlign:'c',
+		        area: ['80%', '96%'],
+		        resize: false,
+		        shift: 2,
+		        shade: 0.3,
+		        content: [openurl], //iframe的url，no代表不显示滚动条
+		        success: function(layero, index){
+	        		$(layero.find('.layui-layer-btn')).show();
+	        		parent.layero.find('.layui-layer-btn').css('text-align', 'center');
+		        },
+		        yes: function(index, layero){
+		        	var frame = $(layero).find("iframe")[0].contentWindow;
+		        	frame.saveForm(function(data) {
+						parent.layer.close(index);
+						refreshTree();
+					});
+		        },
+		        end: function(){ //此处用于演示
+		            
+		        }
+		    });
+		}
+		
+		function refreshTree(){
+			vpPostAjax('/cfgfunction/functionTree', { }, "POST", function(rst) {
+				var vpnode = new Array();
+				$.each(rst.data, function (i, item) { 
+					var ico = '../../images/node.png'; //'../../css/plugins/zTree/zTreeStyle/img/diy/9.png';
+					if (item.iparent != '0') {
+						ico = '../../images/node.png'; //'../../css/plugins/zTree/zTreeStyle/img/diy/2.png';
+					}
+					vpnode.push( { id:item.iid, pId:item.iparent, name:item.sname, ientityid:item.ientityid,open: false, iconOpen:'../../images/node.png', iconClose:'../../images/node.png', icon: ico } );
+					//vpnode.push( { id:item.iid, pId:item.iparent, name:item.sname, ientityid:item.ientityid,open: false, iconOpen:"../../css/plugins/zTree/zTreeStyle/img/diy/1_open.png", iconClose:"../../css/plugins/zTree/zTreeStyle/img/diy/1_close.png", icon: ico } );
+				});
+				
+				accesslevel = rst.accesslevel;
+				if (accesslevel>0) {
+					$("#btnSave", parent.document).removeAttr("disabled");
+					$("#newAddDiv", parent.document).show();
+				}
+				$.fn.zTree.init($("#functionTree"), setting, vpnode);
+			});
+		}
+
+    </SCRIPT>
+</HEAD>
+
+<BODY>
+<ul id="functionTree" class="ztree"></ul>
+</BODY>
+</HTML>

@@ -1,0 +1,247 @@
+<div class="box box-default" style="height: 580px">
+    <div class="box-body">
+        <div class="row btn-group" style="margin-left:50px">
+            <button type="button" class="btn btn-default btn-sm" onclick="ctlPointTree.expandAll(true)">
+                <span class="fa fa-expand"></span>展开全部
+            </button>
+            <button type="button" class="btn btn-default btn-sm" onclick="ctlPointTree.expandAll(false)">
+                <span class="fa fa-compress"></span>折叠全部
+            </button>
+            <button type="button" class="btn btn-default btn-sm" onclick="ctlPointTree.checkAll(false)">
+                <span class="fa fa-square-o"></span>取消勾选
+            </button>
+        </div>
+        <br>
+        <div class="row" id="showTree">
+            <div class="col-sm-6">
+                <div style="text-align: center">
+                    <h3 class="box-title">原始大纲树(请选择保留的大纲)</h3>
+                </div>
+                <div style="border:3px solid #E6E6E6">
+                    <ul id="oldOutlineTree-branch" class="ztree resize" style="height:500px;overflow: auto;"></ul>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div style="text-align: center">
+                    <h3 class="box-title">上传大纲树</h3>
+                </div>
+                <div style="border:3px solid #E6E6E6">
+                    <ul id="newOutlineTree-branch" class="ztree resize" style="height:500px;overflow: auto;"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var ctlPointTree = {
+        dialog: null,
+        firstCtlpoint: 0,
+        orgartIds: [],
+        deleteArtIds: [],
+        cancelDataleIds: [],
+        compleIds: [],
+        dialogClose: function () {
+            ctlPointTree.dialog.close();
+        },
+        expandAll: function (expandFlag) {
+            ctlPointTree.tree.expandAll(expandFlag);
+            ctlPointTree.tree2.expandAll(expandFlag);
+        },
+        checkAll: function (checkFlag) {
+            ctlPointTree.tree.checkAllNodes(checkFlag);
+        },
+        initTree: function () {
+            WD_URL.rest.ajaxMask({
+                maskEl: '#showTree',
+                maskinfo: '加载中...',
+                url: config.uploadTreeUrl(),
+                data: {
+                    outlineId: ctlPointTree.dialog.outlineId
+                },
+                type: 'GET'
+            }, function (data) {
+                ctlPointTree.tree = $.fn.zTree.init($('#oldOutlineTree-branch'), settingDialogTreeOld,
+                    data.oldTree); //原始大纲树
+                ctlPointTree.tree2 = $.fn.zTree.init($('#newOutlineTree-branch'), settingDialogTreeNew,
+                    data.newTree); //上传大纲树
+                ctlPointTree.expandAll(true);
+                var firstCtlpoint = ctlPointTree.tree.getCheckedNodes(true).length;
+                $("#firstCtlpoint").text(ctlPointTree.firstCtlpoint);
+                $("#firstCtlpoint").val(ctlPointTree.firstCtlpoint);
+                $("#ctlpointCount").text(ctlPointTree.firstCtlpoint);
+            })
+        },
+        addDiyDom: function (treeId, treeNode) { //节点元素扩展
+            var $title = $('#' + treeNode.tId + '_span');
+            if (treeNode.origChapNum) {
+                $title.prepend(treeNode.origChapNum);
+                treeNode.name = treeNode.origChapNum + treeNode.name;
+            }
+            var _extends = [];
+            var req = !!(treeNode.propertys && treeNode.propertys.busFlag);
+            //判断是否有业务标识
+            var treeObj = $.fn.zTree.getZTreeObj(treeId);
+            if (req) {
+                // ctlPointTree.tree.addBusFlag($title, treeNode.busFlag, treeNode.busFlagName);
+                _extends.push('<span class="label label-info word-outline-asset-label" id="asset_' +
+                    treeNode.propertys.busFlag + '">' + treeNode.propertys.busFlagName + '</span>');
+                $title.after(_extends.join(''));
+                // treeNode.checked = true; //勾选复选框
+                ctlPointTree.orgartIds.push(treeNode.tid);
+                treeObj.updateNode(treeNode);
+                ctlPointTree.firstCtlpoint++;
+            }
+            //判断修改状态 1 修改，2 新增，3 删除
+            var modifyflag = treeNode.propertys.modifyFlag;
+            if (modifyflag == 1) {
+                ctlPointTree.changeCss($('#' + treeNode.tId + '_span'), 'outline-bg-modify');
+                treeObj.setChkDisabled(treeNode, true);
+            } else if (modifyflag == 2) {
+                ctlPointTree.changeCss($('#' + treeNode.tId + '_span'), 'outline-bg-add');
+                treeObj.setChkDisabled(treeNode, true);
+            } else if (modifyflag == 3) {
+                ctlPointTree.changeCss($('#' + treeNode.tId + '_span'), 'outline-bg-delete');
+            } else {
+                treeObj.setChkDisabled(treeNode, true);
+            }
+        },
+        countNodes: function () {
+            //var checkedCount = ctlPointTree.tree.getCheckedNodes(true).length;
+            $("#ctlpointCount").text(0);
+            $("#delCtlpoint").text($(".art-bg-delete").length);
+            $("#addCtlpoint").text($(".art-bg-add").length);
+        },
+        saveCtlPoint: function (data) {
+            ctlPointTree.getChangeNodeInfo();
+            ctlPointTree.getcompleIdsInfo();
+            WD_URL.rest.ajaxMask({
+                url: config.saveUploadDeleteOutline(),
+                type: 'PUT',
+                data: {
+                    cancelDataleIds: JSON.stringify(ctlPointTree.cancelDataleIds), //取消删除的大纲参数集合
+                    outlineId: ctlPointTree.dialog.outlineId, //解锁上传的大纲ID
+                    compleIds: JSON.stringify(ctlPointTree.compleIds), //需要添加outlineUuid的大纲参数集合
+                    startOrigChapNum: ctlPointTree.dialog.startOrigChapNum //起始章节号
+                },
+                dataType: 'json',
+                maskinfo: '正在保存请稍等...'
+            }, function (json) {
+                show_message('操作成功', 'success');
+                ctlPointTree.cancelDataleIds = [];
+                ctlPointTree.dialogClose();
+            }, function () {
+                ctlPointTree.cancelDataleIds = [];
+                show_message('操作失败', 'success');
+            })
+        },
+        //获取选中的节点
+        getChangeNodeInfo: function () {
+            function filter(node) {
+                return node.checked;
+            }
+            var ckNodes = ctlPointTree.tree.getNodesByFilter(filter);
+            if (ckNodes.length == 0) {
+                return false;
+            } else {
+                $.each(ckNodes, function (i, node) {
+                    ctlPointTree.cancelDataleIds.push({
+                        outlinePath: node.propertys.outlinePath,
+                        outlineUuid: node.outlineUuid,
+                        parentId: node.parentId
+                    });
+                });
+            }
+        },
+        getcompleIdsInfo: function () {
+            function filter(node) {
+                return node.propertys.defectFlag == 1;
+            }
+            var newNodes = ctlPointTree.tree2.getNodesByFilter(filter);
+            if (newNodes.length == 0) {
+                return false;
+            } else {
+                $.each(newNodes, function (i, node) {
+                    ctlPointTree.compleIds.push({
+                        outlinePath: node.propertys.outlinePath, //路径
+                        outlineUuid: node.outlineUuid //outlineUuid
+                    });
+                })
+            }
+
+        },
+        changeCss: function ($el, css, cssPrefix) {
+            if (!$el.hasClass(css)) {
+                $el.addClass(css);
+            }
+        },
+        removeCss: function ($el, css) {
+            if ($el.hasClass(css)) {
+                $el.removeClass(css)
+            }
+        },
+        loadData: function (dialog, data) {
+            this.dialog = dialog;
+            this.dialog.tree = data.tree;
+            this.dialog.outlineId = data.outlineId;
+            this.dialog.startOrigChapNum = data.startOrigChapNum;
+            ctlPointTree.initTree(); //初始化树
+        }
+    };
+
+    var settingDialogTreeOld = {
+        view: {
+            showLine: true,
+            showIcon: true,
+            selectedMulti: true,
+            dblClickExpand: false,
+            addDiyDom: ctlPointTree.addDiyDom
+        },
+        check: {
+            enable: true,
+            chkStyle: "checkbox",
+            chkboxType: {
+                "Y": "p",
+                "N": "s"
+            }
+        },
+        data: {
+            simpleData: {
+                enable: true,
+                idKey: "tid",
+                pIdKey: "pid",
+                rootPId: 0
+            }
+        },
+        callback: {
+            onClick: function (e, treeId, treeNode, clickFlag) {
+                ctlPointTree.tree.checkNode(treeNode, !treeNode.checked, true);
+            }
+        }
+    };
+
+    var settingDialogTreeNew = {
+        view: {
+            showLine: true,
+            showIcon: true,
+            selectedMulti: true,
+            dblClickExpand: false,
+            addDiyDom: ctlPointTree.addDiyDom
+        },
+        check: {
+            enable: false
+        },
+        data: {
+            simpleData: {
+                enable: true,
+                idKey: "tid",
+                pIdKey: "pid",
+                rootPId: 0
+            }
+        },
+        callback: {
+            onClick: function (e, treeId, treeNode, clickFlag) {
+                ctlPointTree.tree2.checkNode(treeNode, !treeNode.checked, true);
+            }
+        }
+    };
+</script>

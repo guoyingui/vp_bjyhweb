@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>工作流</title>
+<meta name="keywords" content="">
+<meta name="description" content="">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Cache-control" content="no-cache">
+<meta http-equiv="Cache" content="no-cache">
+<link rel="shortcut icon" href="img/favicon.ico">
+<link href="../../css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+<link href="../../css/font-awesome.min.css?v=4.7.0" rel="stylesheet">
+<link href="../../css/animate.css" rel="stylesheet">
+<link href="../../css/plugins/datapicker/datepicker3.css"	rel="stylesheet">
+<link href="../../css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+	
+<!-- zTree树表 -->
+<link href="../../css/plugins/zTree/zTreeStyle/zTreeStyle.css"	rel="stylesheet">
+<!-- layUI表格 -->
+<link rel="stylesheet" href="../../js/plugins/layui/css/layui.css"	media="all">
+<link href="../../css/style.css?v=4.1.0" rel="stylesheet">
+<link href="../../css/common.css" rel="stylesheet">
+<link href="../../css/vp.css" rel="stylesheet">
+    <script src="../../../vpcommon/config.js"></script>
+    <script src="../../../vpcommon/vputils.min.js"></script>
+<!--[if lte IE 9]>
+        <script src="../../js/html5shiv.min.js"></script>
+        <script src="../../js/respond.js"></script>
+    <![endif]-->
+</head>
+<body>
+<div class="col-sm-12">
+    <div class="ibox">
+        <div class="ibox-title p-l-none">
+            <div class="ibox-tools" id="vptoolbar">
+
+            </div>
+        </div>
+        <div class="ibox-content p-n m-t-sm vp-overflow-x" style="display: block;">
+            <div class="vp-overflow-x vpcontent">
+                <table lay-size="sm" class="layui-hide" id="tableSort" lay-filter="vpclick"></table>
+            </div>
+            <div class="layui-table-page" id="vppagebar">
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<!-- 全局js -->
+<script src="../../js/jquery-1.11.3.min.js"></script>
+<!--[if IE 8]>
+<script type="text/javascript" src="../../js/jquery-1.9.1.min.js"></script>
+<![endif]-->
+<script src="../../js/bootstrap.min.js?v=3.3.6"></script>
+<!-- 自定义js -->
+<script src="../../js/content.js?v=1.0.0"></script>
+<!-- 日期控件 -->
+<script src="../../js/plugins/datapicker/bootstrap-datepicker.js"></script>
+<!-- layer弹出层 -->
+<script src="../../js/plugins/layer/layer.min.js"></script>
+<script src="../../js/plugins/layui/layui.js"></script>
+<!-- 下拉选择列表 -->
+<script src="../../js/plugins/chosen/chosen.jquery.js"></script>
+<!-- zTree模拟树表 -->
+<script src="../../js/plugins/zTree/jquery.ztree.all.min.js"></script>
+<script src="../../js/plugins/validate/jquery.validate.min.js"></script>
+<script src="../../js/vpsoft/TreeTable.js"></script>
+<script src="../../js/vpsoft/common.js"></script>
+<script src="../../js/vpsoft/form.js"></script>
+<script src="../../js/plugins/iCheck/icheck.min.js"></script>
+<script src="../../js/vue.js"></script>
+<script>
+var iid=$('#vpeditform', parent.document).attr("iid");
+vpAjax(getWorkflowPath()+'/rest/workflow/version', {iid:iid}, "GET", function(data) {
+	//console.log("json:"+JSON.stringify(data.data));
+	layui.use(['laypage','table'], function(){
+       	 var table = layui.table;
+         table.render({
+            elem: '#tableSort'
+           ,page: false
+           ,data:data
+           ,limit:100
+           ,height: 'full-110'
+           ,cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+           ,cols: [[
+               //{field:'id', title: 'id', event:"click",width:150},
+               {field:'name', title: '名称', event:"click"},
+               //{field:'key', title: 'key',event:"click",width:100},
+               {field:'version', title: '版本', event:"click"},
+               {field:'pubdate', title: '发布时间', sort: true,event:"click"},
+               {field:'publisher', title: '发布者', sort: true,event:"click"}
+           ]]
+         });
+         table.on('tool(vpclick)',function(obj){
+            parent.layer.open({
+				type: 2,
+				shade: false,
+				title: '查看流程',
+                area: ['100%', '100%'], //宽高
+                //area: ['80%', '80%'], //宽高
+				content: [getFlowPagePath()+'/diagram-viewer/index.html?processDefinitionId='+ obj.data.id]					
+			});
+        });
+	});
+});
+</script>
+</body>
+</html>

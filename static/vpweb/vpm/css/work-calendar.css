@@ -1,0 +1,177 @@
+#cal-header{
+	border-top:1px solid #000;
+	border-left:1px solid #000;
+	border-right:1px solid #000;
+	height:30px;
+	width:280px;
+	line-height:30px;
+	text-align:center;
+	
+}
+a{
+	text-decoration:none!important;
+}
+#cal-content{
+	border:1px solid #000;
+	height:210px;
+	width:280px;
+}
+#cal-footer{
+	border-bottom:1px solid #000;
+	border-left:1px solid #000;
+	border-right:1px solid #000;
+	height:30px;
+	width:280px;
+	
+	text-align:center;
+	vertical-align:middle;
+	background:#84a5ED;
+	display:none;
+}
+
+#cal-footer a{
+	text-decoration:none
+}
+#cal-content-table{
+	width:100%;
+	border:0px;
+	border-collapse:collapse;
+}
+#cal-content-table td{
+	width:70px;
+	height:30px;
+	text-align:center;
+	
+}
+#cal-content-table td a{
+	text-decoration:none
+}
+
+#day-name-table {
+	height:29px;
+	width:100%;
+	border-bottom:0px solid #000;
+	border-collapse:collapse;
+}
+#day-name-table td{
+	width:70px;
+	text-align:center;
+	font-weight:bold;
+	background:#6495ED;
+	border:1px solid #fff ;
+	color:white;
+	border-bottom:0px solid #fff;
+}
+.holiday{
+	background:#7CCD7C;
+	border:1px solid #fff;
+}
+.other-month-day{
+	background:#eee;
+	border:1px solid #fff;
+}
+
+.other-month-holiday{
+	background:#548B54;
+	border:1px solid #fff;
+	
+}
+.normal-day{
+	background:#ddd;
+	border:1px solid #fff;
+}
+
+.the-current-day{
+	background:#ddd;
+	border:1px solid #fff;
+}
+
+.holiday-current{
+	background:#7CCD7C;
+	border:1px solid #fff;
+}
+/*.the-current-day{
+	background:#A4D3EE;
+	font-weight:bold;
+	width:40px;
+}
+
+.holiday-current{
+	background:#228B22;
+	font-weight:bold;
+	width:40px;
+}*/
+
+#w-cal-year-list{
+	width:280px;
+	text-align:center;
+	position:absolute;
+	display:none;
+	z-index:999;
+	
+}
+#years-table{
+	position:relative;
+	border:0px solid #000;
+	width:50%;
+	text-align:center;
+	border-collapse:collapse;
+	margin-left:auto;
+	margin-right:auto;
+}
+#years-table td{
+	height:25px;
+	border:1px solid #54839E;
+	width:100%;
+	text-align:center;
+}
+.cur-year{
+	background:#A4D3EE;
+}
+
+.normal-year{
+	background:#ddd
+}
+#pre-month-bt{
+	float:left;
+	width:30px;
+	border-right:1px solid #000;
+	background:#9Dc6dD;
+}
+#next-month-bt{
+	float:left;
+	width:30px;
+	border-left:1px solid #000;
+	background:#9Dc6dD;
+}
+
+#cal-title-div{
+	width:218px;
+	float:left;
+	background:#8DB6CD;
+	font-weight:bold;
+	color:white;
+	}
+#cal-title-div a{
+	decoration:none;
+	color:black;
+}
+#cal-today-div{
+	position:relative;
+	top:4px;
+	border:0px solid #000;
+	height:18px;
+	height-line:16px;
+	margin-left:auto;
+	margin-right:auto;
+	width:90px;
+	font-weight:bold;
+}
+.day-inner-div{
+	height:100%;
+	width:30px;
+	text-align:center;
+	margin-left:auto;
+	margin-right:auto;
+	line-height:26px;
+}

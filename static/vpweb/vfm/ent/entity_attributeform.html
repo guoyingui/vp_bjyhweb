@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>任务看板 - VP应用全生命周期管理系统</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
+    <link rel="shortcut icon" href="img/favicon.ico">
+    <link href="../../css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="../../css/font-awesome.min.css?v=4.7.0" rel="stylesheet">
+    <link href="../../css/animate.css" rel="stylesheet">
+    <link href="../../css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+    <link href="../../css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+    <!-- zTree树表 -->
+    <link href="../../css/plugins/zTree/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+    <!-- layUI表格 -->
+    <link href="../../css/plugins/chosen/chosen.css" rel="stylesheet">
+    <link href="../../css/plugins/iCheck/custom.css" rel="stylesheet">
+    <link href="../../js/plugins/layui/css/layui.css"  rel="stylesheet" media="all">
+    <link href="../../css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="../../css/common.css" rel="stylesheet">
+    <link href="../../css/vp.css" rel="stylesheet">
+    <script src="../../../vpcommon/config.js"></script>
+    <script src="../../../vpcommon/vputils.min.js"></script>
+    
+    <!-- 全局js -->
+    <script src="../../js/jquery-1.11.3.min.js"></script>
+	<!--[if IE 8]>
+	<script type="text/javascript" src="../../js/jquery-1.9.1.min.js"></script>
+	<![endif]-->
+    <script src="../../js/bootstrap.min.js?v=3.3.6"></script>
+    <!-- 自定义js -->
+    <script src="../../js/content.js?v=1.0.0"></script>
+    <!-- 日期控件 -->
+    <script src="../../js/plugins/datapicker/bootstrap-datepicker.js"></script>
+    <!-- layer弹出层 -->
+    <script src="../../js/plugins/layer/layer.min.js"></script>
+    <!-- 下拉选择列表 -->
+    <script src="../../js/plugins/chosen/chosen.jquery.js"></script>
+    <!-- layui表格 -->
+    <script src="../../js/plugins/layui/layui.js" charset="utf-8"></script>
+    <script src="../../js/vpsoft/common.js"></script>
+    <script src="../../js/vpsoft/getUrlParam.js"></script>
+    <script src="../../js/vpsoft/form.js"></script>
+    <script src="../../js/plugins/iCheck/icheck.min.js"></script>
+</head>
+
+<body>
+	<div class="padding-10" >
+			<div class="ibox-title border-bottom ">
+				<h5>基本信息</h5>
+				<div class="ibox-tools">
+					<a class="collapse-link" data-toggle="tooltip" data-placement="top" title="收起">
+						<i class="fa fa-caret-up"></i>
+					</a>
+				</div>
+			</div>
+			<div class="ibox-content p-n clearfix">
+				<form class="form-horizontal m-t" id="signupForm">
+					<div class="form-group">
+						<div class="col-sm-6">
+							<label class="col-sm-4 col-md-3 control-label text-ellipsis">属性码：</label>
+							<div class="col-sm-8 col-md-9">
+								<input id="code" name="code" hidid="" class="form-control" type="text" maxlength="20">
+							</div>
+						</div>
+						<div class="col-sm-6">
+							<label class="col-sm-4 col-md-3 control-label text-ellipsis">属性名：</label>
+							<div class="col-sm-8 col-md-9">
+								<input id="name" name="name" class="form-control" type="text" maxlength="60">
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-sm-6">
+							<label class="col-sm-4 col-md-3 control-label text-ellipsis">数据类型：</label>
+							<div class="col-sm-8 col-md-9">
+				                <div class="input-group vp-width-100">
+				                    <select data-placeholder="" id="datatype" hidid="" class="chosen-select vp-width-100" tabindex="2">
+				                        
+				                    </select>
+				                </div>
+					        </div>
+						</div>
+						
+						<div class="hide col-sm-6">
+							<label class="col-sm-4 col-md-3 control-label text-ellipsis">关联实体：</label>
+							<div class="col-sm-8 col-md-9">
+				                <div class="input-group vp-width-100">
+				                    <select data-placeholder="" id="relentity" hidid="" class="chosen-select vp-width-100" tabindex="2">
+				                        
+				                    </select>
+				                </div>
+					        </div>
+						</div>
+						
+						<div class="hide col-sm-6">
+							<label class="col-sm-4 col-md-3 control-label text-ellipsis">数据字典：</label>
+							<div class="col-sm-8 col-md-9">
+				                <div class="input-group vp-width-100">
+				                    <select data-placeholder="" id="dictionary" hidid="" class="chosen-select vp-width-100" tabindex="2">
+				                        
+				                    </select>
+				                </div>
+					        </div>
+						</div>
+					
+					</div>
+					<div class="form-group">
+						<div class="hide col-sm-6">
+							<label class="col-sm-4 col-md-3 control-label text-ellipsis">默认值：</label>
+							<div class="col-sm-8 col-md-9">
+				                <div class="input-group vp-width-100">
+				                    <input id="idefault" name="idefault" class="form-control" type="text" maxlength="600">
+				                </div>
+					        </div>
+						</div>						
+					</div>
+					
+					<div class="form-group">
+						<div class="col-sm-6">
+							<label class="col-sm-4 col-md-3 control-label text-ellipsis">字段长度：</label>
+							<div class="col-sm-8 col-md-9">
+								<input id="ilength" name="ilength" class="form-control" type="text" maxlength="8">
+							</div>
+						</div>
+						<div class="col-sm-6">
+							<label class="col-sm-4 col-md-3 control-label text-ellipsis">分组名称：</label>
+							<div class="col-sm-8 col-md-9">
+								<input id="sgroup" name="sgroup" class="form-control" type="text" maxlength="60">
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-sm-6">
+							<label class="col-sm-4 col-md-3 control-label text-ellipsis">字段名称：</label>
+							<div class="col-sm-8 col-md-9">
+								<input id="fieldscode" name="fieldscode" disabled="disabled" class="form-control" type="text" maxlength="60">
+							</div>
+						</div>
+						<div class="col-sm-6">
+							<label class="col-sm-4 col-md-3 control-label text-ellipsis">查看详情：</label>
+							<div class="col-sm-8 col-md-9">
+								<div class="radio radio-info radio-inline">
+									<input type="radio" id="ishowdetail1" value="0" name="ishowdetail" checked="">
+									<label for="ishowdetail1">允许</label>
+								</div>
+								<div class="radio radio-info radio-inline">
+									<input type="radio" id="ishowdetail2" value="1" name="ishowdetail">
+									<label for="ishowdetail2">禁用</label>
+								</div>
+							</div>
+						</div>
+					</div>					
+					<div class="form-group hide" id="entinit">						
+						<div class="col-sm-6">
+							<label class="col-sm-4 col-md-3 control-label text-ellipsis">字段属性：</label>
+							<div class="col-sm-8 col-md-9">
+								<div class="input-group vp-width-100">
+									<select data-placeholder="" id="itype" hidid="" class="chosen-select vp-width-100" tabindex="2">
+											<option value="3" hassubinfo="true" >自定义属性</option>
+											<option value="0" hassubinfo="true" >系统属性</option>
+									</select>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 col-md-3 control-label text-ellipsis">属性描述：</label>
+						<div class="col-sm-10 col-md-9">
+							<textarea id="desc" name="desc" class="form-control"  maxlength="360"></textarea>
+						</div>
+					</div>
+					<!-- <div class="form-group">
+						<div class="col-sm-6">
+							<label class="col-sm-4 col-md-3 control-label text-ellipsis">状态：</label>
+							<div class="col-sm-8 col-md-9">
+				                <div class="input-group vp-width-100">
+				                    <input id="iremove" name="iremove" class="form-control" type="text" disabled >
+				                </div>
+					        </div>
+						</div>
+					</div> -->
+					<div class="hide form-group">
+						<label class="col-sm-2 col-md-3 control-label text-ellipsis"></label>
+						<div class="col-sm-10 col-md-9" id="valueList">
+				            <!-- 选项值列表 start-->
+							<div class="form-horizontal" id="valueListform">
+								<div style="height:6px;"></div>
+								<div class="form-group m-b-sm" id="dicgroupdiv">
+							    	
+							    </div>
+							    <div class="form-group m-b-sm">
+							    	<div class="col-xs-4 " style="text-align:left;">选项值</div>
+							        <div class="col-xs-6 " style="text-align:left;">选项名称</div>
+							        <div class="col-xs-2 " style="text-align:center;">是否默认</div>
+							    </div>
+							    <div class="form-group form-item vp-pr m-b-sm">
+							    	<div class="col-xs-4">
+							        	<input id="optionvalue0" name="optionvalue0" placeholder="请输入选项值" index="0" class="form-control input-sm" type="text" hidid="0">
+							        </div>
+							        <div class="col-xs-6">
+							        	<input id="optionname0"  name="optionname0"  placeholder="请输入选项名称" index="0" maxlength="80" class="form-control input-sm" type="text">
+							        </div>
+							        <div class="col-xs-2">
+							        	<input id="isdefaultvalue0" name="isdefaultvalue0" placeholder="" index="0" class="form-control" type="checkbox" style="height: 18px;margin: 8px 2px 0;">
+							        </div>
+							    </div>
+							    <div class="m-t-sm"><a class="text-primary newAdd" id="newAddOption"><i class="fa fa-plus-circle fa-fw"></i>再添加一个</a></div>
+							</div>
+							<!-- 选项值列表 end-->
+					    </div>
+					    <div class="hide col-sm-10 col-md-9" id="richtext">
+					    	
+					    </div>
+					</div>
+				</form>
+			</div>
+	</div>
+</body>
+<script>
+	var config = {'.chosen-select': {} }
+	var etid = UrlParm.parm("entityid");
+	var eiid = UrlParm.parm("iid");
+	var isEdit = UrlParm.parm("isEdit");
+	var fromtype = UrlParm.parm("fromtype");
+	var sfrom = UrlParm.parm("sfrom");// sub子表单属性
+
+	if (fromtype != 'undefined' && fromtype != 'prod') {
+		$("#entinit").removeClass("hide");
+		$("#itype option[value='0']").attr("selected", true); 
+	}
+	else {
+		$("#itype option[value='1']").attr("selected", true); 
+	}
+	var datatypeid = "1";
+	var sprefix="s" ;
+	var relentityid = "0";
+	var idictionaryid = "0";
+	var idefault = "";
+	//备份选项列表格式
+	var valueListform = $('#valueListform');
+	if(eiid=='0'){//新建
+		/*  $('#iremove').val('新建'); */
+		 $('#code').attr('hidid',eiid);
+		 showDefaultOrValueList(sprefix,"文本默认值：");
+		 $('#fieldscode').closest('.col-sm-12').addClass('hide');
+	}else{
+		var url = '/cfgentattr/get';
+		if('sub'==sfrom){
+			url = '/cfgentview/subattrget';
+		}
+		vpPostAjax(url, {iid:eiid}, 'POST', function(rst) {
+			var data = rst;
+			if(data.success){
+				 /* if(data.data.iremove=='0'){
+					 $('#iremove').val('非删除');
+				 }else{
+					 $('#iremove').val('已删除');
+				 } */
+				 $('#code').attr('hidid',eiid);
+				 $('#code').val(data.data.scode);
+				 $('#fieldscode').val(data.data.fieldscode);
+				 $('#code').attr('disabled','disabled');
+				 $('#name').val(data.data.sname);
+				 $('#desc').val(data.data.sdescription);
+				 $('#sgroup').val(data.data.sgroup);
+				 $('#ilength').val(data.data.ilength);
+				 $(":radio[name='ishowdetail'][value='" + data.data.ishowdetail + "']").prop("checked", "checked");
+				 
+				 if (data.data.inew == 0) {
+					$('#ilength').attr('disabled','disabled');
+				 }
+				 idefault = data.data.idefault;
+				 datatypeid = data.data.idatatype;
+				 relentityid = data.data.irelationentityid;
+				 idictionaryid = data.data.idictionaryid;
+				 sprefix = data.data.sprefix;
+				 showDefaultOrValueList(sprefix,data.data.idatatypename+"：");
+				 
+			}else{
+				 layer.msg('获取属性信息失败，！'+data.msg, { icon: 2, time: 2000 });
+			}
+		});
+	}
+	
+	//选择实体下拉框数据填充
+    vpPostAjax('/cfgentattr/getDataTypeList', {scode:'entity'}, 'POST', function(rst) {
+		var data = rst;
+    	if(data.success){
+    		var html = '<option value="0">请选择...</option>';
+    		var list = data.data;
+    		$.each(list, function(i, item) {
+				if(item.shtmltype!='hidden'){
+    			if(i==0&&eiid=='0'){
+    				relentityid = item.iid;
+    			}
+    			if(item.iid==relentityid){
+    				html+= '<option value="'+item.iid+'" hassubinfo="true" selected>'+item.sname+'</option>';
+    			}else{
+    				html+= '<option value="'+item.iid+'" hassubinfo="true">'+item.sname+'</option>';
+    			}
+				}
+    		});
+    		$('#relentity').append(html);
+    		$('#relentity').attr('hidid',relentityid);
+    		if(eiid=='0'){
+    			$('#relentity').removeAttr('disabled');
+    		}else{
+    			$('#relentity').attr('disabled','disabled');
+    		}
+    	}else{
+    		layer.msg("加载实体下拉框数据异常", {icon: 2,time: 2000});
+    	}
+    });	
+  	//选择数据字典下拉框数据填充
+    vpPostAjax('/cfgentattr/getDataTypeList', {scode:'dictionary'}, 'POST', function(rst) {
+		var data = rst;
+    	if(data.success){
+    		var html = '<option value="0">请选择...</option>';
+    		var list = data.data;
+    		$.each(list, function(i, item) {
+				if(item.shtmltype!='hidden'){
+					if(item.iid==idictionaryid){
+						html+= '<option value="'+item.iid+'" hassubinfo="true" selected>'+item.sname+'('+item.scode+')</option>';
+						$("#dicgroupdiv").html('数据字典分组信息（名称：'+item.sname+'，编号：'+item.scode+'，ID：'+item.iid+'）');
+					}else{
+						html+= '<option value="'+item.iid+'" hassubinfo="true">'+item.sname+'('+item.scode+')</option>';
+					}
+				}
+    		});
+    		$('#dictionary').append(html);
+    		$('#dictionary').attr('hidid',idictionaryid);
+    		if(eiid=='0'){
+    			$('#dictionary').removeAttr('disabled');
+    		}else{
+    			$('#dictionary').attr('disabled','disabled');
+    		}
+    	}else{
+    		layer.msg("加载数据字典下拉框数据异常", {icon: 2,time: 2000});
+    	}
+    });	
+  	//选择数据类型下拉框数据填充
+    vpPostAjax('/cfgentattr/getDataTypeList', {scode:'datatype'}, 'POST', function(rst) {
+		var data = rst;
+    	if(data.success){
+    		var html = '<option value="0">请选择...</option>';
+    		var list = data.data;
+    		$.each(list, function(i, item) {
+				if(item.shtmltype!='hidden'){
+    			if(item.idatatype==datatypeid){
+    				sprefix = item.sprefix;
+    				html+= '<option value="'+item.idatatype+'" sprefix="'+item.sprefix+'" hassubinfo="true" selected>'+item.sname+'</option>';
+    			}else if(item.idatatype!='0'){
+    				html+= '<option value="'+item.idatatype+'" sprefix="'+item.sprefix+'" hassubinfo="true">'+item.sname+'</option>';
+    			}
+				}
+    		});
+    		$('#datatype').append(html);
+    		$('#datatype').attr('hidid',datatypeid);
+    		if(eiid=='0'){
+    			$('#datatype').removeAttr('disabled');
+    		}else{
+				$('#datatype').attr('disabled','disabled');
+				$('#itype').closest('.col-sm-6').addClass('hide');
+    		}
+    	}else{
+    		layer.msg("加载数据类型下拉框数据异常", {icon: 2,time: 2000});
+    	}
+    });	
+    for (var selector in config) {
+        $(selector).chosen(config[selector]);
+    }
+    $('#datatype_chosen').find('.chosen-results').height('200px');
+    $('#datatype_chosen').removeAttr('style');
+	$('#datatype_chosen').addClass('vp-width-100');
+    $('#relentity_chosen').find('.chosen-results').height('200px');
+    $('#relentity_chosen').removeAttr('style');
+	$('#relentity_chosen').addClass('vp-width-100');
+    $('#dictionary_chosen').find('.chosen-results').height('200px');
+    $('#dictionary_chosen').removeAttr('style');
+	$('#dictionary_chosen').addClass('vp-width-100');
+  	//筛选数据类型
+	$(document).on('click','.active-result',function(){
+	 	var index=$(this).attr("data-option-array-index");
+	 	if($(this).closest("#datatype_chosen").attr("id")=="datatype_chosen"){
+	 		datatypeid=$("#datatype>option:eq("+index+")").val();
+	 		sprefix=$("#datatype>option:eq("+index+")").attr("sprefix");
+			var textstr = $("#datatype>option:eq("+index+")").text()+'默认值：';
+			showDefaultOrValueList(sprefix,textstr);
+	 	}
+	 	if($(this).closest("#relentity_chosen").attr("id")=="relentity_chosen"){
+	 		relentityid=$("#relentity>option:eq("+index+")").val();
+	 		$('#relentity').attr('hidid',relentityid);
+	 	}
+	 	if($(this).closest("#dictionary_chosen").attr("id")=="dictionary_chosen"){
+	 		idictionaryid=$("#dictionary>option:eq("+index+")").val();
+	 		$('#dictionary').attr('hidid',idictionaryid);
+	 		//刷新选项列表
+	 		showOptionList();
+	 	}
+	});
+  	
+  	function showDefaultOrValueList(sprefix,textstr){
+  		$('#datatype').attr('sprefix',sprefix);
+  		$('#datatype').attr('hidid',datatypeid);
+  		if(sprefix=='s'||sprefix=='f'||sprefix=='t'){//字符串类,数字类:如金额、数字,时间类:如日期时间
+  			if(sprefix=='t'){//时间类暂不设置默认值
+  				$('#idefault').closest('.col-sm-6').removeClass('hide');
+  				$('#idefault').closest('.col-sm-6').addClass('hide');
+  				return;
+  			}
+  			$('#dictionary').closest('.col-sm-6').removeClass('hide');
+			$('#dictionary').closest('.col-sm-6').addClass('hide');
+			$('#relentity').closest('.col-sm-6').removeClass('hide');
+			$('#relentity').closest('.col-sm-6').addClass('hide');
+			$('#valueList').parent().removeClass('hide');
+			$('#valueList').parent().addClass('hide');
+			
+			$('#idefault').val(idefault);
+			$('#idefault').closest('.col-sm-6').removeClass('hide');
+			$('#idefault').closest('.col-sm-6').find('label').remove();
+			$('#idefault').closest('.col-sm-6').find('div.col-sm-8').before('<label class="col-sm-4 col-md-3 control-label text-ellipsis">'+textstr+'</label>');
+			if(eiid=='0'){//新建
+				if(sprefix=='s'){
+					idefault="";
+				}else if(sprefix=='f'){
+					idefault="0";
+				}else{
+					idefault="";//
+				}
+			}
+  		}else if(sprefix=='r'){//关联类，附件、实体
+  			//无值列表选项或默认值
+  			if(datatypeid=='11'||datatypeid=='12'){//附件
+  				$('#idefault').closest('.col-sm-6').removeClass('hide');
+  				$('#idefault').closest('.col-sm-6').addClass('hide');
+  				$('#dictionary').closest('.col-sm-6').removeClass('hide');
+  				$('#dictionary').closest('.col-sm-6').addClass('hide');
+  				$('#relentity').closest('.col-sm-6').removeClass('hide');
+  				$('#relentity').closest('.col-sm-6').addClass('hide');
+  				$('#valueList').parent().removeClass('hide');
+  				$('#valueList').parent().addClass('hide');
+  			}else{
+				$('#idefault').val(idefault);
+			    $('#idefault').closest('.col-sm-6').removeClass('hide');
+				$('#idefault').closest('.col-sm-6').find('label').remove();
+				$('#idefault').closest('.col-sm-6').find('div.col-sm-8').before('<label class="col-sm-4 col-md-3 control-label text-ellipsis">URL地址</label>');
+  				$('#dictionary').closest('.col-sm-6').removeClass('hide');
+  				$('#dictionary').closest('.col-sm-6').addClass('hide');
+  				//$('#idefault').closest('.col-sm-6').removeClass('hide');
+  				//$('#idefault').closest('.col-sm-6').addClass('hide');
+  				$('#valueList').parent().removeClass('hide');
+  				$('#valueList').parent().addClass('hide');
+  				$('#relentity').closest('.col-sm-6').removeClass('hide');
+  			}
+		}else if(sprefix=='o'){//对象类，如富文本
+			$('#dictionary').closest('.col-sm-6').removeClass('hide');
+			$('#dictionary').closest('.col-sm-6').addClass('hide');
+			$('#relentity').closest('.col-sm-6').removeClass('hide');
+			$('#relentity').closest('.col-sm-6').addClass('hide');
+			$('#idefault').closest('.col-sm-6').removeClass('hide');
+			$('#idefault').closest('.col-sm-6').addClass('hide');
+			$('#valueList').parent().removeClass('hide');
+			$('#valueList').parent().addClass('hide');
+			$('#valueList').removeClass('hide');
+			$('#valueList').addClass('hide');
+			$('#richtext').removeClass('hide');
+			$('#richtext').parent().find('label').remove();
+			$('#richtext').before('<label class="col-sm-2 col-md-3 control-label text-ellipsis">'+textstr+'</label>');
+			//添加富文本编辑框
+			/* var richtextframe='<iframe id="richtextframe" width="100%" height="100%" frameborder="0" '
+							 +'		  src="ueditor.html?scode='+$('#code').val()+'&isRead=false" >'
+							 +'</iframe>';
+			$('#richtext').children().remove();
+			$('#richtext').append(richtextframe); */
+		}else if(sprefix=='i'){//数据类，如单选、多选框及列表
+			$('#relentity').closest('.col-sm-6').removeClass('hide');
+			$('#relentity').closest('.col-sm-6').addClass('hide');
+			$('#idefault').closest('.col-sm-6').removeClass('hide');
+			$('#idefault').closest('.col-sm-6').addClass('hide');
+			
+			if(datatypeid == '7' || datatypeid == '8' || datatypeid == '9' || datatypeid == '10'){//加载数据字典项
+				$('#dictionary').closest('.col-sm-6').removeClass('hide');
+				$('#valueList').parent().removeClass('hide');
+				$('#valueList').removeClass('hide');
+				$('#richtext').removeClass('hide');
+				$('#richtext').addClass('hide');
+				$('#valueList').parent().find('label').remove();
+				textstr = "选项列表：";
+				$('#valueList').before('<label class="col-sm-2 col-md-3 control-label text-ellipsis">'+textstr+'</label>');
+				//加载选项列表
+				if(eiid=='0'){//新建
+					
+				}else{
+					showOptionList();
+				}
+			}
+			else{//主键
+				//无值列表选项或默认值
+				$('#dictionary').closest('.col-sm-6').removeClass('hide');
+				$('#dictionary').closest('.col-sm-6').addClass('hide');
+				$('#valueList').parent().removeClass('hide');
+				$('#valueList').parent().addClass('hide');
+			}
+		}else{
+			$('#idefault').closest('.col-sm-6').removeClass('hide');
+			$('#idefault').closest('.col-sm-6').addClass('hide');
+			$('#dictionary').closest('.col-sm-6').removeClass('hide');
+			$('#dictionary').closest('.col-sm-6').addClass('hide');
+			$('#relentity').closest('.col-sm-6').removeClass('hide');
+			$('#relentity').closest('.col-sm-6').addClass('hide');
+			$('#valueList').parent().removeClass('hide');
+			$('#valueList').parent().addClass('hide');
+		}
+  		$('#idefault').val(idefault);
+  	}
+  	//显示已有选项列表
+  	function showOptionList(){
+  		vpPostAjax('/cfgentattr/getDataTypeList', {idictionaryid:idictionaryid,scode:'dictionarydetail'}, "POST",function (rst) {
+			var data = rst;
+			if(data.success){
+				var valueList = data.data;
+				if(valueList!=null&&valueList!=undefined&&valueList.length>0){
+					$.each(valueList, function(i, item) {
+			  			var checked = "";
+						if(item.scode==idefault){
+							checked = "checked";
+						}
+						var _parents = $('#valueListform');
+				  		var oItem = _parents.children('.form-item');
+					    var itemBack = oItem.last();
+					    var itemNew = itemBack.clone(true);
+						//修改表单属性
+				  	    itemNew.find(":input[type=text],:input[type=checkbox]").each(function(i){
+				  	    	//清空输入框
+				  	    	$(this).val("");
+				  	    	if($(this).is(':checked')){
+				  	    		$(this).removeProp('checked');
+				  	    	}
+				  			var index = $(this).attr('index');
+				  			var idstr =$(this).attr('id');
+				  			var namestr = $(this).attr('name');
+				  			idstr = idstr.replace(index,"");
+				  			namestr = namestr.replace(index,"");
+				  			index = parseInt(index);
+				  			index++;
+				  			if(idstr=='isdefaultvalue'&&checked == "checked"){
+				  				$(this).prop('checked', true);
+				  			}
+				  			if(idstr=='optionvalue'){
+				  				$(this).val(item.scode);
+				  				$(this).attr('hidid',item.iid);
+				  			}
+							if(idstr=='optionname'){
+								$(this).val(item.sname);
+				  			}
+				  	  		$(this).attr('index',index);
+				  	        //修改id属性
+				  	        $(this).attr({"id": idstr+index });
+				  	        //修改name属性
+				  	        $(this).attr({"name":namestr+index });
+				  	    });
+				  		//拼接新行到最下面
+				  	    cloneItemToBottom(_parents,itemBack,oItem,itemNew);
+					}); 
+			  		//删除空白行
+			  		if(valueList.length>=1){
+			  			$('#valueListform').children('.form-item').first().remove();
+			  		}
+		        }else{
+		        	newAddOption(true);//添加空白行
+		        	var itemlength = $('#valueListform').children('.form-item').length;
+		        	$('#valueListform').children('.form-item').each(function(i){
+		        		if((i+1)<itemlength){
+		        			$(this).remove();
+		        		}
+		        	});
+		        	
+		        }
+        	}else{
+        		layer.msg("加载选项列表数据异常", {icon: 2,time: 2000});
+        	}
+        });
+  	}
+  	
+    //选项列表中的再添一个
+  	$('#newAddOption').on('click', function(event) {
+  		newAddOption(false);
+  	});
+  	//添加选项行
+  	function newAddOption(isClear){
+  		  var _parents = $('#valueListform');
+  	      var oItem = _parents.children('.form-item');
+  	      var itemBack = oItem.last();
+  	      var itemNew = itemBack.clone(true);
+  	      //修改表单属性
+  	      itemNew.find(":input[type=text],:input[type=checkbox]").each(function(i){
+  			  //清空输入框
+  	    	  $(this).val("");
+  	    	  if($(this).is(':checked')){
+  	    		  $(this).removeProp('checked');
+  	    	  }
+  			  var index = $(this).attr('index');
+  			  var idstr =$(this).attr('id');
+  			  var namestr = $(this).attr('name');
+  			  idstr = idstr.replace(index,"");
+  			  namestr = namestr.replace(index,"");
+  			  index = parseInt(index);
+  			  index++;
+  			  if(isClear){
+  				index = 0; 
+  			  }
+  			  if(idstr=='optionvalue'){
+  				$(this).attr('hidid','0');
+  			  }
+  	  		  $(this).attr('index',index);
+  	          //修改id属性
+  	          $(this).attr({"id": idstr+index });
+  	          //修改name属性
+  	          $(this).attr({"name":namestr+index });
+  	      });
+  	      //拼接新行到最下面
+  	      cloneItemToBottom(_parents,itemBack,oItem,itemNew); 
+  	}
+  	function cloneItemToBottom(_parents,itemBack,oItem,itemNew){
+  		  //alert(itemNew.html());
+  		  var hasA = itemBack.children('div:first-child').hasClass('vp-delAdd');
+	      // 只允许1000条,先复制上一条再插入删除图标
+	      if (oItem.length == 1000) {
+	          if(!hasA){
+	              _parents.children('.m-t-sm').before(itemNew.prepend('<div class="vp-delAdd"><a href="#"><i class="fa fa-minus-circle text-danger" onclick="deleteRow(this)"></i></a></div>'));
+	          }else{
+	              _parents.children('.m-t-sm').before(itemNew);
+	          }
+	          _parents.children('.m-t-sm').hide()
+	      }else{
+	          // 如果上一个是新增的就不用再插入删除按钮了
+	          if(!hasA){
+	              _parents.children('.m-t-sm').before(itemNew.prepend('<div class="vp-delAdd"><a href="#"><i class="fa fa-minus-circle text-danger" onclick="deleteRow(this)"></i></a></div>'));
+	          }else{
+	              _parents.children('.m-t-sm').before(itemNew);
+	          }
+	          
+	      }
+  	}
+  	$(document).on('click','input[type=checkbox]',function(){
+  		var index = $(this).attr('index');
+  		$("input[type=checkbox]").each(function(i){
+  			var curindex = $(this).attr('index');
+  			if(index != curindex){
+  				//alert(index+":"+curindex);
+  				if($(this).is(':checked')){
+	  	    		$(this).removeProp('checked');
+	  	    	}
+  			}
+  		});
+  	});
+  	function deleteRow(obj){
+  		$(obj).closest('.form-item').remove();
+  	}
+</script>
+</html>

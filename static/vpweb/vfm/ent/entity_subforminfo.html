@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>任务看板 - VP应用全生命周期管理系统</title>
+	<meta name="keywords" content="">
+	<meta name="description" content="">
+	<meta http-equiv="Pragma" content="no-cache">
+	<meta http-equiv="Cache-control" content="no-cache">
+	<meta http-equiv="Cache" content="no-cache">
+	<link rel="shortcut icon" href="img/favicon.ico">
+	<link href="../../css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+	<link href="../../css/font-awesome.min.css?v=4.7.0" rel="stylesheet">
+	<link href="../../css/animate.css" rel="stylesheet">
+	<link href="../../css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+	<link href="../../css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+	<!-- zTree树表 -->
+	<link href="../../css/plugins/zTree/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+	<!-- layUI表格 -->
+	<link rel="stylesheet" href="../../js/plugins/layui/css/layui.css" media="all">
+	<link href="../../css/style.css?v=4.1.0" rel="stylesheet">
+	<link href="../../css/common.css" rel="stylesheet">
+	<link href="../../css/vp.css" rel="stylesheet">
+	<script src="../../../vpcommon/config.js"></script>
+	<script src="../../../vpcommon/vputils.min.js"></script>
+	<!--[if lte IE 9]>
+        <script src="../../js/html5shiv.min.js"></script>
+        <script src="../../js/respond.js"></script>
+    <![endif]-->
+	<!-- 全局js -->
+	<script src="../../js/jquery-1.11.3.min.js"></script>
+	<!--[if IE 8]>
+	<script type="text/javascript" src="../../js/jquery-1.9.1.min.js"></script>
+	<![endif]-->
+	<script src="../../js/bootstrap.min.js?v=3.3.6"></script>
+	<!-- 自定义js -->
+	<script src="../../js/content.js?v=1.0.0"></script>
+	<!-- 日期控件 -->
+	<script src="../../js/plugins/datapicker/bootstrap-datepicker.js"></script>
+	<!-- layer弹出层 -->
+	<script src="../../js/plugins/layer/layer.min.js"></script>
+	<!-- 下拉选择列表 -->
+	<script src="../../js/plugins/chosen/chosen.jquery.js"></script>
+	<!-- layui表格 -->
+	<script src="../../js/plugins/layui/layui.js" charset="utf-8"></script>
+	<script src="../../js/vpsoft/common.js"></script>
+	<script src="../../js/vpsoft/form.js"></script>
+	<script src="../../js/vpsoft/getUrlParam.js"></script>
+	<script src="../../js/plugins/iCheck/icheck.min.js"></script>
+</head>
+
+<body>
+	<div class="padding-10">
+		<div class="ibox-title border-bottom ">
+			<h5>基本信息</h5>
+			<div class="ibox-tools">
+				<a class="collapse-link" data-toggle="tooltip" data-placement="top" title="收起"> <i class="fa fa-caret-up"></i>
+				</a>
+			</div>
+		</div>
+		<div class="ibox-content p-n clearfix">
+			<div class="form-horizontal m-t" id="signupForm">
+				<div class="form-group">
+					<div class="col-sm-6">
+						<label class="col-sm-4 col-md-3 control-label text-ellipsis">表单编号：</label>
+						<div class="col-sm-8 col-md-9">
+							<input id="code" name="code" class="form-control" type="text" maxlength="30">
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<label class="col-sm-4 col-md-3 control-label text-ellipsis">表单名称：</label>
+						<div class="col-sm-8 col-md-9">
+							<input id="name" name="name" class="form-control" type="text" maxlength="80">
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-12">
+						<label class="col-sm-2 col-md-3 control-label text-ellipsis">onsave接口类：</label>
+						<div class="col-sm-10 col-md-9">
+							<input id="ssaveinterface" name="ssaveinterface" class="form-control" type="text" maxlength="280">
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-6">
+						<label class="col-sm-4 col-md-3 control-label text-ellipsis">onload事件标志：</label>
+						<div class="col-sm-8 col-md-9">
+							<div class="radio radio-info radio-inline">
+								<input type="radio" id="onleventflag1" value="0" name="onleventflag" checked="">
+								<label for="iflag1">启用</label>
+							</div>
+							<div class="radio radio-info radio-inline">
+								<input type="radio" id="onleventflag2" value="1" name="onleventflag">
+								<label for="iflag2">禁用</label>
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<label class="col-sm-4 col-md-3 control-label text-ellipsis">onsave标志：</label>
+						<div class="col-sm-8 col-md-9">
+							<div class="radio radio-info radio-inline">
+								<input type="radio" id="onceventflag1" value="0" name="onceventflag" checked="">
+								<label for="iflag1">启用</label>
+							</div>
+							<div class="radio radio-info radio-inline">
+								<input type="radio" id="onceventflag2" value="1" name="onceventflag">
+								<label for="iflag2">禁用</label>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-12">
+						<label class="col-sm-2 col-md-3 control-label text-ellipsis">onload事件：</label>
+						<div class="col-sm-10 col-md-9">
+							<textarea id="onloadevent" name="onloadevent" class="form-control" maxlength="380"></textarea>
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-12">
+						<label class="col-sm-2 col-md-3 control-label text-ellipsis">onsave事件：</label>
+						<div class="col-sm-10 col-md-9">
+							<textarea id="oncevent" name="oncevent" class="form-control" maxlength="380"></textarea>
+						</div>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<div class="col-sm-12">
+						<label class="col-sm-2 col-md-3 control-label text-ellipsis">关联表单：</label>
+						<div class="col-sm-8 col-md-9">
+							<select id="sformname" name="sformname" class="form-control">
+							</select>
+						</div>
+					</div>
+
+				</div>
+</body>
+<script>
+	var globalSequencekey = 0;
+	var formtype = 7;
+
+
+	$(document).ready(function () {
+		var sparam = { ientityid: UrlParm.parm("ientityid"), iid: UrlParm.parm("iid"), itype: formtype };
+
+
+		vpPostAjax('/cfgentview/subget', sparam, 'POST', function (rst) {
+			if (rst.success) {
+				if (rst.data.iid != '0') {
+					document.getElementById("name").value = rst.data.sname;
+					document.getElementById("code").value = rst.data.scode;
+					document.getElementById("ssaveinterface").value = rst.data.ssaveinterface;
+					
+					if (rst.data.viewevents) {
+						if (rst.data.viewevents.length > 0) {
+							$.each(rst.data.viewevents, function (i, item) {
+								var seventinfo = rst.data.viewevents[i].seventinfo;
+								var ieventtype = rst.data.viewevents[i].ieventtype;
+								var sintroducejs = rst.data.viewevents[i].sintroducejs;
+								var seventinfo = rst.data.viewevents[i].seventinfo;
+								var iflag = rst.data.viewevents[i].iflag;
+								if (ieventtype == 0) {
+									if (iflag == 0) {
+										document.getElementById("onleventflag1").checked = true;
+									} else {
+										document.getElementById("onleventflag2").checked = true;
+									}
+									document.getElementById("onloadevent").value = seventinfo;
+								} else if (ieventtype == 1) {
+									if (iflag == 0) {
+										document.getElementById("onceventflag1").checked = true;
+									} else {
+										document.getElementById("onceventflag2").checked = true;
+									}
+									document.getElementById("oncevent").value = seventinfo;
+								}
+							});
+
+						}
+					}
+				}
+				if (rst.data.mainform) {
+					if (rst.data.mainform.length > 0) {
+						$.each(rst.data.mainform, function (i, item) {
+							var sname = rst.data.mainform[i].sname;
+							var iid = rst.data.mainform[i].iid;
+							var selmainform = rst.data.selmainform;
+							if (selmainform == iid) {
+								$("#sformname").append("<option value='" + iid + "' selected>" + sname + "</option>");
+							} else {
+								$("#sformname").append("<option value='" + iid + "'>" + sname + "</option>");
+							}
+						});
+					}
+				}
+			}
+			else {
+				parent.layer.msg('查询失败，！' + rst.msg, { icon: 2, time: 2000 });
+			}
+		});
+
+	});
+
+	function saveViewInfo() {
+
+		if (document.getElementById("code").value == "") {
+			layer.msg('请填写表单编号！', { icon: 5, time: 2000 });
+			return false;
+		}
+		var isUnique = true;
+		vpPostAjax('/vfmcheck/isUnique', {
+			code: 'cfg_entity_view', iid: UrlParm.parm("iid"), data: [
+				{ field: 'iviewtype', fieldvalue: formtype },
+				{ field: 'ientityid', fieldvalue: UrlParm.parm("ientityid") },
+				{ field: 'scode', fieldvalue: document.getElementById("code").value }]
+		}, 'POST', function (rst) {
+			isUnique = !rst;
+		});
+		if (!isUnique) {
+			parent.layer.msg("属性码已经存在，请重新输入!", { icon: 5, time: 2000 });
+			return false;
+		}
+
+		if (document.getElementById("name").value == "") {
+			layer.msg('请填写表单名称！', { icon: 5, time: 2000 });
+			return false;
+		}
+
+		if (/^[A-Za-z]([0-9A-Za-z]*$)/g.test(document.getElementById("code").value)) {
+		} else {
+			layer.msg('表单编号只能是以英文字母开头的英文字母或数字组成！', { icon: 5, time: 2000 });
+			return false;
+		}
+
+		var dataObj = new Object();
+
+
+		dataObj.ientityid = UrlParm.parm("ientityid");
+		dataObj.iid = UrlParm.parm("iid");
+		dataObj.iviewtype = formtype;
+		dataObj.sname = $("#name").val();
+		dataObj.scode = $("#code").val();
+		dataObj.onleventflag = getCheckValue("onleventflag");
+		dataObj.onceventflag = getCheckValue("onceventflag");
+		dataObj.sintroducejs = "";
+		dataObj.ssaveinterface = $("#ssaveinterface").val();
+
+		dataObj.onloadevent = $("#onloadevent").val();
+		dataObj.oncevent = $("#oncevent").val();
+		/// dataObj.sformname =  $("#sformname").val();  // 保存无属性问题，先注释不报错 后面看是什么问题 2019/7/22
+		var action = '/cfgentview/subformupdate';
+		if (dataObj.iid == 0) {
+			action = '/cfgentview/subformadd';
+		}
+
+
+		vpPostAjax(action, dataObj, 'POST', function (rst) {
+			if (rst.success) {
+				parent.layer.msg('保存成功！', { icon: 1, time: 2000 });
+			} else {
+				parent.layer.msg('保存失败，！' + rst.msg, { icon: 2, time: 2000 });
+			}
+		});
+	}
+
+	function getCheckValue(attrName) {
+		var v = 0;
+		var len = document.getElementsByName(attrName).length;
+		for (var i = 0; i < len; i++) {
+			if (document.getElementsByName(attrName)[i].checked) {
+				v = document.getElementsByName(attrName)[i].value;
+			}
+
+		}
+		return v;
+	}
+</script>
+
+</html>

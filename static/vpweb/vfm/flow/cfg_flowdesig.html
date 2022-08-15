@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>流程模型编辑器</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
+    <link rel="shortcut icon" href="img/favicon.ico">
+    <link href="../../css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="../../css/font-awesome.min.css?v=4.7.0" rel="stylesheet">
+    <link href="../../css/animate.css" rel="stylesheet">
+    <link href="../../css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+    <link href="../../css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+    <link href="../../css/plugins/zTree/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+	<link href="../../js/plugins/layui/css/layui.css" rel="stylesheet" media="all">
+    <!-- 自定义css -->
+    <link href="../../css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="../../css/common.css" rel="stylesheet">
+    <link href="../../css/vp.css" rel="stylesheet">
+	<link rel="Stylesheet" media="screen" href="./css/vpeditor.css" type="text/css" />
+    <script src="../../../vpcommon/config.js"></script>
+    <script src="../../../vpcommon/vputils.min.js"></script>
+
+    <!--[if lte IE 9]>
+        <script src="../../js/html5shiv.min.js"></script>
+        <script src="../../js/respond.js"></script>
+    <![endif]-->
+
+	<style>
+
+	</style>
+</head>
+
+<body class="wight-bg">
+    <div class="">
+		<div class="col-sm-12">
+			<div class="ibox">
+				<div class="ibox-title p-l-none">					
+					<div class="ibox-tools" id="vptoolbar">
+					
+					</div>
+				</div>
+				<div class="ibox-content p-n m-t-sm vp-overflow-x" style="display: block;">
+					 <div class="vp-overflow-x vpcontent">
+						<ul id="vptreetable" class="ztree" lay-filter="vpclick"></ul>
+						<script type="text/html" id="vpbar">
+							{{# if(d.flowver==""){ }}
+								<a lay-event="btnpub"><i class="fa fa-check-circle fa-fw text-success" data-toggle="tooltip" title="发布"></i></a>
+							{{#}else{ }}
+								
+							{{# }}}
+						</script>
+					</div>
+					<div class="layui-table-page" id="vppagebar">
+					  
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+    <!-- 全局js -->
+    <script src="../../js/jquery-1.11.3.min.js"></script>
+	<!--[if IE 8]>
+	<script type="text/javascript" src="../../js/jquery-1.9.1.min.js"></script>
+	<![endif]-->
+    <script src="../../js/bootstrap.min.js?v=3.3.6"></script>
+    <!-- 自定义js -->
+    <script src="../../js/content.js?v=1.0.0"></script>
+    <!-- 日期控件 -->
+    <script src="../../js/plugins/datapicker/bootstrap-datepicker.js"></script>
+    <!-- layer弹出层 -->
+    <script src="../../js/plugins/layer/layer.min.js"></script>
+    <script src="../../js/plugins/layui/layui.js"></script>
+    <!-- 下拉选择列表 -->
+    <script src="../../js/plugins/chosen/chosen.jquery.js"></script>
+    <!-- zTree模拟树表 -->
+    <script src="../../js/plugins/zTree/jquery.ztree.all.min.js"></script>
+    <script src="../../js/vpsoft/TreeTable.js"></script>
+    <script src="../../js/vpsoft/common.js"></script>
+    <script src="../../js/vpsoft/form.js"></script>
+    <script src="../../js/plugins/iCheck/icheck.min.js"></script>
+    <script src="../../js/vpsoft/getUrlParam.js"></script>    
+	
+	
+<script src="./libs/prototype-1.5.1.js" type="text/javascript" ></script>
+<script src="./libs/path_parser.js" type="text/javascript"  ></script>
+
+<script src="./libs/ext-2.0.2/adapter/ext/ext-base.js" type="text/javascript"  ></script>
+<script src="./libs/ext-2.0.2/ext-all-debug.js" type="text/javascript"  ></script>
+<script src="./libs/ext-2.0.2/color-field.js" type="text/javascript"  ></script>
+
+</body>
+<script>
+var gVar={
+		zoomSelectionChanged:false,
+		modelVersion: getParameter("flowver")||'',
+		southHeight:240,
+		westWidth:180,
+		flowId: getParameter("flowid")||'-1',
+		modelId: getParameter("modelid")||'-1',
+		eid: getParameter("entityid")||'-1',
+		init:function(){
+			var reg=/\/{2}[^\/]+/g;
+			var as= window.location.href.match(reg);
+			gVar.host=as[0].substring(2);
+			  if (window.ActiveXObject){
+				  gVar.toXml=function(text){
+					  var doc=new ActiveXObject('Microsoft.XMLDOM');
+	                  doc.async='false';
+	                  doc.loadXML(text);
+	                  return doc;
+				  }
+                  
+                } else {  
+                	gVar.toXml=function(text){
+	                	var parser=new DOMParser();
+	                    var doc=parser.parseFromString(text,'text/xml');
+	  	                return doc;
+  				  	}
+                 
+                }
+			  //对否可编辑
+			  if(isNaN(gVar.modelId)){
+				  gVar.editable=false;
+			  }else{
+				  gVar.editable=true;
+			  }
+			  //tab 
+			  gVar.tabChanged=false;
+		},
+		isEditable:function(){
+			return  gVar.editable;
+		},
+		getHost:function(){
+			
+			return gVar.host;
+		},
+		toolTree:{
+			expanded:true
+			},
+		southCollapsed:true,
+		eastCollapsed:true,
+		getBottomTab:function(){
+			return this.bTab||{};
+		},
+		setBottomTab:function(tab){
+			this.bTab=tab;
+		},
+		doDelayFunc:function(){
+			if(gVar.dFunc){
+				gVar.dFunc(gVar.el,gVar.tp);
+			}
+			gVar.dFunc=null;
+			gVar.setTabHeight();
+			
+		},
+		showMask:function(){
+			//document.getElementById('mask-div').style.display='block';
+		},
+		hideMask:function(){
+			//document.getElementById('mask-div').style.display='none';
+		},
+		setTabHeight:function(ph){
+			var h=ph
+			try{
+				if(arguments.length<1){
+					h=gVar.tabHeight;
+				}else{
+					gVar.tabHeight=h;
+				}
+		    	var its=gVar.getBottomTab().items.items;
+		        if(its&&its.length>0){
+		        	for(var i=0;i<its.length;i++){
+		        		its[i].setHeight(h);
+		        	}
+		        }
+		    }catch(e){
+		    	;
+		    }
+		},
+		isTabChanged:function(){
+			return gVar.tabChanged;
+		},
+		setTabChanged:function(p){
+			gVar.tabChanged=p;
+		}
+};
+gVar.init();
+
+window.onresize=function(){
+	try{
+		gVar.getBottomTab().setWidth(document.body.clientWidth);
+	}catch(e){
+		;
+	}
+	
+}
+Ext.layout.BorderLayout.Region.prototype.onExpand=function(){
+
+    this.isCollapsed = false;
+    if(this.splitEl){
+        this.splitEl.show();
+    }
+    this.layout.layout();
+    this.panel.el.setStyle('z-index', 1);
+    this.state.collapsed = false;
+    this.panel.saveState();
+
+    var tab=gVar.getBottomTab();
+    if(tab&&tab.func){
+    	tab.func(tab.el,tab);
+    }
+    if(this.region=='south'){
+		gVar.southCollapsed=false;
+		 gVar.doDelayFunc();
+		 if(gVar.isDef){
+			 tab.readTabs(true);
+			 gVar.proWin.defaultProperWin();
+		 }
+	}
+   
+};
+Ext.layout.BorderLayout.Region.prototype.onCollapse=function(){
+
+	 this.panel.el.setStyle('z-index', 1);
+     if(this.lastAnim === false || this.panel.animCollapse === false){
+         this.getCollapsedEl().dom.style.visibility = 'visible';
+     }else{
+         this.getCollapsedEl().slideIn(this.panel.slideAnchor, {duration:.2});
+     }
+     this.state.collapsed = true;
+     this.panel.saveState();
+     if(this.region=='south'){
+ 		gVar.southCollapsed=true;
+ 	}
+
+};
+Ext.layout.BorderLayout.SplitRegion.prototype.applyFns.south=function(box){
+    if(this.isCollapsed){
+        return this.applyLayoutCollapsed(box);
+    }
+    var sd = this.splitEl.dom, s = sd.style;
+    var sh = sd.offsetHeight;
+    this.panel.setPosition(box.x, box.y+sh);
+    s.left = (box.x)+'px';
+    s.top = (box.y)+'px';
+    s.width = Math.max(0, box.width)+'px';
+    this.panel.setSize(box.width, box.height-sh);
+	gVar.setTabHeight(box.height-sh-55);
+};
+function setTabChanged(p){
+	gVar.setTabChanged(false);
+}
+function isEditable(){
+	return gVar.isEditable();
+}
+function tabDoLayout(){
+	gVar.setTabHeight();
+}
+function setBaseInfoWin(win){
+	gVar.baseWin=win;
+}
+</script>
+</html>
+<script src="./editor/i18n/translation_en_us.js" type="text/javascript" ></script>
+<script src="./editor/i18n/translation_signavio_en_us.js" type="text/javascript"  ></script>
+<script src="./libs/utils.js" type="text/javascript"  ></script>
+<script src="./js/properties.js" type="text/javascript"  ></script>
+<script src="./js/vpeditorcfg.js?time=1" type="text/javascript"  ></script>
+<script src="./js/oryx.debug.js" type="text/javascript"  ></script>

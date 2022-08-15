@@ -1,0 +1,58 @@
+.godMode {
+  .ant-tabs-bar {
+    position: relative !important;
+  }
+  .ant-row-flex-start {
+    height: 100%;
+  }
+  // .ant-tabs-vertical > .ant-tabs-bar .ant-tabs-tab{
+  //   // margin: 0;
+  //   .ant-tabs-tab-inner{
+  //     text-align: left !important;
+  //     white-space: break-spaces;
+  //   }
+  // }
+  .ant-col-4,
+  .ant-col-20 {
+    height: 100%;
+    overflow: auto;
+    padding: 10px 15px;
+    border-right: 1px solid #e9e9e9;
+  }
+  // .ant-timeline {
+  //   .ant-timeline-item-content {
+  //     cursor: pointer;
+  //     &:hover {
+  //       color: red;
+  //     }
+  //     &:active {
+  //       color: red;
+  //     }
+  //   }
+  // }
+  .stepUL {
+    cursor: pointer;
+    &:hover {
+      color: @red;
+    }
+    &:active {
+      color: @red;
+    }
+    &.click_this {
+      color: @blue;
+      border: 2px dotted;
+      border-radius: 5px;
+      padding: 5px;
+    }
+  }
+}
+.img_box {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@red:red;
+@blue:#1890ff;
+

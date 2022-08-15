@@ -1,0 +1,41 @@
+.handle-form {
+    .pts{
+        padding-top: 65px;
+    }
+    .step-head{
+        width: 80%;
+        margin: 0 auto;
+        position: absolute;
+        top: 0;
+        z-index: 10;
+        left: 0;
+        right: 0;
+    }
+    .handle-form-right {
+        .icon {
+            padding: 0 2px;
+            color: #fff;
+            border-radius: 0 14px 14px 0;
+            background: #4bb8f5;
+            cursor: pointer;
+        }
+        .detail {
+            .content {
+                .msg-title {
+                    width: 30%;
+                    & + span {
+                        width: 60%;
+                    }
+                }
+            }
+        }
+        
+    }
+    .weiy{
+        overflow: hidden; /*自动隐藏文字*/
+        text-overflow: ellipsis;/*文字隐藏后添加省略号*/
+        white-space: nowrap;/*强制不换行*/
+        width: 20em;/*不允许出现半汉字截断*/
+        cursor:pointer;
+    }
+}

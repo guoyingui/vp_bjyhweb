@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>任务看板 - VP应用全生命周期管理系统</title>
+<meta name="keywords" content="">
+<meta name="description" content="">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Cache-control" content="no-cache">
+<meta http-equiv="Cache" content="no-cache">
+<link rel="shortcut icon" href="img/favicon.ico">
+<link href="../../css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+<link href="../../css/font-awesome.min.css?v=4.7.0" rel="stylesheet">
+<link href="../../css/animate.css" rel="stylesheet">
+<link href="../../css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+<link href="../../css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+<!-- zTree树表 -->
+<link href="../../css/plugins/zTree/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+<!-- layUI表格 -->
+<link rel="stylesheet" href="../../js/plugins/layui/css/layui.css" media="all">
+<link href="../../css/style.css?v=4.1.0" rel="stylesheet">
+<link href="../../css/common.css" rel="stylesheet">
+<link href="../../css/vp.css" rel="stylesheet">
+    <script src="../../../vpcommon/config.js"></script>
+    <script src="../../../vpcommon/vputils.min.js"></script>
+<!--[if lte IE 9]>
+        <script src="../../js/html5shiv.min.js"></script>
+        <script src="../../js/respond.js"></script>
+    <![endif]-->
+<!-- 全局js -->
+<script src="../../js/jquery-1.11.3.min.js"></script>
+<!--[if IE 8]>
+	<script type="text/javascript" src="../../js/jquery-1.9.1.min.js"></script>
+	<![endif]-->
+<script src="../../js/bootstrap.min.js?v=3.3.6"></script>
+<!-- 自定义js -->
+<script src="../../js/content.js?v=1.0.0"></script>
+<!-- 日期控件 -->
+<script src="../../js/plugins/datapicker/bootstrap-datepicker.js"></script>
+<!-- layer弹出层 -->
+<script src="../../js/plugins/layer/layer.min.js"></script>
+<!-- 下拉选择列表 -->
+<script src="../../js/plugins/chosen/chosen.jquery.js"></script>
+<!-- layui表格 -->
+<script src="../../js/plugins/layui/layui.js" charset="utf-8"></script>
+<script src="../../js/vpsoft/common.js"></script>
+<script src="../../js/vpsoft/form.js"></script>
+<script src="../../js/vpsoft/getUrlParam.js"></script>
+<script src="../../js/plugins/iCheck/icheck.min.js"></script>
+</head>
+
+<body>
+    <div class="sub-navigator clearfix">
+		<div class="col-sm-2 sub-head" id="vpsearch">           
+		</div>
+		<div class="col-sm-10 subnav">
+			<div data-toggle="buttons" class="btn-group" id="vpfilter">
+				
+			</div>
+		</div>
+	</div>
+
+	<div class="padding-10" style="padding-top: 45px;">
+		<div class="ibox" style="height: 40px;">			
+			<div class="ibox-content p-n clearfix">
+				<div class="form-horizontal m-t" id="signupForm">
+					<div class="form-group">
+						<div class="col-sm-6">
+							<label class="col-sm-4 col-md-3 control-label text-ellipsis">字段所属节：</label>
+							<div class="col-sm-8 col-md-9">
+								<select id="iselectionid" name="iselectionid" class="form-control"></select>
+							</div>
+						</div>
+						<div class="col-sm-6">
+							<label class="col-sm-4 col-md-3 control-label text-ellipsis">字段占据列数：</label>
+							<div class="col-sm-8 col-md-9">
+								<div class="radio radio-info radio-inline">
+									<input type="radio" id="idisplaycolumn1" value="1" name="idisplaycolumn" checked=""> <label for="idisplaycolumn1">一列</label>
+								</div>
+								<div class="radio radio-info radio-inline">
+									<input type="radio" id="idisplaycolumn2" value="2" name="idisplaycolumn"> <label for="idisplaycolumn2">二列</label>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	
+		<div class="col-sm-12">
+			<div class="ibox">
+				<div class="ibox-content p-n m-t-sm vp-overflow-x" style="display: block;">
+					<div class="vp-overflow-x vpcontent">
+						<ul id="vptreetable" class="ztree" lay-filter="vpclick"></ul>
+						<script type="text/html" id="vpbar">
+							{{# if(d.idefault=="非默认"){ }}
+								<a lay-event="btnunpub"><i class="fa fa-times fa-fw text-danger" data-toggle="tooltip" title="删除"></i></a>
+							{{#}else{ }}
+							
+							{{# }}}
+						</script>
+					</div>
+					<div class="layui-table-page" id="vppagebar"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	
+</body>
+<script>
+var globalSequencekey=0;
+var entityid=$('#vpeditform', parent.document).attr("iid");
+
+var osearch = Search({ el: 'vpsearch', id: 'quicksearch' });
+osearch.parseEl();
+if($('#vpeditform', parent.document).attr("ientityid")!=undefined){
+	entityid=$('#vpeditform', parent.document).attr("ientityid");
+}
+if (decodeURI(getParameter("quicksearch")) != 'null') {
+	$("#quicksearch").val(decodeURI(getParameter("quicksearch")));
+}
+var olisttable = ListTable({ el:'vptreetable',vpurl:'/cfgentview/getfield',layfilter:'vpclick',checkbox: true,multiple:true,pager: false,opt:false,param: { ientityid: entityid, iviewid: UrlParm.parm("iviewid"), iselectionid: UrlParm.parm("iselectionid"), quickvalue: $("#quicksearch").val() } });
+
+
+olisttable.parseEl();
+
+
+
+$(document).ready(function() {
+	var sparam = { ientityid : UrlParm.parm("ientityid"), iviewid : UrlParm.parm("iviewid")};
+	   vpPostAjax('/cfgentview/getsection', sparam, 'POST', function(rst) {
+		  
+		   if(rst.success){  
+
+			   if(rst.data!=undefined){
+					    if(rst.data.length>0){
+							$.each(rst.data, function(i, item) {
+								var sname = rst.data[i].sname;
+								var iid = rst.data[i].iid;
+								var iselectionid = UrlParm.parm("iselectionid");
+								if(iselectionid!=null && iselectionid!=undefined && iselectionid==iid){
+								    $("#iselectionid").append("<option value='"+iid+"' selected>"+sname+"</option>");
+								}else{
+									$("#iselectionid").append("<option value='"+iid+"'>"+sname+"</option>");
+								}
+							});
+						
+						}
+			   } 
+			}else{
+				//parent.layer.msg('删除失败，！'+rst.msg, { icon: 2, time: 2000 });
+			}
+	   });
+	
+
+});
+
+ function addFields(){
+
+		var dataObj=new Object();
+		
+		var obj=new Array();
+		
+		var checkStatus = olisttable.getTable().checkStatus("vptable"), idlist = "";
+		
+		if(checkStatus.data.length==0){
+			parent.layer.msg('请先选择要删除的数据！', { icon: 2, time: 2000 });
+		}
+		
+		for(var i=0;i<checkStatus.data.length;i++){	
+			var objvalues="";
+			objvalues=checkStatus.data[i].iid;
+			obj[i]=objvalues;
+		}
+
+		var idisplaycolumn=$("input[name='idisplaycolumn']:checked").val();
+
+		if(idisplaycolumn==undefined){
+			idisplaycolumn=1;
+		}
+
+		//dataObj.ientityid=UrlParm.parm("ientityid");
+		dataObj.iviewid=UrlParm.parm("iviewid");
+		dataObj.iselectionid = $("#iselectionid").val();
+		dataObj.idisplaycolumn=idisplaycolumn;
+		dataObj.fieldArr=obj.join(",");
+
+		if(dataObj.iselectionid==null ){
+			parent.layer.msg('请先新建节！', { icon: 2, time: 2000 });
+			return false;
+		}
+		
+		
+		
+		action='/cfgentview/addsectionfields';
+		
+
+	   vpPostAjax(action, dataObj, 'POST', function(rst) {
+		   if(rst.success){   
+			parent.layer.msg('保存成功！', { icon: 1, time: 2000 });
+			return true;
+		}else{
+			parent.layer.msg('保存失败，！'+rst.msg, { icon: 2, time: 2000 });
+			return false;
+		}
+	   });
+	}
+
+
+</script>
+</html>

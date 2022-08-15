@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WBS菜单</title>
+<meta name="keywords" content="">
+<meta name="description" content="">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Cache-control" content="no-cache">
+<meta http-equiv="Cache" content="no-cache">
+	<link href="../../vpm/vframe/css/style_v4.css?maxage=6000000" rel="stylesheet" type="text/css">
+	<link href="../../vpm/vframe/css/styleImage_v4.css?maxage=6000000" rel="stylesheet" type="text/css">
+
+	<script type="text/javascript" src="../../vpm/js/webUtil.js?maxage=6000000"></script>
+	<script type="text/javascript" src="../../vpm/vframe/js/common.js?maxage=6000001"></script>
+	<script type="text/javascript" src="../../vpm/js/calendar.js?maxage=6000000"></script>
+	<script type="text/javascript" src="../../vpm/vframe/js/search.js?maxage=6000001"></script>
+	<script type="text/javascript" src="../../vpm/web/js/jquery-1.11.1.min.js"></script>
+	<script type="text/javascript" src="../../vpm/web/js/cwindow.js"></script>
+	<script type="text/javascript" src="../../vpm/web/js/utils.js"></script>
+	<script type="text/javascript" src="../../js/vpsoft/getUrlParam.js?v=1.0.0"></script>
+    <script>
+        var iparent = UrlParm.parm("iparent");
+        var projectId = UrlParm.parm("projectId");
+        var wbsId = UrlParm.parm("wbsId");
+        var relentityId = UrlParm.parm("relentityId");
+        
+		var curuserid = "";
+		var curusername = "";
+		var curdptid = "";
+		curuserid = '2';
+		curusername = 'user';
+		curdptid = '1';
+	
+		var NULL = undefined;
+		var BLANK_IMAGE_URL = "../../vpm/images/s.gif";
+		var WAIT_IMAGE_URL = "../../vpm/images/s.gif";
+	</script>
+
+	<style>
+	.x-grid3-col {
+		padding-top: 6px;
+		height: 30px;
+		line-height: 30px;
+	}
+	
+	#viewFilter, #filterSelect {
+		margin-top: 2px;
+		height: 24px;
+		line-height: 24px;
+		margin-bottom: 2px;
+	}
+	</style>
+</head>
+
+<body class="right_bg">
+	<div id="wait_div" class="wait_div_style"></div>
+
+	<script>
+	function formEvent(flag) {
+		if (flag == -1) {
+			if ($("#win_2", parent.document).attr("id") != undefined) {
+				$('#win_2', parent.document).remove();
+			}
+			else if ($("#win_2", parent.parent.document).attr("id") != undefined){ 
+				$('#win_2', parent.parent.document).remove();
+			}
+			if ($("#win_1", parent.document).attr("id") != undefined) {
+				$('#win_1', parent.document).remove();
+			}
+			else if ($("#win_1", parent.parent.document).attr("id") != undefined){ 
+				$('#win_1', parent.parent.document).remove();
+			}
+			else if (($("#win_0").attr("id") != undefined)) {	
+				$('#win_0').remove();
+			}
+			else if (($("#win_0", parent.document).attr("id") != undefined)) {
+				$('#win_0', parent.document).remove();
+			}
+			else if (($("#win_0", parent.parent.document).attr("id") != undefined)) {
+				$('#win_0', parent.parent.document).remove();
+			}
+			/**
+			else if (($("#win").attr("id") != undefined)) {	
+				cwindow.close();
+			}
+			else if (($("#win", parent.document).attr("id") != undefined)) {
+				 parent.cwindow.close();
+			}
+			else if (($("#win", parent.parent.document).attr("id") != undefined)) {
+				parent.parent.cwindow.close();
+			}
+			**/
+		}
+		else if (flag == 0) {
+			document.getElementById("frmFormPage").contentWindow.save();
+		}
+	}
+	
+	window.bindEvent = function(obj, str, fn){
+		str = str.replace(/^on/, "");
+		if(obj.addEventListener){
+			obj.addEventListener(str, fn, false)
+		}else{
+			obj.attachEvent("on"+str, fn);
+		}
+	}
+	
+	bindEvent(window, "onunload", function(){
+		var iframelist=document.getElementsByTagName("iframe");
+		if(iframelist){
+			for(var i=0;i<iframelist.length;i++){
+				var iframe = iframelist[i];
+				
+				if(iframe){
+					iframe.src = 'about:blank';
+					try{
+					    var iframecontent = iframe.contentWindow;
+						iframecontent.document.write('');
+						iframecontent.document.clear();
+					}catch(e){};
+					try{
+						top.document.body.removeChild(iframe);
+					}catch(e){};	
+				}
+			}
+		}
+		
+		var framelist=document.getElementsByTagName("frame");
+		if(framelist){
+			for(var i=0;i<framelist.length;i++){
+				var frame = framelist[i];
+				
+				if(frame){
+					frame.src = 'about:blank';
+					try{
+					    var framecontent = frame.contentWindow;
+						framecontent.document.write('');
+						framecontent.document.clear();
+					}catch(e){};
+					try{
+						top.document.body.removeChild(frame);
+					}catch(e){};	
+				}
+			}
+		}
+	});
+	</script>
+	
+	<script type="text/javascript" src="../../vpm/js/secondUtil.js?maxage=6000000"></script>
+	<script src="../../vpm/vframe/js/jquery-1.4.2.min.js"></script>
+	<script src="../../vpm/vframe/js/becloud.js"></script>
+	<link type="text/css" rel="stylesheet" href="../../vpm/vpCss/style.css">
+	<script type="text/javascript" src="../../vpm/vpJS/jquery-1.7.2.min.js"></script>
+	<script type="text/javascript" src="../../vpm/vpJS/vpsoft.js"></script>
+	<script type="text/javascript" src="../../vpm/vpJS/webUtil.js"></script>
+	<link type="text/css" rel="stylesheet" href="../../vpm/vpCss/dialog.css">
+	<script type="text/javascript" src="../../vpm/vpJS/dialog.js"></script>
+	<script type="text/javascript" src="../../vpm/vpJS/search.js"></script>
+	<script type="text/javascript" src="../../vpm/web/js/jquery-1.11.1.min.js"></script>
+	<script type="text/javascript" src="../../vpm/web/js/cwindow.js"></script>
+	<script type="text/javascript" src="../../vpm/web/js/utils.js"></script>
+	
+	<script src="../../js/vpsoft/getUrlParam.js"></script>  
+	<style type="text/css">
+	.processcontainer {
+		float: left;
+		left: 30px;
+		background-color: #E8E8E8;
+		border: 1px solid #d9d9d9;
+		height: 12px;
+		width: 80px;
+		position: absolute;
+		top: 1px;
+	}
+	
+	.processbar {
+		float: left;
+		background: transparent url(../../vpm/vframe/images/other/jdt_bg.gif) repeat-x 0 0;
+		border-style: 1px solid #3b90ad;
+		height: 100%;
+		text-align: center;
+		line-height: 100%;
+	}
+	</style>
+
+	<script language="javascript">
+		var userID = '2';
+		if (userID == null || userID == "") {
+			location = "/project/login.jsp";
+		}
+		var ss = "open index";
+	</script>
+
+	<div id="mainIndexDiv" style="height: 574px; width: 100%; border: 0px; background-color: rgb(255, 255, 255); position: absolute; margin: 0px; top: 0px;">
+		<!-- <iframe id="leftFrame" style="width: 100%; height: 100%; border: 0px;"
+			src="/project/vframe/openWindowMenuAction.do?fileName=wbs_task_std&amp;ignoreParam=ignoreParam&amp;metaType=null&amp;wbsObjId=12782&amp;winType=wbs_task_std&amp;wbsObjectID=34&amp;objectID=34&amp;taskID=12782&amp
+            ;projectID=625&amp;workItemID=12782&amp;detailobjectid=12782&amp;loadextramenu=1&amp;iid=12782&amp;eid=34&amp;taskname=test1&amp;selectItemID=20&amp;stype=tabs"
+			frameborder="0" marginheight="0" align="middle"></iframe> -->
+			<table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
+				<tbody>
+					<tr height="20">
+						<td style="background: url(../../vpm/vframe/images/ntab/ul_bg.png) repeat-x;">
+							<ul class="tab_wrapper">
+								<!-- <li id="20" class="current" url="../../vpm/mywork/taskTrackMain.jsp?rwFlag=2" displayflag="2">跟踪</li> -->
+								<li id="liTrackView" class="current" url="wbsPlanTrackView.html?rwFlag=1" displayflag="2" class="">跟踪视图</li>
+								<li id="liCompareGantt" url="compareGantt.html?rwflag2=1" displayflag="2" class="">比较甘特图</li>
+								<li id="liMapView" url="wbsMapView.html?rwflag3=1" displayflag="2" class="">镜像视图</li>
+								<!-- 
+								<li id="32" url="/project/vocation/timesheet/workTimesheet.jsp" displayflag="2" class="">报工</li>
+								<li id="25" url="/project/wbs/task/taskPlanPropertyToolbar.jsp?rwFlag=2" displayflag="2" class="">详细信息</li>
+						        <li id="26" url="/project/mywork/workItem/wbsElementtoolbar.jsp" displayflag="2" class="">自定义</li>
+						        <li id="29" url="/project/bpm/process/entityHisWFListToolbar.jsp?xmdlc=1&amp;objectName=WBS元素&amp;objectid=12782&amp;objecttype=34&amp;displayflag=2" displayflag="2" class="">流程</li> -->
+							</ul>
+						</td>
+					</tr>
+					<tr>
+						<td valign="top">
+						    <!-- <iframe id="infoIframe" width="100%" height="100%" frameborder="0" scrolling="no" src="/project/mywork/taskTrackMain.jsp?rwFlag=2&amp;wbsObjectID=34&amp;loadextramenu=1&amp;iid=12782&amp;detailobjectid=12782&amp;ignoreParam=ignoreParam&amp;eid=34&amp;metaType=null&amp;taskID=12782&amp;wbsObjId=12782&amp;projectID=625&amp;objectID=34&amp;winType=wbs_task_std&amp;stype=tabs&amp;selectItemID=20&amp;fileName=wbs_task_std&amp;taskname=test1&amp;workItemID=12782&amp;displayflag=2&amp;displayFlag=2"></iframe> -->
+						    <iframe id="infoIframe" width="100%" height="100%" frameborder="0" scrolling="no" src="wbsPlanTrackView.html?rwFlag=1"></iframe>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			
+			<script>
+			$(function(){
+				//alert("projectId:" + projectId + " iparent:" + " wbsId:" + wbsId + " relentityId" + relentityId);
+				$("#liTrackView").attr("url","wbsPlanTrackView.html?rwFlag=1&projectId=" + projectId + "&wbsId=" + wbsId + "&relentityId=" + relentityId);
+				$("#liCompareGantt").attr("url","compareGantt.html?rwflag2=1&projectId=" + projectId + "&wbsId=" + wbsId + "&relentityId=" + relentityId);
+				$("#liMapView").attr("url","wbsMapView.html?projectId=" + projectId + "&iid=" + wbsId + "&ientityid=10" + "&relentityId=" + relentityId);
+                $("#infoIframe").attr("src","wbsPlanTrackView.html?rwFlag=1&projectId=" + projectId + "&wbsId=" + wbsId + "&relentityId=" + relentityId);
+				
+				$('.tab_wrapper li').click(function(e) {
+					jQuery("#lr_menu").hide();
+					$(this).addClass('current').siblings().removeClass('current');
+					if ('tab_more' != $(this).attr("id")) {
+						var url = $(this).attr("url");
+						if (url.indexOf("?") == -1) {
+							url += "?ss=ss";
+						}
+						
+						//url += "&wbsObjectID=34&loadextramenu=1&iid=12782&detailobjectid=12782&ignoreParam=ignoreParam&eid=34&metaType=null&taskID=12782&wbsObjId=12782&projectID=625&objectID=34&winType=wbs_task_std&stype=tabs&selectItemID=20&fileName=wbs_task_std&taskname=test1&workItemID=12782&displayflag=2&displayFlag=" + $(this).attr("displayFlag");
+						//limit=50;loadextramenu=1;displayflag=2;iid=625;rtype=1;display=1;eid=1;titleText=WBS详细;projectID=625;parentID=0;objectID=1;start=1;stype=viewpj;selectItemID=20;fileName=pjinfos;projectid=625;workItemID=625;projectName=test;typeID=1
+						url += "&iparent=" + iparent + "&projectid=" + projectId + "&wbsId=" + wbsId + "&relentityId=" + relentityId + "&ientityid=10";
+						document.getElementById("infoIframe").src = url;
+					} else {
+						jQuery("#lr_menu").css("left", jQuery($(this)).offset().left);
+						if (imoreClick%2 == 0) {
+							jQuery("#lr_menu").hide();
+						}
+						else {
+							jQuery("#lr_menu").show();
+						}
+						imoreClick++;
+					}
+					$('#titleSpan').html($('#LayerContainer', parent.document).attr("custtitle"));
+			    });
+			
+				$(".lr_menu dt img").attr("src","../../vpm/vframe/images/icon_jie_close.gif");
+				$(".lr_menu dd").hide();
+				$(".lr_menu dt").click(function(){
+					if (tmpoo != null) {
+						tmpoo.removeClass("top_menu_chioce");
+					}
+					tmpoo = $(this);
+					$(".lr_menu dt").css({"background-color":"#ffffff"})
+					$(this).addClass("top_menu_chioce");
+					$(this).parent().find('dd').removeClass("menu_chioce");
+					$(".lr_menu dt img").attr("src","../../vpm/vframe/images/icon_jie_close.gif");
+					$(this).parent().find('img').attr("src","../../vpm/vframe/images/icon_jie_open.gif");
+					$(".menu_chioce").slideUp(); 
+					$(this).parent().find('dd').slideToggle();
+					$(this).parent().find('dd').addClass("menu_chioce");
+				});
+			});
+			
+			var otmpID = "";
+			function doLink(id) {	
+				var titleText = $("#"+id).attr("title");
+				if(titleText.indexOf('[') > 0){
+					titleText = titleText.substring(0, titleText.indexOf('['));
+				}
+				$('#titleSpan').html($('#LayerContainer', parent.document).attr("custtitle")+'-->' + titleText);
+					
+				imoreClick = 1;
+				jQuery("#lr_menu").hide();
+				document.getElementById("infoIframe").src = $("#"+id).attr("url");
+				if (otmpID != '') {
+					$("#"+otmpID).removeClass("link_chioce");//css({"background-color": "#ffffff"});
+				}
+				$("#"+id).addClass("link_chioce");//css({"background-color": "#e5f5ff"});
+				otmpID = id;
+			}
+			function doLink2(id){
+				$("#"+id).click();
+			}
+			
+			function doOnload(){
+				
+			}
+			</script>
+	</div>
+
+	<script>
+		if (parent.location.href.indexOf("index.jsp") != -1) {
+			$('#LayerContainer', parent.document).css("top", "60px")
+		}
+		$('#titleSpan').html($('#LayerContainer', parent.document).attr("custtitle"));
+		//document.getElementById("mainIndexDiv").style.height = document.body.clientHeight - document.getElementById("titleDiv").style.height.replace("px", "") - 60 + 'px';
+		document.getElementById("mainIndexDiv").style.height = document.body.clientHeight - 60 + 'px';
+		</script>
+
+	<script type="text/javascript">
+		function closeNew() {
+			doClose();
+		}
+    </script>
+
+</body>
+</html>

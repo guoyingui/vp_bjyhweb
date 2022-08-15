@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>角色组用户 - VP应用全生命周期管理系统</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
+    <link rel="shortcut icon" href="img/favicon.ico">
+    <link href="../../css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="../../css/font-awesome.min.css?v=4.7.0" rel="stylesheet">
+    <link href="../../css/animate.css" rel="stylesheet">
+    <link href="../../css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+    <link href="../../css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+    <!-- zTree树表 -->
+    <link href="../../css/plugins/zTree/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+    <!-- layUI表格 -->
+    <link href="../../css/plugins/chosen/chosen.css" rel="stylesheet">
+    <link href="../../css/plugins/iCheck/custom.css" rel="stylesheet">
+    <link href="../../js/plugins/layui/css/layui.css"  rel="stylesheet" media="all">
+    <link href="../../css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="../../css/common.css" rel="stylesheet">
+    <link href="../../css/vp.css" rel="stylesheet">
+    <script src="../../../vpcommon/config.js"></script>
+    <script src="../../../vpcommon/vputils.min.js"></script>
+    <!--[if lte IE 9]>
+    <script src="../../js/html5shiv.min.js"></script>
+    <script src="../../js/respond.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+<div class="padding-10">
+    <div class="ibox-content p-n clearfix">
+        <form class="form-horizontal m-t" id="oForm">
+            <input type="hidden" id="rolegroupid" name="rolegroupid">
+            <input type="hidden" id="idepartmentid" name="idepartmentid">
+            <div class="form-group">
+                <label class="col-sm-2 col-md-3 control-label text-ellipsis">组名：</label>
+                <div class="col-sm-10 col-md-9">
+                    <div class="input-group vp-width-100">
+                        <input id="flowgroupname" name="flowgroupname" placeholder="组名" type="text" class="form-control" required="" readonly>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group ">
+                <label class="col-sm-2 col-md-3 control-label text-ellipsis">用户列表：</label>
+                <div class="col-sm-10 col-md-9" id="valueListform">
+                    <div class="form-group m-b-sm" style="height:10px;">
+                        <div class="col-xs-12 radio" style="text-align:left;margin:0px;padding:5px;left: 5px;">
+                            <i id="add" class="fa fa-plus fa-fw text-info" data-toggle="tooltip" title="新增用户"></i>
+                            <i id="del" class="fa fa-times fa-fw text-danger" data-toggle="tooltip" title="删除用户"></i>
+                        </div>
+                    </div>
+                    <div class="form-group" style="width:101%">
+                        <div id="vpcontainer" >
+                            <div class="clearfix white-bg padding-10 animated fadeInRight vp-pr">
+                                <table lay-size="sm" class="layui-hide" id="tableSort" lay-filter="vpclick"></table>
+                                <div class="layui-table-page" id="vppagebar">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+<!-- 全局js -->
+<script src="../../js/jquery-1.11.3.min.js"></script>
+<!--[if IE 8]>
+<script type="text/javascript" src="../../js/jquery-1.9.1.min.js"></script>
+<![endif]-->
+<script src="../../js/bootstrap.min.js?v=3.3.6"></script>
+<!-- 自定义js -->
+<script src="../../js/content.js?v=1.0.0"></script>
+<!-- 日期控件 -->
+<script src="../../js/plugins/datapicker/bootstrap-datepicker.js"></script>
+<!-- layer弹出层 -->
+<script src="../../js/plugins/layer/layer.min.js"></script>
+<script src="../../js/plugins/layui/layui.js"></script>
+<!-- 下拉选择列表 -->
+<script src="../../js/plugins/chosen/chosen.jquery.js"></script>
+<!-- jQuery 表单验证-->
+<script src="../../js/plugins/validate/jquery.validate.min.js"></script>
+<script src="../../js/plugins/validate/messages_zh.min.js"></script>
+<!-- zTree模拟树表 -->
+<script src="../../js/plugins/zTree/jquery.ztree.all.min.js"></script>
+<script src="../../js/vpsoft/TreeTable.js"></script>
+<script src="../../js/vpsoft/common.js"></script>
+<script src="../../js/vpsoft/form.js"></script>
+<script src="../../js/plugins/iCheck/icheck.min.js"></script>
+<script src="../../js/vpsoft/getUrlParam.js"></script>
+</html>
+<script>
+    var groupId =  UrlParm.parm("groupId");
+    var vobj = new Object();
+
+    vppage();
+    function vppage(obj){
+        for(var key in obj) {
+            vobj[key] = obj[key];
+        }
+        vobj['groupId'] = groupId;
+        vpAjax(getWorkflowPath() +'/rest/flowgroup/user/page', vobj, "GET", function(data) {
+            layui.use(['laypage','table'], function(){
+                var laypage = layui.laypage;
+
+                laypage.render({
+                    elem: 'vppagebar',
+                    count: data.count,
+                    limit: data.limit,
+                    curr: data.curr,
+                    limits: [10,20, 30, 50],
+                    layout: ['count', 'first', 'prev', 'page', 'next', 'last', 'limit', 'skip'],
+                    jump: function(obj, first) {
+                        if (!first) {
+                            vppage(obj);
+                        }
+                    }
+                });
+
+                var table = layui.table;
+                table.render({
+                    elem: '#tableSort'
+                    ,page: false
+                    ,data:data.result
+                    ,limit: data.limit
+                    ,height: 'full-110'
+                    ,cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                    ,cols: [[
+                        {type:'checkbox'}
+                        ,{field:'iid', title: 'id', sort: true,event:"click"}
+                        ,{field:'sname', title: '用户名称', sort: true,event:"click"}
+                        ,{field:'scode', title: '用户编码',event:"click"}
+                        ,{field:'sloginname', title: '用户登录名',event:"click"}
+                    ]]
+                });
+
+                table.on('tool(vpclick)',function(obj){
+                    vpclick(obj);
+                });
+            });
+
+        });
+    }
+
+    $(document).on('click','#add',function(){
+        addRoleGroupUser();
+    });
+
+    //调用
+    function addRoleGroupUser(){
+        var cfg = new Object();
+        cfg.entityID = "2";
+        cfg.multiple = true;
+
+        // cfg.width = "90%";//设置弹框宽度
+        // cfg.height = "70%";//设置弹框高度
+
+        parent.Chosen.chosenEntity(cfg, function(data) {
+            var ids = "";
+            var names = "";
+            if (data.length > 0) {
+                for (var i = 0; i < data.length; i++) {
+                    if (i == 0) {
+                        ids = data[0].id;
+                        names = data[0].name;
+                    } else {
+                        ids = ids + "," + data[i].id;
+                        names = names + "," + data[i].name;
+                    }
+                }
+                var param = {groupId:groupId,userids:ids};
+                vpAjax(getWorkflowPath() +'/rest/flowgroup/user/save', param, "POST", function(data) {
+                    vppage();
+                });
+            } else {
+                parent.layer.msg("请至少选择一条数据！", { icon: 2, time: 2000 });
+            }
+        });
+    }
+
+    $(document).on('click','#del',function(){
+        var userarr = [];
+        var checkStatus = layui.table.checkStatus("tableSort");
+        for(var i=0;i<checkStatus.data.length;i++){
+        if(checkStatus.data.length>0){
+                userarr.push(checkStatus.data[i].iid);
+            }
+        }
+        if(userarr.length>0){
+            vpAjax(getWorkflowPath()+'/rest/flowgroup/user/delete', { userids: userarr.join(),groupId: groupId }, "POST", function(rst) {
+                try {
+                    vppage();
+                }
+                catch(exception) {
+                    layer.msg("刷新列表失败！", { icon: 2, time: 2000 });
+                }
+            });
+        }else{
+            layer.msg("请至少选择一条数据！", { icon: 2, time: 2000 });
+        }
+    });
+
+</script>

@@ -1,0 +1,7 @@
+/*可以在这里添加你自己的css*/
+img{max-width:100%}
+table.chtech-table {
+    word-break: break-all;
+    table-layout: fixed;
+}
+td p img{ width: inherit !important;max-width: inherit !important;}

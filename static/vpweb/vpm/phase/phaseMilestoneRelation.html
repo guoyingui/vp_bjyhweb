@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>里程碑关联 - VP应用全生命周期管理系统</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
+    <link rel="shortcut icon" href="img/favicon.ico">
+    <link href="../../css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="../../css/font-awesome.min.css?v=4.7.0" rel="stylesheet">
+    <link href="../../css/animate.css" rel="stylesheet">
+    <link href="../../css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+    <link href="../../css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+    <link href="../../css/plugins/zTree/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+	<link href="../../js/plugins/layui/css/layui.css" rel="stylesheet" media="all">
+    <!-- 自定义css -->
+    <link href="../../css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="../../css/common.css" rel="stylesheet">
+    <link href="../../css/vp.css" rel="stylesheet">
+    <script src="../../../vpcommon/config.js"></script>
+    <script src="../../../vpcommon/vputils.min.js"></script>
+
+	<!-- 全局js -->
+    <script src="../../js/jquery-1.11.3.min.js"></script>
+	<!--[if IE 8]>
+	<script type="text/javascript" src="../../js/jquery-1.9.1.min.js"></script>
+	<![endif]-->
+    <script src="../../js/bootstrap.min.js?v=3.3.6"></script>
+    <!-- 自定义js -->
+    <script src="../../js/content.js?v=1.0.0"></script>
+    <!-- 日期控件 -->
+    <script src="../../js/plugins/datapicker/bootstrap-datepicker.js"></script>
+    <!-- layer弹出层 -->
+    <script src="../../js/plugins/layer/layer.min.js"></script>
+    <script src="../../js/plugins/layui/layui.js"></script>
+    <!-- 下拉选择列表 -->
+    <script src="../../js/plugins/chosen/chosen.jquery.js"></script>
+    <!-- zTree模拟树表 -->
+    <script src="../../js/plugins/zTree/jquery.ztree.all.min.js"></script>
+    <script src="../../js/vpsoft/WBSTreeTable.js"></script>
+    <script src="../../js/vpsoft/common.js"></script>
+    <script src="../../js/vpsoft/form.js"></script>
+    <script src="../../js/plugins/iCheck/icheck.min.js"></script>
+
+<script>
+var curdate = new Date();
+var datestr = curdate.getFullYear()+"-"+(parseInt(curdate.getMonth())+1)+"-"+curdate.getDate(); 
+var ientityid = getParameter("ientityid");
+var projectid = getParameter("iid");
+var startDate = datestr;
+var endDate = datestr;
+if(parseInt(ientityid) > 0 && parseInt(projectid) > 0){
+	vpPostAjax(getVpmPath()+'/vfrm/phase/getPhaseDate', { formType : 'relation', iid: projectid, ientityid: ientityid }, "POST", function(rst) {			
+		startDate = rst.startDate;
+		endDate = rst.endDate;
+	});
+}
+var ganttCfg={
+		colsCfg:{
+			cols:[
+				  {header:'序号',width:30,hidden:false,columnid:'Id'},
+			      {header:'',width:100,hidden:true,columnid:'zs'},
+			      {header:'项目群or项目or里程碑',width:100,hidden:true,columnid:'stype'},
+			      {header:'名称',width:100,hidden:false,columnid:'Name',
+				      renderer: function(value, metaData, record, rowIdx, colIdx, store) {
+				      var stype = record.get('stype');
+				      var mileStoneType = record.get('mileStoneType');
+						if (stype=='0') {
+							metaData.tdCls = 'projectGroup';
+						}else if (stype=='1') {
+							metaData.tdCls = 'project';
+						}else{
+							metaData.tdCls = 'milestone'+mileStoneType;
+						}
+						var iid = record.get('iid');
+						var ptype = record.get('ptype');
+						var projectid = record.get('projectid');
+						return '<a href="javascript:toInfo(\''+stype+'\',\''+iid+'\',\''+value+'\',\''+ptype+'\',\''+projectid+'\')">'+value+'</a>';
+				  }},
+			      {header:'状态',width:60,hidden:false,columnid:'statusname'},
+			      {header:'',width:50,hidden:true,columnid:'iid'},
+			      {header:'',width:50,hidden:true,columnid:'ptype'},
+			      {header:'',width:50,hidden:true,columnid:'projectid'},
+			      {header:'',width:50,hidden:true,columnid:'mileStoneType'},
+			      {header:'预测开始时间',width:90,hidden:false,columnid:'StartDate'},
+			      {header:'预测结束时间',width:90,hidden:false,columnid:'EndDate'},
+			      {header:'计划开始时间',width:90,hidden:false,columnid:'StartDate2'},
+			      {header:'计划结束时间',width:90,hidden:false,columnid:'EndDate2'},
+			      {header:'实际开始时间',width:90,hidden:false,columnid:'StartDate3'},
+			      {header:'实际结束时间',width:90,hidden:false,columnid:'EndDate3'}
+			],
+			comboData:[	//comboBox类型自定义列的默认数据
+				{	id:'cusfFile1',
+					data:[
+                       	        {"val":"AL", "name":"Alabama"},
+                    	        {"val":"AK", "name":"Alaska"},
+                    	        {"val":"AZ", "name":"Arizona"}
+                    ]
+				},
+                {
+					id:'m_hdlx',
+					data:[
+                           {"val":"1", "name":"Alabama"},
+                           {"val":"0", "name":"Alaska"},
+                           {"val":"2", "name":"Arizona"}
+                  	]
+				}
+			]
+		},
+		editFunc:function(taskId){
+			//alert('ddddd '+taskId);
+		},
+		taskPartWidth:420,
+		taskPartTitle:'项目-里程碑树',
+		ganttPartTitle:'里程碑关系图',
+		loadDataUrl:getVpmPath()+'/vfrm/phase/getMilestone',
+		loadParas: { access_token:token,iid: projectid, ientityid: ientityid },
+		startDate: startDate,
+		endDate: endDate
+};
+</script>
+</head>
+
+<body class="wight-bg">
+	<div class="sub-navigator clearfix">
+		<div id="toolbar" align="right">
+			<div style="margin-top: 5px;">
+				<img src="../../vpm/images/wbstask/icon_task_milestone1.gif" />未开始&nbsp;&nbsp;
+				<img src="../../vpm/images/wbstask/icon_task_milestone2.gif" />已完成&nbsp;&nbsp;
+				<img src="../../vpm/images/wbstask/icon_task_milestone3.gif" />绿灯&nbsp;&nbsp;
+				<img src="../../vpm/images/wbstask/icon_task_milestone4.gif" />黄灯&nbsp;&nbsp;
+				<img src="../../vpm/images/wbstask/icon_task_milestone5.gif" />红灯&nbsp;&nbsp;&nbsp;
+			</div>
+		</div>
+	</div>
+	<div id="vpcontainer" style="padding-top:25px; ">
+        <div class="clearfix white-bg animated fadeInRight vp-pr">
+            <div class="vp-overflow-x vpcontent">
+                <iframe src = "../../vpm/phase/commonGantt.html" width="100%" height="100%" frameborder="none"></iframe>
+            </div>
+        </div> 
+    </div>
+
+	<!-- drawer 侧滑DIV -->
+    <div class="hide drawer-fixed vp-studio vp-t" style="margin-top: 40px;" id="vpeditform">
+        
+    </div>
+</body>
+<script>
+$(".vpcontent").height(document.body.clientHeight - 22);
+</script>
+</html>

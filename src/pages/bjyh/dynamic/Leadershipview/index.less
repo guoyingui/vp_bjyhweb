@@ -1,0 +1,179 @@
+.leader-container {
+    .flex-container,
+    .flex-container-scxtzs,
+    .flex-container-prompt{
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(243, 243, 243, 0);
+        z-index: 9999;
+        display: none;
+        .flex-status{
+            width: auto;
+            height: auto;
+            background: #f2f2f2;
+            border-radius: 5px;
+            position: absolute;
+            h5{
+                height: 30px;
+                line-height: 30px;
+                border-top-left-radius: 5px;
+                border-top-right-radius: 5px;
+                text-align: center;
+                color: #fff;
+            }
+            div{
+                padding: 5px 10px;
+                font-size: 14px;
+                color: #000;
+            }
+        }
+    }
+    .box-title-logo{
+        height: 22px;
+        position: absolute;
+        top: 15px;
+        left: 20px;
+        z-index: 1;    
+    }
+    .card-head-title{
+        width: 100%;
+        display: inline-flex;
+        justify-content: center;
+        span{
+            display: inline-block;
+            height: 35px;
+            line-height: 35px;
+            padding: 0 10px;
+            margin-left: 10px;
+            border-radius: 5px;
+            background: #f2f2f2;
+            color: #000;
+        }
+    }
+    .ant-tabs-bar{
+        margin-bottom: 10px;
+        .ant-tabs-nav-container ,
+        .ant-tabs-nav .ant-tabs-tab{
+            margin: 0;
+            background: #fff;
+            .ant-tabs-nav .ant-tabs-tab-active .ant-tabs-tab-inner{
+                height: 40px;
+                line-height: 40px;
+                padding: 0 20px;
+                text-align: center;
+                color: #fff;
+                background: #30788e;
+                box-shadow: 0px 0px 10px 0px #466771;
+            }
+        }
+    }
+    .ant-row{
+        margin-bottom: 10px;
+        .ant-col-6{
+            .ant-card-head{
+                padding: 0 10px;
+                h3{
+                    font-size: 16px;
+                    font-weight: 600;
+                    padding-left: 30px;
+                    color: #fff;
+                }
+            }
+            &:nth-child(1) .ant-card-head{
+                background: #0994FF;
+            }
+            &:nth-child(2) .ant-card-head{
+                background: #3C63E5;
+            }
+            &:nth-child(3) .ant-card-head{
+                background: #79D5C7;
+            }
+            &:nth-child(4) .ant-card-head{ 
+                background: #FF675C;
+            }
+        }
+        .card-title{
+            height: 30px;
+            line-height: 26px;
+            font-size: 14px;
+            display: flex;
+            img{
+                width: 26px;
+                height: 26px;
+                margin-right: 5px;
+            }
+            a{
+                text-decoration: underline;
+            }
+        }
+        .particulars{
+            position: absolute;
+            right: 10px;
+            bottom: 10px;
+            padding: 5px;
+            font-size: 12px;
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+            cursor: pointer;
+            box-shadow: 0px 0px 10px 0px #d0cece;
+        }
+    }
+    .ant-card-body{
+        padding: 10px;
+        .ant-select-enabled{
+            position: absolute;
+            top: 7px;
+            right: 10px;
+            width: 90px;
+            .ant-select-selection--single,
+            .ant-select-selection__rendered{
+                height: 32px;
+                line-height: 32px;
+            }
+        }
+        .ant-radio-group{
+            position: absolute;
+            top: 30%;
+            right: 10px;
+        }
+        .card_prompt{
+            position: absolute;
+            top: 12px;
+            left: 145px;
+            height: 20px;
+        }
+    }
+    .content-grids{
+        min-height: 300px;
+    }
+    .layui-loop{
+        height: 30px;
+        line-height: 30px;
+        .vpicon{
+            font-size: 15px;
+            margin-right: 5px;
+            color: #ca5de8;
+        }
+        a{
+            padding: 0 5px;
+            text-decoration: underline;
+        }
+    }
+    .loader_tbody{
+        .cell-w{
+            width: 100% !important;
+            white-space: break-spaces;
+        }
+    }
+}
+.loaderModel{
+    .flex-status{
+        p{
+            padding: 3px 10px;
+            text-align: left;
+        }
+    }
+}

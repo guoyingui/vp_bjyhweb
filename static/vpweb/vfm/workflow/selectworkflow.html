@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>选择定时器任务  - VLM</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
+    <link rel="shortcut icon" href="img/favicon.ico">
+    <link href="../../css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="../../css/font-awesome.min.css?v=4.7.0" rel="stylesheet">
+    <link href="../../css/animate.css" rel="stylesheet">
+    <link href="../../css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+    <link href="../../css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+    <link href="../../css/plugins/zTree/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+	<link href="../../js/plugins/layui/css/layui.css" rel="stylesheet" media="all">
+    <!-- 自定义css -->
+    <link href="../../css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="../../css/common.css" rel="stylesheet">
+    <link href="../../css/vp.css" rel="stylesheet">
+    <script src="../../../vpcommon/config.js"></script>
+    <script src="../../../vpcommon/vputils.min.js"></script>
+	
+    <!--[if lte IE 9]>
+    <script src="../../js/html5shiv.min.js"></script>
+    <script src="../../js/respond.js"></script>
+    <![endif]-->
+	<style>
+		.ztree div.divTd {
+			min-width: 70px;
+		}
+		.nav-tabs li.active>a {
+			border: 0px;
+			color: #1890ff;
+		}
+
+	</style>
+</head>
+<body class="gray-bg">
+    <div class="padding-10" id="vpcontainer" style="padding-top:45px; ">
+        <div class="clearfix white-bg padding-10 animated fadeInRight vp-pr">
+            <div class="vp-overflow-x vpcontent">
+                <ul id="vptreetable" class="ztree" lay-filter="vpclick"></ul>
+            </div>
+			<div class="layui-table-page" id="vppagebar">
+			  
+			</div>
+        </div> 
+    </div>
+	
+    <!-- 全局js -->
+    <script src="../../js/jquery-1.11.3.min.js"></script>
+	<!--[if IE 8]>
+	<script type="text/javascript" src="../../js/jquery-1.9.1.min.js"></script>
+	<![endif]-->
+    <script src="../../js/bootstrap.min.js?v=3.3.6"></script>
+    <!-- 自定义js -->
+    <script src="../../js/content.js?v=1.0.0"></script>
+    <!-- 日期控件 -->
+    <script src="../../js/plugins/datapicker/bootstrap-datepicker.js"></script>
+    <!-- layer弹出层 -->
+    <script src="../../js/plugins/layer/layer.min.js"></script>
+    <script src="../../js/plugins/layui/layui.js"></script>
+    <!-- 下拉选择列表 -->
+    <script src="../../js/plugins/chosen/chosen.jquery.js"></script>
+    <!-- zTree模拟树表 -->
+    <script src="../../js/plugins/zTree/jquery.ztree.all.min.js"></script>
+    <script src="../../js/plugins/validate/jquery.validate.min.js"></script>
+    <script src="../../js/vpsoft/TreeTable.js"></script>
+    <script src="../../js/vpsoft/common.js"></script>
+    <script src="../../js/vpsoft/form.js"></script>
+    <script src="../../js/plugins/iCheck/icheck.min.js"></script>
+	<!-- <script src="../../js/vue.js"></script> -->
+	
+	<script src="../../js/vpsoft/getUrlParam.js?v=1.0.0"></script>
+</body>
+<script>
+var ientityid = UrlParm.parm("ientityid");
+var iid = UrlParm.parm("iid");
+$(document).ready(function () {
+
+});
+
+var olisttable = ListTable({ el: 'vptreetable', vpurl:'/cfgentwfform/pagewflist', checkbox: true, toolbar: false, toolbarwidth: 60, toolbarevent: 'viewEdit',
+	    param:  { iid: iid,  ientityid: ientityid}
+	});
+olisttable.parseEl();
+
+function viewEdit(obj){
+	
+}
+
+function saveForm() {
+	//获取选中idList
+	var iid="";
+	var skey="";
+	
+	var checkStatus = olisttable.getTable().checkStatus("vptable"), idlist = "";
+	for(var i=0;i<checkStatus.data.length;i++){
+		iid = checkStatus.data[i].iid;
+		skey = checkStatus.data[i].skey;
+	}
+	var params = {iid:iid,skey:skey};
+	return params;
+}
+</script>
+</html>

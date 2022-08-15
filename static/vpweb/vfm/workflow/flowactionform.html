@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>流程用户组</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
+    <link rel="shortcut icon" href="img/favicon.ico">
+    <link href="../../css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="../../css/font-awesome.min.css?v=4.7.0" rel="stylesheet">
+    <link href="../../css/animate.css" rel="stylesheet">
+    <link href="../../css/plugins/datapicker/datepicker3.css"	rel="stylesheet">
+    <link href="../../css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+
+    <!-- zTree树表 -->
+    <link href="../../css/plugins/zTree/zTreeStyle/zTreeStyle.css"	rel="stylesheet">
+    <!-- layUI表格 -->
+    <link rel="stylesheet" href="../../js/plugins/layui/css/layui.css"	media="all">
+    <link href="../../css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="../../css/common.css" rel="stylesheet">
+    <link href="../../css/vp.css" rel="stylesheet">
+    <script src="../../../vpcommon/config.js"></script>
+    <script src="../../../vpcommon/vputils.min.js"></script>
+    <!--[if lte IE 9]>
+    <script src="../../js/html5shiv.min.js"></script>
+    <script src="../../js/respond.js"></script>
+    <![endif]-->
+</head>
+<body>
+<div class="ibox" id="app">
+    <div class="ibox-content newverison">
+        <form class="form-horizontal m-t" id="oForm" novalidate="novalidate">
+		    <input type="hidden" name="iid" id="iid">
+		    <input type="hidden" name="iflowid" id="iflowid">
+            <div class="form-group">
+                <label class="col-xs-3  text-right control-label">动作名称：</label>
+                <div class="col-xs-8">
+                    <input id="sname"  placeholder="动作名称" name="sname" type="text" class="form-control padding-left-10 vp-radius" required="" aria-required="true">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-3  text-right control-label">步骤编码：</label>
+                <div class="col-xs-8">
+                    <input id="stepkey"  placeholder="步骤编码" name="stepkey" type="text" class="form-control padding-left-10 vp-radius"  >
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-3 text-right control-label">步骤动作时点：</label>
+                <div class="col-xs-8">
+                    <div class="radio radio-info radio-inline">
+                        <input type="radio" id="itasktime0" value="0" name="itasktime" checked=true>
+                        <label for="itasktime0">步骤到达时</label>
+                    </div>
+                    <div class="radio radio-info radio-inline">
+                        <input type="radio" id="itasktime1" value="1" name="itasktime">
+                        <label for="itasktime1">步骤完成时</label>
+                    </div>
+                    <div class="radio radio-info radio-inline">
+                        <input type="radio" id="itasktime2" value="2" name="itasktime">
+                        <label for="itasktime2">发起流程第一步触发</label>
+                    </div>
+                    <div class="radio radio-info radio-inline">
+                        <input type="radio" id="itasktime3" value="3" name="itasktime">
+                        <label for="itasktime3">分支上触发</label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-3 text-right control-label">动作类型：</label>
+                <div class="col-xs-8">
+                    <div class="radio radio-info radio-inline">
+                        <input type="radio" id="type0" value="class" name="stype" checked="true">
+                        <label for="type0">Class</label>
+                    </div>
+                    <div class="radio radio-info radio-inline">
+                        <input type="radio" id="type1" value="url" name="stype">
+                        <label for="type1">Url</label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-3 text-right control-label">实现类/URL：</label>
+                <div class="col-xs-8">
+					<input id="scontent"  placeholder="实现类/URL" name="scontent" type="text" class="form-control padding-left-10 vp-radius" required="" aria-required="true">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-3 text-right control-label">实现说明：</label>
+                <div class="col-xs-8">
+                    <textarea  style="resize: vertical;" placeholder="描述动作有什么作用，实现了什么业务逻辑。" id="sremark" name="sremark" rows="3" class="form-control"></textarea>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-3 text-right control-label">应用范围：</label>
+                <div class="col-xs-8">
+                    <div class="checkbox checkbox-info radio-inline">
+						<input id="ijumpflag" type="checkbox" value="" name="ijumpflag"><label for="ijumpflag">跳转步骤</label>
+					</div>
+					<div class="checkbox checkbox-info radio-inline">
+						<input id="istopflag" type="checkbox" value="" name="istopflag"><label for="istopflag">终止流程</label>
+					</div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="text-center">
+        <!--<button type="button" class="btn btn-sm btn-outline btn-primary" id="saveBtn">保存</button>-->
+    </div>
+</div>
+</body>
+<!-- 全局js -->
+<script src="../../js/jquery-1.11.3.min.js"></script>
+<!--[if IE 8]>
+<script type="text/javascript" src="../../js/jquery-1.9.1.min.js"></script>
+<![endif]-->
+<script src="../../js/bootstrap.min.js?v=3.3.6"></script>
+<!-- 自定义js -->
+<script src="../../js/content.js?v=1.0.0"></script>
+<!-- 日期控件 -->
+<script src="../../js/plugins/datapicker/bootstrap-datepicker.js"></script>
+<!-- layer弹出层 -->
+<script src="../../js/plugins/layer/layer.min.js"></script>
+<script src="../../js/plugins/layui/layui.js"></script>
+<!-- 下拉选择列表 -->
+<script src="../../js/plugins/chosen/chosen.jquery.js"></script>
+<!-- jQuery 表单验证-->
+<script src="../../js/plugins/validate/jquery.validate.min.js"></script>
+<script src="../../js/plugins/validate/messages_zh.min.js"></script>
+<!-- zTree模拟树表 -->
+<script src="../../js/plugins/zTree/jquery.ztree.all.min.js"></script>
+<script src="../../js/vpsoft/TreeTable.js"></script>
+<script src="../../js/vpsoft/common.js"></script>
+<script src="../../js/vpsoft/form.js"></script>
+<script src="../../js/plugins/iCheck/icheck.min.js"></script>
+<script src="../../js/vpsoft/getUrlParam.js"></script>
+<script>
+    var flowid = $('#vpeditform', parent.document).attr("iid");
+	var eiid = UrlParm.parm("iid");
+	
+    function saveform(callvppage) {
+        var form = $("#oForm");
+        var validator = form.validate();
+        if (!validator.form()) {
+            return;
+        }
+
+        $(".layui-layer-btn0").attr('disabled', "true");
+        var param = form.serializeJSON();
+        param['iflowid'] = flowid;
+		
+		if (document.getElementById("ijumpflag").checked == true) {
+			param['ijumpflag'] = 0;
+		}
+		else {
+			param['ijumpflag'] = 1;
+		}
+		if (document.getElementById("istopflag").checked == true) {
+			param['istopflag'] = 0;
+		}
+		else {
+			param['istopflag'] = 1;
+		}
+		
+        vpAjax(getWorkflowPath() + "/rest/flowaction", param, "POST", function(data) {
+            $(".layui-layer-btn0").removeAttr('disabled');
+            parent.layer.closeAll();
+            callvppage();
+        });
+    }
+
+	if (eiid != undefined && eiid != '0') {
+		vpAjax(getWorkflowPath() + "/rest/flowaction/get", {iid:eiid, iflowid: flowid}, 'POST', function(rst) {
+			var data = rst;
+			try
+			{
+				$('#iid').val(data.iid);
+				$('#iflowid').val(data.iflowid);
+                $('#sname').val(data.sname);
+                $('#stepkey').val(data.stepkey);
+				$('#scontent').val(data.scontent);
+				$('#sremark').val(data.sremark);
+				if (data.stype == 'class') {
+					$("#type0").attr("checked", true);
+					$("#type1").removeAttr("checked");
+				}
+				else {
+					$("#type1").attr("checked", true);
+					$("#type0").removeAttr("checked");
+                }
+                
+                if (data.itasktime == 0) {
+					$("#itasktime0").attr("checked", true);
+                    $("#itasktime1").removeAttr("checked");
+                    $("#itasktime2").removeAttr("checked");
+                    $("#itasktime3").removeAttr("checked");
+				} else if(data.itasktime == 1){
+                    $("#itasktime1").attr("checked", true);
+                    $("#itasktime0").removeAttr("checked");
+                    $("#itasktime2").removeAttr("checked");
+                    $("#itasktime3").removeAttr("checked");
+                } else if(data.itasktime == 2){
+                    $("#itasktime1").attr("checked", true);
+                    $("#itasktime0").removeAttr("checked");
+                    $("#itasktime2").removeAttr("checked");
+                    $("#itasktime3").removeAttr("checked");
+                }  
+				else {
+					$("#itasktime3").attr("checked", true);
+                    $("#itasktime0").removeAttr("checked");
+                    $("#itasktime1").removeAttr("checked");
+                    $("#itasktime2").removeAttr("checked");
+				}
+
+				if (data.ijumpflag == 0) {
+					$("#ijumpflag").attr("checked", true);
+				}
+				else {
+					$("#ijumpflag").removeAttr("checked");
+				}
+				if (data.istopflag == 0) {
+					$("#istopflag").attr("checked", true);
+				}
+				else {
+					$("#istopflag").removeAttr("checked");
+				}
+			}
+			catch (e)
+			{
+			}			
+		});
+	}
+</script>
+</html>

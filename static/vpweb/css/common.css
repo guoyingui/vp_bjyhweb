@@ -1,0 +1,230 @@
+/*
+ * author jiangsw
+ * date 2017-11-26
+*/
+
+html {
+    font-family: sans-serif;
+    height: 100%;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+}
+*{
+    outline: none !important;
+}
+body {
+    font-family:'Microsoft YaHei','WenQuanYi Micro Hei',sans-serif;
+    color: #333;
+
+}
+/* 优化默认滚动条 */
+
+::-webkit-scrollbar {
+    width:6px;
+    height:6px;
+}
+::-webkit-scrollbar-button {
+    display: none;
+}
+::-webkit-scrollbar-track {
+    background:none;
+}
+::-webkit-scrollbar-track-piece {
+    
+}
+::-webkit-scrollbar-thumb{
+    background:#ccc;
+    border-radius:3px;
+}
+.overflow-hid{
+    overflow: hidden;
+}
+.overflow-over{
+    overflow: overlay !important;
+}
+
+a:active,
+a:hover {
+    outline: 0;
+    text-decoration: none;
+}
+
+hr,
+ul,
+li,
+dl,
+dt,
+dd {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+label{
+    font-weight: normal;
+}
+img {
+    vertical-align: middle;
+}
+.gray{
+    color: #999;
+}
+.vp-pr{
+    position: relative;
+}
+.vp-height-full {
+    height: 100%;
+}
+.vp-hide{
+    display: none;
+}
+.vp-text-left {
+    text-align: left;
+}
+
+.vp-text-right {
+    text-align: right;
+}
+
+.vp-text-center {
+    text-align: center;
+}
+
+.vp-radius {
+    border-radius: 3px;
+}
+
+.vp-width-100 {
+    width: 100%;
+}
+.vp-width-70 {
+    width: 70%;
+}
+.vp-width-30 {
+    width: 30%;
+}
+.vp-width-60 {
+    width: 60%;
+}
+.vp-width-40 {
+    width: 40%;
+}
+.icon-left {
+    position: absolute;
+    left: 8px;
+    top: 10px;
+}
+.padding-right-30 {
+    padding-right: 30px;
+}
+.padding-right-10 {
+    padding-right: 10px;
+}
+.padding-left-30 {
+    padding-left: 30px;
+}
+.padding-left-10 {
+    padding-left: 10px;
+}
+.vp-fz-12 {
+    font-size: 12px !important;
+}
+.vp-fz-14 {
+    font-size: 14px !important;
+}
+.vp-fz-16 {
+    font-size: 16px !important;
+}
+.vp-fz-18 {
+    font-size: 18px !important;
+}
+.vp-fz-20 {
+    font-size: 20px !important;
+}
+.vp-fz-22 {
+    font-size: 22px !important;
+}
+.vp-fz-24 {
+    font-size: 24px !important;
+}
+.vp-fz-30 {
+    font-size: 30px !important;
+}
+.vp-fz-36 {
+    font-size: 36px !important;
+}
+
+.vp-fz-64 {
+    font-size: 64px !important;
+}
+
+.vp-display-block {
+    display: block;
+}
+
+.vp-color-success {
+    color: #87d068 !important;
+}
+
+.vp-margin-no {
+    margin: 0;
+}
+
+.vp-padding-no {
+    padding: 0;
+}
+
+.vp-padding-top-no {
+    padding-top: 0;
+}
+
+.vp-margin-right5 {
+    margin-right: 5px;
+}
+
+.vp-overhidden {
+    height: 100%;
+    overflow: hidden;
+}
+.vp-text-ovh{
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    display: block;
+}
+.vp-height-35{
+    height: 35px;
+}
+.vp-ovh{
+    overflow: hidden;
+}
+/*
+* 自定义样式
+*/
+.fa-square-o.checked:before {
+    content: "\f14a";
+}
+.has-error .checkbox, .has-error .checkbox-inline, .has-error .control-label, .has-error .help-block, .has-error .radio, .has-error .radio-inline, .has-error.checkbox label, .has-error.checkbox-inline label, .has-error.radio label, .has-error.radio-inline label{
+    color: #ed5565;
+}
+
+.vp-cursor{
+    cursor: pointer;
+}
+.vp-overflow-x{
+    overflow-x: scroll;
+    overflow-y: hidden; 
+}
+.vp-overflow-y{
+    overflow-y: scroll;
+    overflow-x: hidden; 
+}
+.vp-m-t-no{
+    margin-top: 0;
+}
+.vp-m-b-no{
+    margin-bottom: 0;
+}
+.gray-bg, .white-bg, .wight-bg {
+    overflow: hidden;
+}
+

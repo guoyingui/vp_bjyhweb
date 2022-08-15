@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+</head>
+
+<body class="page-login layout-full">  
+	<script src="../vpcommon/config.js"></script>
+	<script src="../vpcommon/vputils.min.js"></script>
+    <script>
+		function getParameter(name) {
+			var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+			var r = window.location.search.substr(1).match(reg);
+			if (r != null) return unescape(r[2]); return null;
+		}
+	    var host = window.location.protocol+"//"+window.location.host + "/vpplatweb";
+		if(vp.cookie.getTkInfo().userid!=undefined){
+			window.location = rpthost+"/vpreport/showRpt1.jsp?rpx="+getParameter('rpx')+"&userid="+vp.cookie.getTkInfo().userid+"&valmhost="+host;
+		}else{
+			top.window.location = window.vp.config.SETTING.vpgatway+"/login";
+		}
+    </script>
+</body>
+
+</html>

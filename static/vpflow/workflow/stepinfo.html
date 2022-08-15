@@ -1,0 +1,57 @@
+<style>
+table input {
+	width: 100%;
+}
+</style>
+<table width="100%" border="0" align="center" cellpadding="1"
+	cellspacing="1">
+	<tr>
+		<td width="120">&nbsp;步骤名称</td>
+		<td><input name="stepname" type="text" disabled></td>
+	</tr>
+	<tr>
+		<td width="120">&nbsp;步骤ID</td>
+		<td><input name="stepkey" type="text" disabled></td>
+	</tr>
+	<tr>
+		<td width="120">&nbsp;步骤类型</td>
+		<td><input  name="steptype" type="text" disabled></td>
+	</tr>
+</table>
+<div>
+<a href="#" id="stepOpen">当前步骤配置</a>
+</div>
+<script src="../js/getUrlParam.js"></script>
+<!-- 全局js -->
+<script src="../js/jquery-1.11.3.min.js"></script>
+<!--[if IE 8]>
+<script type="text/javascript" src="../js/jquery-1.9.1.min.js"></script>
+<![endif]-->
+<script src="../js/plugins/layer/layer.min.js"></script>
+<script src="../js/plugins/layui/layui.js"></script>
+<script src="../js/plugins/validate/jquery.validate.min.js"></script>
+<script src="../js/plugins/validate/messages_zh.min.js"></script>
+<script src="../js/util.js"></script>
+<script>
+jQuery("#stepOpen").click(function(){
+	layer.open({
+        type: 2,
+        shade: false,
+        title: '流程进度',
+        area: ['50%', '100%'], //宽高
+        content: "http://localhost/vpweb/vfm/workflow/test.html#edit-tab-2"
+    });		
+	return false;
+});
+</script>
+<script src="../js/getUrlParam.js"></script>
+<script src="../editor-app/libs/jquery_1.11.0/jquery.min.js"></script>
+<script>
+	var stepkey = UrlParm.parm("stepkey");
+	var steptype = UrlParm.parm("steptype");
+	var stepname = UrlParm.parm("stepname");
+	$("input[name=stepkey]").val(stepkey);
+	$("input[name=steptype]").val(steptype);
+	$("input[name=stepname]").val(stepname);
+</script>
+

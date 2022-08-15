@@ -1,0 +1,26 @@
+
+<div class="layui-tab layui-tab-brief" lay-filter="reqkitbox">
+    <ul class="layui-tab-title">
+        <li lay-id="docarttpl">元素模板</li>
+        <li lay-id="reqasset">需求资产</li>
+        <li lay-id="assetframe">资产结构</li>
+    </ul>
+    <div class="layui-tab-content">
+        <div class="layui-tab-item"></div>
+        <div class="layui-tab-item"></div>
+        <div class="layui-tab-item"></div>
+    </div>
+    <link rel="stylesheet" href="static/plugins/layui/css/layui.css" />
+    <script type="text/javascript" src="static/comm/global.js"></script>
+    <script>
+        layui.use(['element'], function(){
+            var element = layui.element;
+            element.on('tab(reqkitbox)', function(data){
+                var $this = $(this),
+                    $content = $(data.elem).find('.layui-tab-item').eq(data.index);
+                    vpUtils.loadPage($content, config[$this.attr('lay-id')+'Html']());
+            });
+            element.tabChange('reqkitbox','docarttpl');
+        });
+    </script>
+</div>

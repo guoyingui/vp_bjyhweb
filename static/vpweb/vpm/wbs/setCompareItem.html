@@ -1,0 +1,210 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" style="height:100%">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>project work calendar</title>
+    <!-- <jsp:include flush="true" page="/include.jsp?file=jquery"></jsp:include> -->
+    <link href="../../vpm/vframe/css/style_v4.css?maxage=6000000" rel="stylesheet" type="text/css"/>
+    <link href="../../vpm/vframe/css/styleImage_v4.css?maxage=6000000" rel="stylesheet" type="text/css"/>
+    <link href="../../vpm/css/style.css" rel="stylesheet" type="text/css">
+</head>
+<body class="right_bg" style="text-align:center;padding:0px;border:0px;margin:0px;">
+	<div class="formborder">   
+		<input type="hidden" id="storeid" value="0"/>
+		<table width="100%" border="0" cellpadding="0" cellspacing="1"  id="formTable">
+			<tr>
+				<td style="width:100%;">
+					<table width="100%"  border="0" cellpadding="0" cellspacing="0" >
+						<tr>
+							<th nowrap><div class="lableText">被比较项</div></th>
+							<td class="textCell">
+							<select id="i1" type="text" class="inputSelect ">
+							    <option type="0" version="0">当前-计划</option>
+							    <option type="1" version="0">当前-预测</option>
+							    <option type="2" version="0">当前-实际</option></select>
+							</select>
+						</tr>
+					</table>
+				</td>
+				</tr>
+			
+				<tr class="rPropTr">
+				<td style="width:100%;">
+					<table width="100%"  border="0" cellpadding="0" cellspacing="0">
+						<tr>
+							<th nowrap><div class="lableText">比较项</div></th>
+							<td class="textCell">
+								<select id="i2" type="text" class="inputSelect " >
+								    <option type="0" version="0">当前-计划</option>
+								    <option type="1" version="0" selected>当前-预测</option>
+								    <option type="2" version="0">当前-实际</option>
+								</select>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div id="cal-bts" style="position:relative;top:80px;">
+		<table style="width:100%;">
+			<tr><td colspan="3" style="height:10px;"></td></tr>
+		    <tr>
+		        <td width="65%">&nbsp;</td>
+		        <td><input  class="buttonOut"  id="save-bt" type="button" value="确定" style="width:65px;" onMouseOver="btnMove(this);" onMouseOut="btnOut(this);" onClick="resetCompareItem();" ></td>
+	            <td><input  class="buttonOut" type="button" value="取消" style="width:65px;" onMouseOver="btnMove(this);" onMouseOut="btnOut(this);" onClick="cancle();" ></td>
+	   		</tr>
+	   	</table>
+	</div>
+</body>
+
+<script type="text/javascript" src="../../../vpcommon/config.js"></script>
+<script type="text/javascript" src="../../../vpcommon/vputils.min.js"></script>
+<script type="text/javascript" src="../../vpm/js/webUtil.js?maxage=6000000"></script>
+<script type="text/javascript" src="../../vpm/vframe/js/common.js?maxage=6000001"></script>
+<script type="text/javascript" src="../../vpm/js/calendar.js?maxage=6000000"></script>
+<script type="text/javascript" src="../../vpm/vframe/js/search.js?maxage=6000001"></script>
+<script type="text/javascript" src="../../vpm/web/js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="../../vpm/web/js/cwindow.js"></script>
+<script type="text/javascript" src="../../vpm/web/js/utils.js"></script>
+<script src="../../vpm/js/webUtil.js"></script>
+<script src="../../vpm/js/jquery-1.3.2.js" type="text/javascript"></script>
+
+<script src="../../js/vpsoft/common.js"></script>
+<script src="../../js/vpsoft/getUrlParam.js"></script>
+<script type="text/javascript" src="../../vpm/js/secondUtil.js?maxage=6000000"></script>
+
+<script>
+	var parentUrlParams = location.search; //获取url中含"?"符后的字串
+	var urlParams = getRequestParams();
+	var cols = new Array();
+	var projectId = urlParams.projectId;
+	var type = urlParams.type;
+	var item1Version="-1",item1Type="",item2Version="",item2Type="";
+
+	if (urlParams.item1Version != null) {
+		item1Version = urlParams.item1Version;
+		item1Type = urlParams.item1Type;
+		item2Version = urlParams.item2Version;
+		item2Type = urlParams.item2Type;
+	}
+
+	//获取请求参数
+	function getRequestParams() {
+		var url = location.search; //获取url中含"?"符后的字串
+		var theRequest = new Object();
+		if (url.indexOf("?") != -1) {
+			var str = url.substr(1);
+			strs = str.split("&");
+			for (var i = 0; i < strs.length; i++) {
+				theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+			}
+		}
+		return theRequest;
+	}
+
+	var compareObj = {
+		i1version : item1Version,
+		i2version : item2Version,
+		i1type : item1Type,
+		i2type : item2Type
+	};
+
+	window.onload = function() {
+		var type = type;
+		var objId = objId;
+		
+		var params = {entityid: '7', projectid: projectId};
+		vpPostAjax(getVpmPath() + '/vpmwbs/loadCompareGanttBases', params, "POST", function(rst) {
+			initBaseList(rst.data);
+		});
+	}
+
+	function setSelectOption(i1, i2) {
+
+		if (compareObj.i1version != '-1') {
+			var setted1 = false, setted2 = false;
+			var os1 = i1.options, os2 = i2.options;
+			for (var i = 0; i < os1.length; i++) {
+				if (!setted1) {
+					var o1 = os1[i];
+					if (o1.getAttribute('version') == compareObj.i1version
+							&& o1.getAttribute('type') == compareObj.i1type) {
+						o1.selected = true;
+					}
+				}
+				if (!setted2) {
+					var o2 = os2[i];
+					if (o2.getAttribute('version') == compareObj.i2version
+							&& o2.getAttribute('type') == compareObj.i2type) {
+						o2.selected = true;
+					}
+				}
+				if (setted1 && setted2) {
+					break;
+				}
+			}
+		} else {
+			i1.options[0].selected = true;
+			i2.options[1].selected = true;
+		}
+	}
+
+	function initBaseList(data) {
+		if (data && data.length > 0) {
+			var i1 = document.getElementById('i1');
+			var i2 = document.getElementById('i2');
+			var types = [ {
+				type : '0',
+				suffix : '-计划'
+			}, {
+				type : '1',
+				suffix : '-预测'
+			}, {
+				type : '2',
+				suffix : '-实际'
+			} ]
+			for (var i = 0, len = data.length; i < len; i++) {
+				var cur = data[i];
+				for (var j = 0; j < types.length; j++) {
+					var ct = types[j];
+					var op = document.createElement('option');
+					op.setAttribute('type', ct.type);
+					op.setAttribute('version', cur['version']);
+					op.innerText = cur['text'] + ct.suffix;
+					i1.appendChild(op);
+					i2.appendChild(op.cloneNode(true));
+				}
+
+			}
+			setSelectOption(i1, i2);
+		}
+	}
+
+	function resetCompareItem() {
+		var i1 = document.getElementById('i1');
+		var op1 = i1.options[i1.selectedIndex];
+		var i2 = document.getElementById('i2');
+		var op2 = i2.options[i2.selectedIndex];
+		var obj = {
+			i1 : {
+				version : op1.getAttribute('version'),
+				type : op1.getAttribute('type'),
+				text : op1.innerText
+			},
+			i2 : {
+				version : op2.getAttribute('version'),
+				type : op2.getAttribute('type'),
+				text : op2.innerText
+			}
+		};
+		parent.vpGantt.resetCompareItem(obj);
+	}
+
+	function cancle() {
+		parent.vpGantt.closeSetCompareWin();
+	}
+</script>
+
+</html>

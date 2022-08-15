@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>基线比较 - VP应用全生命周期管理系统</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
+    <link rel="shortcut icon" href="img/favicon.ico">
+    <link href="../../css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="../../css/font-awesome.min.css?v=4.7.0" rel="stylesheet">
+    <link href="../../css/animate.css" rel="stylesheet">
+    <link href="../../css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+    <link href="../../css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+    <link href="../../css/plugins/zTree/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+	<link href="../../js/plugins/layui/css/layui.css" rel="stylesheet" media="all">
+    <!-- 自定义css -->
+    <link href="../../css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="../../css/common.css" rel="stylesheet">
+    <link href="../../css/vp.css" rel="stylesheet">
+    <script src="../../../vpcommon/config.js"></script>
+    <script src="../../../vpcommon/vputils.min.js"></script>
+
+	<!-- 全局js -->
+    <script src="../../js/jquery-1.11.3.min.js"></script>
+	<!--[if IE 8]>
+	<script type="text/javascript" src="../../js/jquery-1.9.1.min.js"></script>
+	<![endif]-->
+    <script src="../../js/bootstrap.min.js?v=3.3.6"></script>
+    <!-- 自定义js -->
+    <script src="../../js/content.js?v=1.0.0"></script>
+    <!-- 日期控件 -->
+    <script src="../../js/plugins/datapicker/bootstrap-datepicker.js"></script>
+    <!-- layer弹出层 -->
+    <script src="../../js/plugins/layer/layer.min.js"></script>
+    <script src="../../js/plugins/layui/layui.js"></script>
+    <!-- 下拉选择列表 -->
+    <script src="../../js/plugins/chosen/chosen.jquery.js"></script>
+    <!-- zTree模拟树表 -->
+    <script src="../../js/plugins/zTree/jquery.ztree.all.min.js"></script>
+    <script src="../../js/vpsoft/WBSTreeTable.js"></script>
+    <script src="../../js/vpsoft/common.js"></script>
+    <script src="../../js/vpsoft/form.js"></script>
+    <script src="../../js/plugins/iCheck/icheck.min.js"></script>
+</head>
+<body class="wight-bg">
+	<div class="sub-navigator clearfix">
+        <div class="col-sm-4 sub-head" style="padding-left:-10px; ">
+			<button id="compareBtn" align="left"  class="btn btn-sm btn-primary" >设置比较项</button>
+        </div>
+        
+        <div class="col-sm-8 sub-head" style="padding-left:-10px; " align="right">
+			<div id="toolbar" style="margin-top: 5px;">
+				<img src="../../vpm/vframe/images/other/icon_tip.gif"></img>
+				比较项：<span id="compareFromText"></span>  &nbsp;&nbsp;&nbsp;
+				被比较项：<span id="compareToText"></span>  &nbsp;&nbsp;&nbsp;
+				偏差：比较项 - 被比较项
+			</div>
+		</div>
+	</div>
+	<div id="vpcontainer" style="padding-top:45px; ">
+        <div class="clearfix white-bg animated fadeInRight vp-pr">
+            <div class="vp-overflow-x vpcontent">
+                <iframe id="ganttFrame" src = "../../vpm/phase/commonGantt.html?PageType=compare" width="100%" height="100%" frameborder="none"></iframe>
+            </div>
+        </div> 
+    </div>
+
+	<!-- drawer 侧滑DIV -->
+    <div class="hide drawer-fixed vp-studio vp-t" style="margin-top: 40px;" id="vpeditform">
+        
+    </div>
+</body>
+<script>
+var curdate = new Date();
+var datestr = curdate.getFullYear()+"-"+(parseInt(curdate.getMonth())+1)+"-"+curdate.getDate(); 
+var ientityid = getParameter("ientityid");
+var projectid = getParameter("iid");
+var startDate = datestr;
+var endDate = datestr;
+if(parseInt(ientityid) > 0 && parseInt(projectid) > 0){
+	vpPostAjax(getVpmPath()+'/vfrm/phase/getPhaseDate', { formType : 'compare', iid: projectid, ientityid: ientityid }, "POST", function(rst) {			
+		startDate = rst.startDate;
+		endDate = rst.endDate;
+	});
+}
+var compareFrom = "0,0";
+var compareTo = "1,0";
+var compareFromText = "当前-预测";
+var compareToText = "当前-计划";
+$('#compareFromText').text(compareFromText);
+$('#compareToText').text(compareToText);
+var ganttCfg={
+		colsCfg:{
+			cols:
+			[
+			  {header:'序号',width:30,hidden:true,columnid:'Id'},
+		      {header:'',width:100,hidden:true,columnid:'zs'},
+			  {header:'名称',width:200,hidden:false,columnid:'Name',
+			      renderer: function(value, metaData, record, rowIdx, colIdx, store) {
+			     	var stype = record.get('phaseorstep');
+			     	if(stype=='91') {
+						metaData.tdCls = 'phase';
+			      	}else if(stype=='92') {
+			      		metaData.tdCls = 'gcjh';
+			      	}else if(stype=='93') {
+			      		metaData.tdCls = 'milestone';
+			      	}else if(stype=='94') {
+			      		metaData.tdCls = 'jfw';
+			      	}else {
+			      		metaData.tdCls = 'project';
+				    } 
+					var iid = record.get('Id');
+					var ptype = 1;
+					return '<a href="javascript:toInfo(\''+stype+'\',\''+iid+'\',\''+value+'\',\''+ptype+'\',\''+projectid+'\')">'+value+'</a>';
+			  	  }
+			  },
+		      {header:'被比较<br/>开始时间',width:90,hidden:true,columnid:'StartDate'},
+		      {header:'被比较<br/>结束时间',width:90,hidden:true,columnid:'EndDate'},
+		      {header:'开始时间',width:90,hidden:true,columnid:'BaselineStartDate'},
+		      {header:'结束时间',width:90,hidden:true,columnid:'BaselineEndDate'},
+		      {header:'开始日期<br/>延迟',width:90,hidden:false,columnid:'startYCDay',
+			      renderer: function(value, metaData, record, rowIdx, colIdx, store) {
+		    	    var day = value * 1;
+			     	if(day < 0){
+						return "延迟" + (day * -1) + "天";
+			     	}
+			  }},
+		      {header:'完成日期<br/>延迟',width:90,hidden:false,columnid:'endYCDay',
+			      renderer: function(value, metaData, record, rowIdx, colIdx, store) {
+					var day = value * 1;
+			     	if(day < 0){
+						return "延迟" + (day * -1) + "天";
+			     	}
+			  }},
+		      {header:'负责人',width:120,hidden:false,columnid:'owner',
+			      renderer: function(value, metaData, record, rowIdx, colIdx, store) {
+				  	metaData.tdAttr = "title='"+value+"'";
+	 				return value;
+			  }},
+		      {header:'',width:50,hidden:true,columnid:'phaseorstep'}
+		    ]
+		},
+		editFunc:function(taskId){
+		},
+		taskPartWidth:420,
+		taskPartTitle:'高层计划树',
+		ganttPartTitle:'基线比较图',
+		loadDataUrl: getVpmPath()+'/vfrm/phase/getBaseLineCompare',
+		loadParas: { access_token:token,iid: projectid, ientityid: ientityid, compareFrom: compareFrom, compareTo: compareTo },
+		startDate: startDate,
+		endDate: endDate,
+		showCompareGantt:true,
+		skipAllHoliday:true
+};
+
+$('#compareBtn').click(function() {	
+	var title = "设置比较项";
+	var openurl = 'setCompareItem.html?entityid='+ientityid+'&projectid='+projectid;
+	layer.open({
+        type: 2, 
+        maxmin: true,
+		title: title,
+        btn: ['确定', '取消'],
+        btnAlign:'c',
+        area: ['600px', '400px'],
+        resize: false,
+        shift: 2,
+        shade: 0.3,
+        content: [openurl], //iframe的url，no代表不显示滚动条
+        success: function(layero, index){
+    		$(layero.find('.layui-layer-btn')).show();
+    		layero.find('.layui-layer-btn').css('text-align', 'center');
+        },
+        yes: function(index, layero){
+        	var frame = $(layero).find("iframe")[0].contentWindow.document;
+        	var checkData = $(layero).find("iframe")[0].contentWindow.getData();
+       		compareFrom = checkData.compareFrom;
+       		compareTo = checkData.compareTo;
+       		compareFromText = checkData.compareFromText;
+       		compareToText = checkData.compareToText;
+       		ganttCfg.loadParas = { access_token:token,iid: projectid, ientityid: ientityid, compareFrom: compareFrom, compareTo: compareTo };
+       		$('#compareFromText').text(compareFromText);
+       		$('#compareToText').text(compareToText);
+       		var url = $('#ganttFrame').attr('src');
+       		$('#ganttFrame').attr('src', url);
+       		layer.close(index);
+        },
+        end: function(){ //此处用于演示
+            
+        }
+    });
+});
+$(".vpcontent").height(document.body.clientHeight - 42);
+</script>
+</html>

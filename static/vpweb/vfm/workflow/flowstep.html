@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>工作流</title>
+<meta name="keywords" content="">
+<meta name="description" content="">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Cache-control" content="no-cache">
+<meta http-equiv="Cache" content="no-cache">
+<link rel="shortcut icon" href="img/favicon.ico">
+<link href="../../css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+<link href="../../css/font-awesome.min.css?v=4.7.0" rel="stylesheet">
+<link href="../../css/animate.css" rel="stylesheet">
+<link href="../../css/plugins/datapicker/datepicker3.css"
+	rel="stylesheet">
+<link
+	href="../../css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css"
+	rel="stylesheet">
+<!-- zTree树表 -->
+<link href="../../css/plugins/zTree/zTreeStyle/zTreeStyle.css"
+	rel="stylesheet">
+<!-- layUI表格 -->
+<link rel="stylesheet" href="../../js/plugins/layui/css/layui.css"
+	media="all">
+<link href="../../css/style.css?v=4.1.0" rel="stylesheet">
+<link href="../../css/common.css" rel="stylesheet">
+<link href="../../css/vp.css" rel="stylesheet">
+    <script src="../../../vpcommon/config.js"></script>
+    <script src="../../../vpcommon/vputils.min.js"></script>
+<!--[if lte IE 9]>
+        <script src="../../js/html5shiv.min.js"></script>
+        <script src="../../js/respond.js"></script>
+    <![endif]-->
+</head>
+<body>
+	<div id="app">
+	<div class="ibox">
+		<!--  
+		<div class="ibox-title border-bottom p-l-none">
+			<h5>基本信息</h5>
+			<div class="ibox-tools">
+				<a class="collapse-link" data-toggle="tooltip" data-placement="top"
+					title="收起"> <i class="fa fa-caret-up"></i>
+				</a>
+			</div>
+		</div>
+		-->
+		<div class="ibox-content newverison padding-10" >
+			<form class="form-horizontal m-t" id="oForm" novalidate="novalidate"
+				action="/vmf/workflow" enctype="multipart/form-data">
+				<div class="form-group">
+					<label class="col-xs-3 text-right control-label">当前步骤：</label>
+					<div class="col-xs-8">
+						<input type="hidden" name="iid" v-model="workflow.iid" /> <input
+							id="sname" v-model="workflow.sname" placeholder="当前步骤"
+							name="sname" minlength="1" maxlength="50" type="text"
+							class="form-control padding-left-10 vp-radius" required=""
+							aria-required="true">
+					</div>
+				</div>
+				<div class="form-group" id="data_5">
+					<label class="col-xs-3 text-right control-label">处理意见：</label>
+					<div class="col-xs-8">
+						<textarea v-model="workflow.sdescription"
+							style="resize: vertical;" placeholder="处理意见" name="sdescription"
+							rows="5" class="form-control"></textarea>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-xs-3 text-right control-label">上传附件：</label>
+					<div class="col-xs-8">
+						<input type="file"/>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+	<div class="ibox">
+		<div class="ibox-title border-bottom p-l-none">
+			<h5>预设审批人</h5>
+			<div class="ibox-tools">
+				<a class="collapse-link" data-toggle="tooltip" data-placement="top"
+					title="收起"> <i class="fa fa-caret-up"></i>
+				</a>
+			</div>
+		</div>
+		<div class="ibox-content newverison padding-10">
+			<div class="clearfix white-bg padding-10 animated fadeInRight">
+	      		<script type="text/html" id="vpbar">
+					
+					<input name="handler" />
+				</script>
+	            <table lay-size="sm" class="layui-hide" id="tableSort" lay-filter="vpclick"></table>
+	        </div>
+		</div>
+	</div>
+	</div>
+	<div class="btnFixed text-center">
+		<button class="btn btn-sm btn-outline btn-primary" id="saveBtn"
+			@click="postWorkflow">保存</button>
+	</div>
+</body>
+<!-- 全局js -->
+<script src="../../js/jquery-1.11.3.min.js"></script>
+<!--[if IE 8]>
+	<script type="text/javascript" src="../../js/jquery-1.9.1.min.js"></script>
+	<![endif]-->
+<script src="../../js/bootstrap.min.js?v=3.3.6"></script>
+<!-- 自定义js -->
+<script src="../../js/content.js?v=1.0.0"></script>
+<!-- 日期控件 -->
+<script src="../../js/plugins/datapicker/bootstrap-datepicker.js"></script>
+<!-- layer弹出层 -->
+<script src="../../js/plugins/layer/layer.min.js"></script>
+<script src="../../js/plugins/layui/layui.js"></script>
+<!-- 下拉选择列表 -->
+<script src="../../js/plugins/chosen/chosen.jquery.js"></script>
+<!-- jQuery 表单验证-->
+<script src="../../js/plugins/validate/jquery.validate.min.js"></script>
+<script src="../../js/plugins/validate/messages_zh.min.js"></script>
+<!-- zTree模拟树表 -->
+<script src="../../js/plugins/zTree/jquery.ztree.all.min.js"></script>
+<script src="../../js/vpsoft/TreeTable.js"></script>
+<script src="../../js/vpsoft/common.js"></script>
+<script src="../../js/vpsoft/form.js"></script>
+<script src="../../js/plugins/iCheck/icheck.min.js"></script>
+<script src="../../js/vue.js"></script>
+<script>
+workflow = {
+	iid : null,
+	sname : null,
+	skey : null,
+	sdescription : null
+};
+var vm = new Vue({
+	el : '#app',
+	data : {workflow:workflow},
+	methods : {
+		postWorkflow : function() {
+			var form = $("#oForm");
+			var validator = form.validate();
+			if (!validator.form()) {
+				return;
+			}
+			$("#saveBtn").attr('disabled', "true");
+			vpAjax(getWorkflowPath() +"/rest/workflow", form.serializeJSON(), "POST", function(result) {
+				vppage();
+			});
+			$("#saveBtn").removeAttr('disabled');
+		}
+	}
+});
+
+layui.use(['table'], function(){
+	 var table = layui.table;
+     table.render({
+        elem: '#tableSort'
+       //,url: getWorkflowPath() + '/rest/workflow/nextsteps?key=LeaveBill2'
+       ,page: false
+       ,cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+       ,cols: [[
+            //{type:'checkbox'}
+           {field:'flowstep', title: '流程步骤', event:"click"}
+           //,{field:'handler', title: '下一步处理人',event:"click"}
+           ,{fixed: 'right', title: '下一步处理人', width:200, align:'center', toolbar: '#vpbar'}
+       ]]
+     });
+	
+});
+</script>
+
+</html>

@@ -1,0 +1,231 @@
+<div class="reqkitbox-docarttpl">
+  <div class="layui-row">
+    <div class="input-group">
+      <input id="search" type="text" class="form-control" placeholder="请输入名称...">
+      <span class="input-group-btn">
+        <button type="button" class="btn btn-default" onclick=search()><i class="fa fa-search"></i></button>
+      </span>
+    </div>
+  </div>
+  <div id="docArtTpl-content">
+    <ul class="clearfix" id="draggable" style="height:450px;">
+    </ul>
+  </div>
+  <div class="">
+    <div id="demo1" class="text-center"></div>
+  </div>
+</div>
+<script>
+  var docarttplPage = {
+    count: 0, //总数量
+    current: 1,  //起始页
+    numPerPage: 6, //每页显示数量
+    searchText: '',  //搜索内容
+    outlineName: ''
+  }
+
+  //初始化
+  initData();
+
+  function initData() {
+    //初始化数据
+    listData();
+    //绑定搜索框
+    $container = $('.reqkitbox-docarttpl');
+    $input = $container.find('#search');
+    $('body').on('keyup', $input, function (e) {
+      var keyCode = e.keyCode ? e.keyCode : e.which ? e.which : e.charCode;
+      if (keyCode == 13) {
+        search();
+      }
+      return false;
+    });
+  }
+
+  //绑定移动
+  function bindingDraggable() {
+    $("#draggable li").draggable({
+      start: function (event, ui) {
+        $(".vrm-content>div>div>div").on('mouseenter', function () {
+          var _class = $(this).attr("class");
+          if ($(this).hasClass("vrm-pannel-head")) {
+            $(".vrm-pannel-head").css({ border: 0, padding: 0 }).removeClass("head-draggable")
+            $(this).attr("class", _class + " head-draggable").css({ border: "2px dotted #ff0000", padding: "3px 0" });
+          } else {
+            $(".vrm-pannel-head").css({ border: 0, padding: 0 }).removeClass("head-draggable")
+          }
+        })
+      },
+      stop: function (event, ui) {
+        $(".vrm-content>div>div>div").off('mouseenter');
+        $(".vrm-pannel-head").css({ border: 0, padding: 0 });
+      },
+      helper: "clone",
+      appendTo: "body",
+      zIndex: 19991016,
+      cursor: "move",
+      cursorAt: { top: 35, left: -5 }
+    })
+    $(".vrm-content").droppable({
+      hoverClass: "ui-state-active",
+      drop: function (event, ui) {
+        docarttplPage.outlineName = $(".head-draggable > .wd-outline-title").text();
+        if ($(".vrm-pannel-head").hasClass("head-draggable")) {
+          layer.open({
+            title: '新增大纲',
+            type: 1,
+            closeBtn: false,
+            area: ['20%', '20%'],
+            btn: ['提交', '取消'],
+            btnAlign: 'c',
+            content:
+              '<div class="layui-row">' +
+              '<div style="text-align: left; padding: 5px">' +
+              '<label>当前位置：' + docarttplPage.outlineName + '</label>' +
+              '</div>' +
+              '<div id="select" style="text-align: left; padding: 5px">' +
+              '<label>插入位置：</label>' +
+              '<label>' +
+              '<input type="radio" name="positionType" value="1" checked> <span class="label label-info" style="font-size: 12px;">大纲前</span>' +
+              '</label>' +
+              '<label>' +
+              '<input type="radio" name="positionType" value="2"> <span class="label label-info" style="font-size: 12px;">大纲后</span>' +
+              '</label>' +
+              '<label>' +
+              '<input type="radio" name="positionType" value="3"> <span class="label label-info" style="font-size: 12px;">大纲内</span>' +
+              '</label>' +
+              '</div>' +
+              '</div>',
+            yes: function (index) {
+              var positionType = $('input[name="positionType"]:checked ').val();
+              var otlineId = $(".head-draggable").parent().attr('data-outlineid');
+              var docArtTpl = ui.draggable.context.dataset.id;
+              var names = $('li[data-id=' + docArtTpl + '] >p>b').text();
+              layer.close(index);
+              $(".vrm-pannel-head").css({ border: 0, padding: 0 }).removeClass("head-draggable")
+              WD_URL.rest.ajaxMask({
+                url: config.addOutlinesByArtTpl(),
+                type: 'POST',
+                data: {
+                  docOutlineId: otlineId,
+                  positionType: positionType,
+                  docArtTpl: docArtTpl,
+                  names: names
+                },
+                dataType: 'json',
+                maskinfo: '保存中...'
+              }, function (json) {
+                show_message("保存成功！", "success");
+              })
+            },
+            end: function () {
+              $(".vrm-pannel-head").css({ border: 0, padding: 0 }).removeClass("head-draggable")
+            }
+          });
+        }
+      }
+    })
+  }
+
+  //获取页面数据
+  function listData() {
+    WD_URL.rest.ajaxMask({
+      url: config.selectPageDocArtTpl(),
+      type: 'GET',
+      data: {
+        name: docarttplPage.searchText,
+        numPerPage: docarttplPage.numPerPage,
+        currentPage: docarttplPage.current
+      },
+      maskinfo: '内容加载中...',
+      maskEl: $('#' + "draggable").closest('#docArtTpl-content')
+    }, function (data) {
+      docarttplPage.count = data.page.total;
+      getHtml(data);
+      //加载分页
+      layui.use(['laypage', 'layer'], function () {
+        var laypage = layui.laypage,
+          layer = layui.layer;
+        laypage.render({
+          elem: 'demo1',
+          count: docarttplPage.count, //数据总数
+          limit: docarttplPage.numPerPage,  //每页显示个数
+          jump: function (obj, first) {
+            docarttplPage.current = obj.curr;
+            if (!first) {
+              listDataPage();
+            }
+          }
+        });
+      })
+    })
+  }
+
+  //获取分页数据
+  function listDataPage() {
+    WD_URL.rest.ajaxMask({
+      url: config.selectPageDocArtTpl(),
+      type: 'GET',
+      data: {
+        name: docarttplPage.searchText,
+        numPerPage: docarttplPage.numPerPage,
+        currentPage: docarttplPage.current
+      },
+      maskinfo: '内容加载中...',
+      maskEl: $('#' + "draggable").closest('#docArtTpl-content')
+    }, function (data) {
+      getHtml(data);
+    })
+  }
+
+  //生成列表显示
+  function getHtml(data) {
+    var tplHtml = '';
+    for (var i = 0; i < data.data.length; i++) {
+      tplHtml +=
+        '<li class="b" data-id="' + data.data[i].id + '" style="padding: 10px;margin:5px 0;cursor: grab">' +
+        '<p><b>' + data.data[i].text + '</b></p>' +
+        '<div class="item_f clearfix">' +
+        '<span class="pull-left">' + data.data[i].dcreatordate + '</span>' +
+        '<button type="button" class="btn btn-default item_btn nobg btn-xs pull-right" onclick=preview("' + data.data[i].id + '","' + data.data[i].text + '")>预览</button>' +
+        '</div>' +
+        '</li>'
+    }
+    $('#' + "draggable").html(tplHtml);
+    //绑定移动
+    bindingDraggable();
+  }
+
+  //搜索
+  function search() {
+    $container = $('.reqkitbox-docarttpl');
+    $input = $container.find('#search');
+    var searchText = $input.val();
+    docarttplPage.searchText = searchText;
+    docarttplPage.current = 1;
+    listData();
+  }
+
+  //预览
+  function preview(artTplId, artTplName) {
+    //获取内容
+    var str = artTplId;
+    arr = str.split("__");
+    WD_URL.rest.ajaxMask({
+      url: config.getDocArtTplContent(),
+      type: 'GET',
+      data: { docId: arr[0] }
+    }, function (data) {
+      layer.open({
+        type: 1,
+        title: artTplName,
+        shadeClose: true,
+        area: ['70%', '100%'],
+        anim: 2,
+        move: false,
+        offset: 'rt',
+        content: '<div style="padding-left:20px;padding-right:10px;">' + data.html + '</div>'
+      });
+    })
+  }
+</script>

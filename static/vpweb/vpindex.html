@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="author" content="vpsoft">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>登录</title>
+    <meta name="keywords" content="登录">
+    <meta name="description" content="登录">
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon" />
+    <link href="css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="css/font-awesome.min.css?v=4.7.0" rel="stylesheet">
+    <link href="css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+    <link href="css/animate.css" rel="stylesheet">
+    <link href="css/common.css" rel="stylesheet">
+    <link href="css/login.css" rel="stylesheet">
+    <!--[if lte IE 9]>
+        <script src="js/html5shiv.min.js"></script>
+        <script src="js/respond.js"></script>
+    <![endif]-->
+</head>
+
+<body class="page-login layout-full">
+    <div class="page vp-height-full">
+        <div class="page-content vp-height-full">
+            <div class="vp-height-full vertical-align hidden-xs slideInLeft animated">
+                <div class="page-brand vertical-align-middle">
+                    <div class="brand">
+                        <img class="brand-img" src="images/login-logo-white.png" height="60" alt="vpsoft">
+                    </div>
+                    <h2>VP应用全生命周期管理系统</h2>
+                    <div class="list-icons">
+                        <p>
+                            北京维普时代软件有限公司是国内最大的软件应用全生命周期管理解决方案的提供商，是软件工艺化生态治理的倡导者和践行者，通过咨询方案、工具产品、专业化服务为IT企业提供一体化解决方案，帮助客户快速打造一流的软件生产与管理体系，为客户聚力、赋能，提升软件生产效能和质量。
+                        </p>
+                        <p>维普时代的团队将以专业的技术知识，丰富的技术经验，国际化的视野，提供最优化的解决方案并超越客户的要求与期望。维普软件的目标是不断地超越自己，重视客户的反馈，与客户保持密切得联系，从客户的角度出发，坚定地与客户站在一起，不断寻求创新与突破。创新引领未来，专注铸就价值。维普时代公司将在未来的发展之路上和客户一起携手，共赢未来。</p>
+                    </div>
+                    <div class="hidden-sm">
+                        <a href="http://www.vpsoft.cn" class="btn btn-primary btn-sm vp-radius" target="_blank">返回官网</a>
+                    </div>
+                </div>
+            </div>
+            <div class="page-login-main fadeInRight animated">
+                <div class="vertical-align">
+                    <div class="vertical-align-middle">
+                        <div class="brand-title vp-text-center">
+                            <span>用户登录</span>
+                        </div>
+                        <form class="login-form" id="oForm" >
+                            <div class="form-group">
+                                <input id="cname" placeholder="手机号、邮箱" name="cname" minlength="2" type="text" class="form-control padding-left-30 vp-radius" required="" aria-required="true">
+                                <i class="fa fa-user icon-left gray"></i>
+                            </div>
+                            <div class="form-group">
+                                <input id="spwd" placeholder="登录密码" name="spwd" minlength="2" type="password" class="form-control padding-left-30 vp-radius" required="" aria-required="true">
+                                <i class="fa fa-lock icon-left gray"></i>
+                            </div>
+                            <div class="form-group clearfix" style="display: none;">
+                                <div class="vp-pr vp-width-60 pull-left">
+                                    <input id="scode" placeholder="验证码" name="scode" minlength="4" maxlength="4" type="text" class="form-control padding-left-30 vp-radius" required="" aria-required="true">
+                                    <i class="fa fa-envelope icon-left gray"></i>
+                                </div>
+                                <div class="vp-width-40 pull-right padding-left-10">
+                                    <img src="images/vcode.png" class="vp-radius" width="100%" height="34">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-primary vp-radius vp-width-100" type="submit">登 录</button>
+                            </div>
+                            <div class="form-group clearfix">
+                                <div class="vp-pr vp-width-60 pull-left">
+                                    <div class="checkbox vp-m-t-no vp-m-b-no">
+                                        <input id="rememberpwd" type="checkbox" checked="">
+                                        <label for="rememberpwd">
+                                            记住账号
+                                        </label>
+                                    </div>
+                                    <!-- <label for="i-pwd"><input type="checkbox" id="i-pwd" class="i-checks"></label> -->
+                                </div>
+                                <div class="vp-width-40 pull-right padding-left-10 vp-text-right">
+                                    <a href="register.html" title="注册账号">注册账号</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="page-copyright">
+                    <div class="nav-foot">
+                        <a href="">维普主页</a>
+                        <a href="">下载</a>
+                        <a href="">帮助</a>
+                        <a href="">支持</a>
+                        <a href="">公告</a>
+                    </div>
+                    <p>北京维普时代科技有限公司 ©
+                        <a href="http://www.vpsoft.cn" target="_blank">vpsoft.cn</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 全局js -->
+    <script src="js/jquery-1.11.3.min.js"></script>
+	<!--[if IE 8]>
+	<script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
+	<![endif]-->
+    <script src="js/bootstrap.min.js?v=3.3.6"></script>
+    <!-- jQuery 表单验证-->
+    <script src="js/plugins/validate/jquery.validate.min.js"></script>
+    <script src="js/plugins/validate/messages_zh.min.js"></script>
+    <script src="js/vpsoft/form-validate.js"></script>
+    <!-- 复选框 -->
+    <script src="js/plugins/iCheck/icheck.min.js"></script>
+    <script src="js/plugins/layer/layer.min.js"></script>
+    <script src="js/vpsoft/common.js"></script>
+    <!--[if lte IE 9]>
+       <script src="js/ie8.js"></script>
+    <![endif]-->
+    <script>
+        $(document).ready(function () {
+			var loginName=getCookie("vpLoginName");
+			//vpPostAjax('/vplogin', { sloginname: 'test'}, "POST", function(rst) {
+			//});
+
+			if(loginName != ''){
+			   document.getElementById("cname").value = decodeURIComponent(loginName);
+			   document.getElementById("rememberpwd").checked;
+			   document.getElementById("spwd").focus();
+			}
+			else {	
+				document.getElementById("cname").focus();
+			}
+
+			if (parent.location.href.indexOf("index.html") == -1) {
+				parent.parent.parent.location = "/index.html";
+			}
+
+            $('.i-checks').iCheck({
+                checkboxClass: 'text-primary fa fa-fw fa-square-o'
+            });
+			$("#oForm").validate({
+				submitHandler : function(form) {
+					try
+					{					
+						if(document.getElementById("rememberpwd").checked==true) {
+							addCookie("vpLoginName", oForm.cname.value,365*99);
+						}
+						else{
+							deleteCookie("vpLoginName");
+						}
+						var sparam = { sloginname : oForm.cname.value, spassword : oForm.spwd.value, scode : oForm.scode.value };
+						vpPostAjax('/vplogin', sparam, "POST", function(rst) {
+							//vpPostAjax('/cfgent/init', { }, "POST", function(rst) {
+							//});
+							function doIndex(){ window.location = "vpdesk.html"; } 
+							window.setTimeout(doIndex, 500);
+						});
+					}
+					catch (e)
+					{
+						layer.msg('取表单数据失败', { icon: 2, time: 2000 });
+					}
+					return false;
+				}
+			});
+        });	
+
+    </script>
+</body>
+
+</html>

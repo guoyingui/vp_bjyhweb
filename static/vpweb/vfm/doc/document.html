@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="author" content="vpsoft">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>登录</title>
+    <link href="../../css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="../../css/font-awesome.min.css?v=4.7.0" rel="stylesheet">
+    <link href="../../css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+    <link href="../../css/animate.css" rel="stylesheet">
+    <link href="../../css/style.css" rel="stylesheet">
+    <link href="../../css/vp.css" rel="stylesheet">
+    <link href="../../css/common.css" rel="stylesheet">
+    <link href="../../css/plugins/zTree/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+    
+    <link href="../../css/plugins/zTree/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+	<link href="../../js/plugins/layui/css/layui.css" rel="stylesheet" media="all">
+	<!-- 自定义css -->
+    <link href="../../css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="../../css/common.css" rel="stylesheet">
+    <link href="../../css/vp.css" rel="stylesheet">
+    <script src="../../../vpcommon/config.js"></script>
+    <script src="../../../vpcommon/vputils.min.js"></script>
+	
+    <!--[if lte IE 9]>
+        <script src="../../js/html5shiv.min.js"></script>
+        <script src="../../js/respond.js"></script>
+    <![endif]-->
+</head>
+<style>
+	.fa-fw {
+		font-size: 24px;
+	}
+	.text-fail {
+		color: #bbb;
+	}
+	.vpbutton {
+		position: fixed; z-index: 100; border-top: 1px solid #ddd; background: #fff;  margin-left: -20px; height: 50px; line-height: 50px;
+		text-align: center;
+	}
+	.btn {
+		margin-top: 5px; 
+	}
+	.vptree, .vpcontent {
+		overflow: auto; 
+	    border-bottom: 0;
+		border: 1px solid #ccc;
+		margin: 10px 0;
+		padding-bottom: 5px;
+	}
+</style>
+
+<body class="gray-bg">
+	<div class="tabs-container clearfix">
+		<input type="hidden" id="ilibraryid" name="ilibraryid">
+		<input type="hidden" id="irelentityid" name="irelentityid">
+		<input type="hidden" id="irelobjectid" name="irelobjectid">
+		<input type="hidden" id="selectedlist" name="selectedlist">
+		<input type="hidden" id="nodeDocument" name="nodeDocument" value="0">
+		
+		<input type="hidden" id="ifolderid" name="ifolderid">
+		<input type="hidden" id="sfoldername" name="sfoldername">
+		<div class="col-xs-3">
+			<div class="ibox-title m-t-xxs clearfix">
+				<h5 class="pull-left" id="foldercount">目录树&nbsp;&nbsp;&nbsp;&nbsp;
+					<span id="chosenLibrary" class="hide" >(<a href="#"><font color="red">存储库模板</font></a>)</span>
+				</h5>
+			</div>
+
+			<div class="white-bg p-n m-t-sm">
+				<div id="vptree" class="vptree" style="height: 541px;">
+					<iframe id="frmtree" src="foldertree.html" style="height: 98%; width: 100%; border: 0px;"></iframe>
+				</div>
+			</div>
+
+		</div>
+		<div class="col-xs-9 ">
+			<div class="ibox-title m-t-xxs clearfix">
+				<h5>文档列表</h5>
+			</div>
+			
+			<div class="white-bg p-n m-t-sm" >
+				<div id="vpcontent" class="vpcontent" style="height: 541px;">
+					<iframe id="frmlist" src="" style="height: 98%; width: 100%; border: 0px;"></iframe>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+<!-- 全局js -->
+    <script src="../../js/jquery-1.11.3.min.js"></script>
+	<!--[if IE 8]>
+	<script type="text/javascript" src="../../js/jquery-1.9.1.min.js"></script>
+	<![endif]-->
+    <script src="../../js/bootstrap.min.js?v=3.3.6"></script>
+    <!-- 自定义js -->
+    <script src="../../js/content.js?v=1.0.0"></script>
+    <!-- 日期控件 -->
+    <script src="../../js/plugins/datapicker/bootstrap-datepicker.js"></script>
+    <!-- layer弹出层 -->
+    <script src="../../js/plugins/layer/layer.min.js"></script>
+    <script src="../../js/plugins/layui/layui.js"></script>
+    <!-- 下拉选择列表 -->
+    <script src="../../js/plugins/chosen/chosen.jquery.js"></script>
+    <!-- zTree模拟树表 -->
+    <script src="../../js/plugins/zTree/jquery.ztree.all.min.js"></script>
+    <script src="../../js/vpsoft/TreeTable.js"></script>
+    <script src="../../js/vpsoft/common.js"></script>
+    <script src="../../js/vpsoft/form.js"></script>
+    <script src="../../js/plugins/iCheck/icheck.min.js"></script>
+    <!--选择用户-->
+	<script src="../../js/vpsoft/chosenEntity.js?v=1.0.0" charset="utf-8"></script>
+    <script>
+    	
+    	var ilibraryid = getParameter("ilibraryid");
+    	if(ilibraryid==null||ilibraryid=='null'||ilibraryid==''){
+    		ilibraryid = '0';
+    	}
+    	
+    	var irelentityid = getParameter("entityid");
+    	if(irelentityid==null||irelentityid=='null'||irelentityid==''){
+    		irelentityid = '-1';
+    	} 
+    	
+    	var irelobjectid = getParameter("iid");
+    	if(irelobjectid==null||irelobjectid=='null'||irelobjectid==''){
+    		irelobjectid = '0';
+    	}
+    	
+    	if(irelentityid=='35'||irelentityid=='0'||irelentityid=='-1'){//文档库、知识库、模板库
+    		ilibraryid = irelobjectid;
+    	}
+    	$('#ilibraryid').val(ilibraryid);
+    	$('#irelentityid').val(irelentityid);
+    	$('#irelobjectid').val(irelobjectid);
+        // 需要添加滚动条的元素
+        showScroll('.workbox-list');
+		var height = $("body").height()-$(".ibox-title.m-t-xxs").height() - 50;
+		$(".vptree").height(height);
+		$(".vpcontent").height(height);
+		
+		$(document).ready(function(){
+			loadDocumentList();
+        });
+		
+		function loadDocumentList(){
+			var ifolderid = $('#nodeDocument').val();
+			var src = 'documentlist.html?ilibraryid='+ilibraryid+'&irelentityid='+irelentityid+'&irelobjectid='+irelobjectid+'&ifolderid='+ifolderid;
+			document.getElementById('frmlist').src = src;
+		}
+		
+		function openChosenWindow(){
+			var openurl = "librarytree.html?treeType=chosenLibrary";
+			layer.open({
+		        type: 2, 
+		        maxmin: true,
+				title: '选择存储库',
+		        btn: ['确定', '取消'],
+		        btnAlign:'c',
+		        area: ['60%', '80%'],
+		        resize: false,
+		        shift: 2,
+		        shade: 0.3,
+		        content: [openurl], //iframe的url，no代表不显示滚动条
+		        success: function(layero, index){
+	        		$(layero.find('.layui-layer-btn')).show();
+	        		layero.find('.layui-layer-btn').css('text-align', 'center');
+		        },
+		        yes: function(index, layero){
+		        	var frame = $(layero).find("iframe")[0].contentWindow.document;
+		        	var fromid = $('#ifolderid').val().replace('l','');
+		        	var toid = $('#ilibraryid').val();
+					vpPostAjax('/document/save', { saveType: 'copyLibrary', fromid: fromid, toid: toid }, "POST", function(rst) {
+						try {
+							if(rst.success){
+								layer.close(index);	
+								var src = 'foldertree.html?ilibraryid='+toid+'&irelentityid='+irelentityid+'&irelobjectid='+irelobjectid;
+								document.getElementById('frmtree').src = src;
+								$('#chosenLibrary').addClass('hide');
+							}
+						}
+						catch(exception) {
+							layer.msg("刷新列表失败！", { icon: 2, time: 2000 });
+						}	
+					});
+		        },
+		        end: function(){ //此处用于演示
+		            
+		        }
+		    });
+		}
+		$("#chosenLibrary").click(function() {
+			openChosenWindow();
+		});
+    </script>
+</html>

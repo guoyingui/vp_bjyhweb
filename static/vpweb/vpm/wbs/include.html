@@ -1,0 +1,187 @@
+<link href="../../vpm/vframe/css/style_v4.css?maxage=6000000" rel="stylesheet" type="text/css"/>
+<link href="../../vpm/vframe/css/styleImage_v4.css?maxage=6000000" rel="stylesheet" type="text/css"/>
+<script>
+var curuserid = "";
+var curusername = "";
+var curdptid = "";
+
+var NULL = undefined;
+var BLANK_IMAGE_URL = "/vpm/images/s.gif";
+var WAIT_IMAGE_URL = "/vpm/images/s.gif";
+</script>
+<script type="text/javascript" src="../../vpm/js/webUtil.js?maxage=6000000"></script>
+<script type="text/javascript" src="../../vpm/vframe/js/common.js?maxage=6000001"></script>
+<script type="text/javascript" src="../../vpm/js/calendar.js?maxage=6000000"></script>
+<script type="text/javascript" src="../../vpm/vframe/js/search.js?maxage=6000001"></script>
+<script type="text/javascript" src="../../vpm/web/js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="../../vpm/web/js/cwindow.js"></script>
+<script type="text/javascript" src="../../vpm/web/js/utils.js"></script>
+
+<!-- file.indexOf("jquery") -->
+<!-- <script src="../../vpm/vframe/js/jquery-1.4.2.min.js"></script> -->
+
+
+<!-- file.indexOf("ext") -->
+<!-- 
+<link href="../../vpm/vframe/css/ext-all.css" rel="stylesheet" type="text/css"/>
+<link href="../../vpm/vframe/css/xtheme-gray.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../vpm/vframe/js/ext/ext-base.js"></script>
+<script type="text/javascript" src="../../vpm/vframe/js/ext/ext-vp-all.js?maxage=6000000"></script>
+<script type="text/javascript" src="../../vpm/vframe/js/ext/ext-lang-zh_CN.js" charset="utf-8"></script> -->
+
+
+<!-- file.indexOf("toolBar") -->
+<!-- <script type="text/javascript" src="../../vpm/vframe/js/toolBar.js?maxage=6000001"></script>
+<style>
+td, button {
+  font-size: 12px;
+}
+#newtoolbar {
+	background: #ffffff;
+}
+</style> -->
+
+
+<!-- file.indexOf("menuBar") -->
+<!-- <script type="text/javascript" src="../../vpm/vframe/js/menuBar.js?maxage=6000001"></script> -->
+
+
+<!-- file.indexOf("navigationBar") -->
+<!-- <script type="text/javascript" src="../../vpm/vframe/js/navigationBar.js?maxage=6000001"></script> -->
+
+
+<!-- file.indexOf("grid") -->
+<!-- 
+<link href="../../vpm/vframe/css/ext-all.css" rel="stylesheet" type="text/css"/>
+<link href="../../vpm/vframe/css/xtheme-gray.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../vpm/vframe/js/ext/ext-base.js"></script>
+<script type="text/javascript" src="../../vpm/vframe/js/ext/ext-vp-all.js?maxage=6000000"></script>
+<script type="text/javascript" src="../../vpm/vframe/js/ext/ext-lang-zh_CN.js" charset="utf-8"></script> -->
+
+
+<!-- file.indexOf("projectgridList") -->
+<!-- <script type="text/javascript" src="../../vpm/vframe/js/projectgridList.js?maxage=6000001"></script> -->
+
+
+<!-- file.indexOf("gridList") -->
+<!-- <script type="text/javascript" src="../../vpm/vframe/js/gridList.js?maxage=6000001"></script> -->
+
+
+<!-- file.indexOf("gridListEdit") -->
+<!-- <script type="text/javascript" src="../../vpm/vframe/js/gridListEdit.js?maxage=6000000"></script> -->
+
+
+<!-- file.indexOf("gridTree") -->
+<!-- 
+<link href="../../vpm/vframe/css/treegrid.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="../../vpm/vframe/js/ext/TreeGrid.js?maxage=6000000"></script>
+<script type="text/javascript" src="../../vpm/vframe/js/gridTree.js?maxage=6000006"></script> -->
+
+
+<!-- file.indexOf("menuFunction") -->
+<!-- <script type="text/javascript" src="../../vpm/vframe/js/menuFunction.js?maxage=6000000"></script> -->
+
+
+<!-- file.indexOf("treeGrid42") -->
+<!-- 
+<link rel="stylesheet" href="../../vpm/ext42/resources/ext-theme-gray/ext-theme-gray-all-debug-treeView.css" type="text/css"></link>
+<script type="text/javascript" src="../../vpm/ext42/ext-all.js"></script>
+<script type="text/javascript" src="../../vpm/ext42/ext-lang-zh_CN.js"></script>
+<script type="text/javascript" src="../../vpm/vframe/js/selectMenu.js?maxage=1"></script>
+<script type="text/javascript" src="../../vpm/js/json2.js"></script>
+<script type="text/javascript" src="../../vpm/js/moneyInput.js"></script>
+<script type="text/javascript" src="../../vpm/vframe/js/treeGrid42.js"></script> -->
+<style>
+	.x-grid3-col {
+		padding-top: 6px;
+		height: 30px;
+		line-height: 30px;
+	}
+	#viewFilter, #filterSelect {
+		margin-top: 2px;
+		height:24px;
+		line-height: 24px;
+		margin-bottom: 2px;
+	}
+</style>
+<div id="wait_div" class="wait_div_style"></div>
+
+
+<script>
+function formEvent(flag) {
+	if (flag == -1) {
+		if ($("#win_2", parent.document).attr("id") != undefined) {
+			$('#win_2', parent.document).remove();
+		}
+		else if ($("#win_2", parent.parent.document).attr("id") != undefined){ 
+			$('#win_2', parent.parent.document).remove();
+		}
+		if ($("#win_1", parent.document).attr("id") != undefined) {
+			$('#win_1', parent.document).remove();
+		}
+		else if ($("#win_1", parent.parent.document).attr("id") != undefined){ 
+			$('#win_1', parent.parent.document).remove();
+		}
+		else if (($("#win_0").attr("id") != undefined)) {	
+			$('#win_0').remove();
+		}
+		else if (($("#win_0", parent.document).attr("id") != undefined)) {
+			$('#win_0', parent.document).remove();
+		}
+		else if (($("#win_0", parent.parent.document).attr("id") != undefined)) {
+			$('#win_0', parent.parent.document).remove();
+		}
+	}
+	else if (flag == 0) {
+		document.getElementById("frmFormPage").contentWindow.save();
+	}
+}
+
+window.bindEvent = function(obj, str, fn){
+	str = str.replace(/^on/, "");
+	if(obj.addEventListener){
+		obj.addEventListener(str, fn, false)
+	}else{
+		obj.attachEvent("on"+str, fn);
+	}
+}
+bindEvent(window, "onunload", function(){
+	var iframelist=document.getElementsByTagName("iframe");
+	if(iframelist){
+		for(var i=0;i<iframelist.length;i++){
+			var iframe = iframelist[i];
+			
+			if(iframe){
+				iframe.src = 'about:blank';
+				try{
+				    var iframecontent = iframe.contentWindow;
+					iframecontent.document.write('');
+					iframecontent.document.clear();
+				}catch(e){};
+				try{
+					top.document.body.removeChild(iframe);
+				}catch(e){};	
+			}
+		}
+	}
+	var framelist=document.getElementsByTagName("frame");
+	if(framelist){
+		for(var i=0;i<framelist.length;i++){
+			var frame = framelist[i];
+			
+			if(frame){
+				frame.src = 'about:blank';
+				try{
+				    var framecontent = frame.contentWindow;
+					framecontent.document.write('');
+					framecontent.document.clear();
+				}catch(e){};
+				try{
+					top.document.body.removeChild(frame);
+				}catch(e){};	
+			}
+		}
+	}
+});
+</script>
+<script type="text/javascript" src="../../vpm/js/secondUtil.js?maxage=6000000"></script>

@@ -1,0 +1,32 @@
+.dataTable {
+  clear: both;
+  margin-top: 5px;
+}
+
+.dataTables_filter label {
+  line-height: 32px !important;
+}
+
+.dataTable .row-details {
+  margin-top: 3px;
+  display: inline-block;
+  cursor: pointer;
+  width: 15px;
+  height: 14px;
+}
+
+.dataTable .details {
+  font-family: "Microsoft YaHei",Arial,Helvetical,sans-serif,"宋体";
+}
+ 
+.dataTable .details td,
+.dataTable .details th {
+  padding: 4px;
+  background-color: none !important;
+  border: 0;
+}
+
+.dataTable .details tr:hover td,
+.dataTable .details tr:hover th {
+  background-color: none !important;
+}

@@ -1,0 +1,36 @@
+.team{
+	.ant-tabs{
+		.ant-tabs-bar {
+			position: inherit;
+			.ant-tabs-nav{
+				margin-left: 0;
+			}
+		}
+	}
+	.ant-tabs-vertical.ant-tabs-left > .ant-tabs-bar .ant-tabs-tab .ant-tabs-tab-inner{
+		width: auto !important;
+	}
+	.rolegroup li{
+		height: 40px;
+		line-height: 40px;
+		border-bottom: 1px dotted #e8e8e8;
+		text-overflow: ellipsis;
+	    overflow: hidden;
+	    white-space: nowrap;
+	    a{
+	    	color: #333;
+	    	&:hover,&.active{
+				color: #2db7f5;
+	    	};
+	    }
+	}
+	.set-box-team{
+		padding-top: 40px;
+		.set-title{
+			position: absolute;
+			left: 10px;
+			right: 10px;
+			top: 0;
+		}
+	}
+}

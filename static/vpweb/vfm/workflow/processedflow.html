@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>已处理的流程- VP应用全生命周期管理系统</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
+    <link rel="shortcut icon" href="img/favicon.ico">
+    <link href="../../css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="../../css/font-awesome.min.css?v=4.7.0" rel="stylesheet">
+    <link href="../../css/animate.css" rel="stylesheet">
+    <link href="../../css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+    <link href="../../css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+    <link href="../../css/plugins/zTree/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+	<link href="../../js/plugins/layui/css/layui.css" rel="stylesheet" media="all">
+    <!-- 自定义css -->
+    <link href="../../css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="../../css/common.css" rel="stylesheet">
+    <link href="../../css/vp.css" rel="stylesheet">
+    <script src="../../../vpcommon/config.js"></script>
+    <script src="../../../vpcommon/vputils.min.js"></script>
+    
+    
+    <!--[if lte IE 9]>
+    <script src="../../js/html5shiv.min.js"></script>
+    <script src="../../js/respond.js"></script>
+    <![endif]-->
+	<style>
+		.ztree div.divTd {
+			min-width: 70px;
+		}
+		.nav-tabs li.active>a {
+			border: 0px;
+			color: #1890ff;
+		}
+
+	</style>
+</head>
+
+<body class="gray-bg">
+    <div class="sub-navigator clearfix">
+        <div class="col-sm-2 sub-head" id="vpsearch">           
+        </div>
+        <div class="col-sm-4 subnav">
+            <div data-toggle="buttons" class="btn-group" id="vpfilter">
+                
+            </div>
+        </div>
+        <div class="col-sm-3 subnav">
+            <!-- 放其他栏目或工具按钮 -->
+        </div>
+        <div class="col-sm-3 subnav tabs-container">
+            <ul class="toolicon clearfix" id="vptoolbar">
+                
+            </ul>
+        </div>
+    </div>
+    <div class="padding-10 m-t-xl">
+        <div class="clearfix white-bg padding-10 animated fadeInRight">
+      		<script type="text/html" id="vpbar">
+					<a lay-event='view'><i class='fa fa-list-ol fa-fw text-success' data-toggle='tooltip' title='查看'></i></a>
+			</script>
+            <table lay-size="sm" class="layui-hide" id="tableSort" lay-filter="vpclick"></table>
+            <div class="layui-table-page" id="vppagebar">
+			</div>
+        </div>
+    </div>
+    <div class="hide drawer-fixed vp-studio" id="drawerRight-list">
+	
+	</div>
+    <!-- 全局js -->
+    <script src="../../js/jquery-1.11.3.min.js"></script>
+	<!--[if IE 8]>
+	<script type="text/javascript" src="../../js/jquery-1.9.1.min.js"></script>
+	<![endif]-->
+    <script src="../../js/bootstrap.min.js?v=3.3.6"></script>
+    <!-- 自定义js -->
+    <script src="../../js/content.js?v=1.0.0"></script>
+    <!-- 日期控件 -->
+    <script src="../../js/plugins/datapicker/bootstrap-datepicker.js"></script>
+    <!-- layer弹出层 -->
+    <script src="../../js/plugins/layer/layer.min.js"></script>
+    <script src="../../js/plugins/layui/layui.js"></script>
+    <!-- 下拉选择列表 -->
+    <script src="../../js/plugins/chosen/chosen.jquery.js"></script>
+    <!-- zTree模拟树表 -->
+    <script src="../../js/plugins/zTree/jquery.ztree.all.min.js"></script>
+    <script src="../../js/plugins/validate/jquery.validate.min.js"></script>
+    <script src="../../js/vpsoft/TreeTable.js"></script>
+    <script src="../../js/vpsoft/common.js"></script>
+    <script src="../../js/vpsoft/form.js"></script>
+    <script src="../../js/plugins/iCheck/icheck.min.js"></script>
+	<script src="../../js/vue.js"></script>
+</body>
+<script>
+    var vobj = new Object();
+    function reloadPage(param) {
+        for(var key in param) {
+            vobj[key] = param[key];
+        }
+        vppage(param);
+    };
+
+	var osearch = Search({ el: 'vpsearch', id: 'quicksearch' });
+	osearch.parseEl();
+	var ofilter = Filter({ el: 'vpfilter', data: [  
+		{ value: 'unfinished', text: '运行中' },
+		{ value: 'finished', text: '结束' },
+        { value: '', text: '所有' }
+	] });
+	ofilter.parseEl();
+	
+	vppage();
+	function vpclick(obj){
+		var data = obj.data; 
+		var pdId = data.pdId;
+		var piId = data.piId;
+		var layEvent = obj.event; 
+		if (layEvent == 'view') {
+			layer.open({
+	            type: 2,
+	            shade: false,
+	            title: '流程进度',
+	            area: ['80%', '100%'], //宽高
+	            content: [getFlowPagePath() + '/diagram-viewer/index.html?processDefinitionId='+pdId+'&processInstanceId='+ piId ]
+				/*,
+	            success: function (layero, index) { 
+	            	//layero.find("iframe")[0].contentWindow.iid = data.iid;
+	            	var iid = $("#iid", layero.find("iframe")[0].contentWindow.document); 
+	            	iid.val(data.iid);
+	            }*/
+	        });		
+		}
+		
+	}
+	
+	function vppage(param){
+		vpAjax(getWorkflowPath() +'/rest/process/processedflow', vobj, "GET", function(data) {
+    		//console.log("------------------"+JSON.stringify(data));
+    		layui.use(['laypage','table'], function(){
+   	       	  var laypage = layui.laypage;
+   	       	  
+   	       	  laypage.render({
+   	       	    elem: 'vppagebar', 
+   		       	count: data.count,
+   				limit: data.limit,
+   				curr: data.curr,
+   				limits: [10,20, 30, 50],
+   				layout: ['count', 'first', 'prev', 'page', 'next', 'last', 'limit', 'skip'],
+   				jump: function(obj, first) {
+   					if (!first) {
+                        vobj['limit'] = obj.limit;
+                        vobj['curr'] = obj.curr;
+                        vppage(vobj);
+   					}
+   				}
+   	       	  });
+   	       	  
+   	       	 var table = layui.table;
+   	      	 table.render({
+		   	       elem: '#tableSort'
+		   	      ,page: false
+		   	      ,data:data.result
+		   	   	  ,limit: data.limit
+				  ,height: 'full-130'
+		   	      ,cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+		   	      ,cols: [[
+			   	   	{type:'checkbox'}
+			   	          ,{field:'activityName', title: '当前步骤', sort: true,event:"click"}
+			   	          ,{field:'flowName', title: '流程名称', sort: true,event:"click"}
+			   	          ,{field:'objectName', title: '对象名称', sort: true,event:"click"}
+			   	          ,{field:'startTime', title: '发起时间', sort: true,event:"click"}
+			   	          ,{field:'endTime', title: '结束时间', sort: true,event:"click"}
+			   	       	  ,{field:'pdId', title: 'pdId', sort: true,event:"click"}
+			   	          ,{field:'piId', title: 'piId', sort: true,event:"click"}
+			   	          //,{field:'startUserId', title: '发起人', sort: true,event:"click"}
+			   	          ,{fixed: 'right', title: '操作', width:150, align:'center', toolbar: '#vpbar'} 
+			   	      ]]
+			   	    });
+   	         
+	   	     table.on('tool(vpclick)',function(obj){
+	      	 	vpclick(obj);
+       		 });
+    		});
+         
+       	});
+	}
+		
+		
+    </script>
+
+</html>

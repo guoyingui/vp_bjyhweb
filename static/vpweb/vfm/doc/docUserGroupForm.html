@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>角色组用户 - VP应用全生命周期管理系统</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
+    <link rel="shortcut icon" href="img/favicon.ico">
+    <link href="../../css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="../../css/font-awesome.min.css?v=4.7.0" rel="stylesheet">
+    <link href="../../css/animate.css" rel="stylesheet">
+    <link href="../../css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+    <link href="../../css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+    <!-- zTree树表 -->
+    <link href="../../css/plugins/zTree/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+    <!-- layUI表格 -->
+    <link href="../../css/plugins/chosen/chosen.css" rel="stylesheet">
+    <link href="../../css/plugins/iCheck/custom.css" rel="stylesheet">
+    <link href="../../js/plugins/layui/css/layui.css"  rel="stylesheet" media="all">
+    <link href="../../css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="../../css/common.css" rel="stylesheet">
+    <link href="../../css/vp.css" rel="stylesheet">
+    <script src="../../../vpcommon/config.js"></script>
+	<script src="../../../vpcommon/vputils.min.js"></script>
+	<script src="base64.js"></script>
+    <!--[if lte IE 9]>
+        <script src="../../js/html5shiv.min.js"></script>
+        <script src="../../js/respond.js"></script>
+    <![endif]-->
+</head>
+
+<body class="wight-bg">
+	<div class="clearfix  white-bg padding-10 fadeInRight vp-pr" >
+		<div class="ibox-content p-n clearfix" id="baseInfo" >
+			<div class="form-group">
+				<div class="ibox-title clearfix">
+					<h5>基本信息</h5>
+				</div>
+			</div>
+			<form class="form-horizontal m-t" id="oForm">
+				<div class="form-group">
+						<div class="col-sm-6">
+							<label class="col-sm-4 col-md-3 control-label text-ellipsis">用户组名称：</label>
+							<div class="col-sm-8 col-md-9">
+								<input id="sname" name="sname" class="form-control" type="text" minlength="2" maxlength="20" type="text" required>
+							</div>
+						</div>
+						<div class="col-sm-6">
+							<label class="col-sm-4 col-md-3 control-label text-ellipsis">归属部门：</label>
+							<div class="col-sm-8 col-md-9">
+				                <div class="input-group vp-width-100">
+				                	<input type="hidden" id="idepartmentid" name="idepartmentid">
+				                    <select data-placeholder="" id="department" hidid="" class="chosen-select vp-width-100" >
+				                        
+				                    </select>
+				                </div>
+					        </div>
+						</div>
+					</div>
+				<div class="form-group">
+					<label class="col-sm-2 col-md-3 control-label text-ellipsis">描述：</label>
+					<div class="col-sm-10 col-md-9">
+						<div class="input-group vp-width-100">
+		                    <textarea id="sdescription" name="sdescription" class="form-control" ></textarea>
+		                </div>
+					</div>
+				</div>
+			</form>
+		</div>
+		<div class="hide" id="valueListform" >
+			<div class="form-group" >
+				<div class="ibox-title clearfix">
+					<h5>用户列表</h5>
+					<span style="text-align: right;display:block;">
+						<i id="add" class="fa fa-plus fa-fw text-info" data-toggle="tooltip" title="新增用户"></i>
+						<i id="del" class="fa fa-times fa-fw text-danger" data-toggle="tooltip" title="删除用户"></i>
+					</span>
+				</div>
+			</div>
+	        <div class="clearfix white-bg " >
+	            <div class="vpcontent " style="overflow: auto;">
+	                <ul id="vptreetable" class="ztree" lay-filter="vpclick"></ul>
+	            </div>
+			
+				<div class="layui-table-page" id="vppagebar" >
+				  
+				</div>
+	        </div> 
+		</div>
+	</div>
+</body>
+    <!-- 全局js -->
+    <script src="../../js/jquery-1.11.3.min.js"></script>
+	<!--[if IE 8]>
+	<script type="text/javascript" src="../../js/jquery-1.9.1.min.js"></script>
+	<![endif]-->
+    <script src="../../js/bootstrap.min.js?v=3.3.6"></script>
+    <!-- 自定义js -->
+    <script src="../../js/content.js?v=1.0.0"></script>
+    <!-- 日期控件 -->
+    <script src="../../js/plugins/datapicker/bootstrap-datepicker.js"></script>
+    <!-- layer弹出层 -->
+    <script src="../../js/plugins/layer/layer.min.js"></script>
+    <script src="../../js/plugins/layui/layui.js"></script>
+    <!-- 下拉选择列表 -->
+    <script src="../../js/plugins/chosen/chosen.jquery.js"></script>
+    <!-- jQuery 表单验证-->
+    <script src="../../js/plugins/validate/jquery.validate.min.js"></script>
+    <script src="../../js/plugins/validate/messages_zh.min.js"></script>
+    <!-- zTree模拟树表 -->
+    <script src="../../js/plugins/zTree/jquery.ztree.all.min.js"></script>
+    <script src="../../js/vpsoft/TreeTable.js"></script>
+    <script src="../../js/vpsoft/common.js"></script>
+    <script src="../../js/vpsoft/form.js"></script>
+	<script src="../../js/plugins/iCheck/icheck.min.js"></script>
+	<script src="../../js/vpsoft/base64.js"></script>
+    
+<script>
+	var usergroupid = $('#vpeditform', parent.document).attr('usergroupid');
+	var idepartmentid = $('#vpeditform', parent.document).attr("idepartmentid");
+	var config = {'.chosen-select': {} }
+	//选择部门下拉框数据填充
+    vpPostAjax('/cfgrolegroup/geDataList', {scode:'department'}, 'POST', function(rst) {
+    	if(rst.success){
+    		var html = '<option value="0">请选择...</option>';
+    		var list = rst.data.list;
+    		$.each(list, function(i, item) {
+    			if(i==0&&(usergroupid=='0'||usergroupid=='')){
+    				idepartmentid = item.iid;
+    			}
+    			if(item.iid==idepartmentid||usergroupid==''){
+    				html+= '<option value="'+item.iid+'" hassubinfo="true" selected>'+item.sname+'</option>';
+    			}else{
+    				html+= '<option value="'+item.iid+'" hassubinfo="true">'+item.sname+'</option>';
+    			}
+    		});
+    		$('#department').append(html);
+    		$('#department').attr('hidid',idepartmentid);
+    		$("#idepartmentid").val(idepartmentid);
+    		if(usergroupid=='0'||usergroupid==''){
+    			$('#department').removeAttr('disabled');
+    		}else{
+    			$('#department').attr('disabled','disabled');
+    		}
+    	}else{
+    		layer.msg("加载实体下拉框数据异常", {icon: 2,time: 2000});
+    	}
+    });	
+	for (var selector in config) {
+        $(selector).chosen(config[selector]);
+	}
+	$('#department_chosen').find('.chosen-results').height('200px');
+    $('#department_chosen').removeAttr('style');
+	$('#department_chosen').addClass('vp-width-100');
+	//筛选数据类型
+	$(document).on('click','.active-result',function(){
+	 	var index=$(this).attr("data-option-array-index");
+	 	if($(this).closest("#department_chosen").attr("id")=="department_chosen"){
+	 		idepartmentid=$("#department>option:eq("+index+")").val();
+	 		$('#department').attr('hidid',idepartmentid);
+	 		$("#idepartmentid").val(idepartmentid);
+	 	}
+	});
+	$(document).on('click','#add',function(){
+	 	addRoleGroupUser();
+	});
+	$(document).on('click','#del',function(){
+	 	delRoleGroupUser();
+	});
+	//调用
+	function addRoleGroupUser(){
+		var cfg = new Object();
+		cfg.entityID = "2";
+		cfg.multiple = true;
+		// cfg.width = "90%";//设置弹框宽度
+    	// cfg.height = "70%";//设置弹框高度
+    	parent.Chosen.chosenEntity(cfg, function(data) {
+			var ids = "";
+			var names = "";
+			if (data.length > 0) {
+				for (var i = 0; i < data.length; i++) {
+					if (i == 0) {
+						ids = data[0].id;
+						names = data[0].name;
+					} else {
+						ids = ids + "," + data[i].id;
+						names = names + "," + data[i].name;
+					}
+				}
+				vpPostAjax('/cfgrolegroup/addUser', { userids: ids, irolegroupid: usergroupid }, "POST", function(rst) {
+					try {
+						reloadUserList();
+					}
+					catch(exception) {
+						layer.msg("刷新列表失败！", { icon: 2, time: 2000 });
+					}	
+				});
+			} else {
+				parent.layer.msg("请至少选择一条数据！", { icon: 2, time: 2000 });
+			}
+		});
+	}
+	//调用
+	function delRoleGroupUser(){
+		var userarr = [];
+		var checkStatus = olisttable.getTable().checkStatus("vptable");
+		if(checkStatus.data.length>0){
+			for(var i=0;i<checkStatus.data.length;i++){
+				userarr.push(checkStatus.data[i].iid);
+			}
+		}
+		if(userarr.length>0){
+			vpPostAjax('/cfgrolegroup/delete', { delType:'delUser',userids: userarr.join(),irolegroupid: usergroupid }, "POST", function(rst) {
+				try {
+					reloadUserList();
+				}
+				catch(exception) {
+					layer.msg("刷新列表失败！", { icon: 2, time: 2000 });
+				}	
+			});
+		}else{
+			layer.msg("请至少选择一条数据！", { icon: 2, time: 2000 });
+		}
+	};
+	var olisttable = ListTable({ el: 'vptreetable', vpurl: '/cfgrolegroup/page', checkbox: true, toolbar: false, toolbarwidth: 60, 
+		param:  { 
+			irolegroupid: Base64.encode(usergroupid),
+			idepartmentid: idepartmentid, 
+			pageType:'rolegroupuser',
+			loadType:'docUser' 
+		}
+	});
+	olisttable.parseEl();
+	function reloadUserList(){
+		olisttable.reload({ 
+			irolegroupid: Base64.encode(usergroupid),
+			idepartmentid: idepartmentid, 
+			pageType:'rolegroupuser',
+			loadType:'docUser' 
+		});
+	}
+	
+	
+	function saveForm(){
+		var resObj = new Object();
+		resObj.iid = usergroupid;
+		resObj.idepartmentid = idepartmentid;
+		resObj.sname = $('#sname').val().replace(/\s/g, "");
+		resObj.sdescription = $('#sdescription').val();
+		resObj.saveType = 'usergroup';
+		if(resObj.sname==''){
+			parent.layer.msg("用户组名称不能为空!", {icon: 2,time: 2000});
+			return false;
+		}
+		
+		vpPostAjax('/document/save', resObj , "POST", function(rst) {
+			try {
+				layer.msg("保存成功！", { icon: 1, time: 2000 });
+				var param = new Object();
+				parent.reload(param);
+				if(resObj.iid=='0'){
+					parent.closeDrawer('#vpeditform');
+				}
+			}
+			catch(exception) {
+				layer.msg("保存失败！", { icon: 2, time: 2000 });
+			}	
+		}); 
+	}
+	
+	function loadDocUserGroupInfo(){
+		var hei = $("body").height();
+		$("#valueListform").find(".vpcontent").height(hei-320);
+		var accesslevel = 1;
+		if (usergroupid != '0') {
+			vpPostAjax('/document/get', { getType: 'usergroup', iid: usergroupid }, "POST", function(rst) {			
+				var json = rst.data;
+				console.log(json);
+				$('#sname').val(json.sname);
+				$('#sdescription').val(json.sdescription);
+			});
+			$('#valueListform').removeClass('hide');
+		} else {
+			$("#oForm").height(hei-100);
+		}
+		var btnHtml = '<button class="btn btn-sm btn-primary" disabled id="saveBtn">保存</button>&nbsp;';
+		$('#btnbutton', parent.document).html(btnHtml);
+		if (accesslevel == 1) {
+			$('#btnbutton button', parent.document).removeAttr('disabled');
+		} 
+		$('#btnbutton', parent.document).attr('style','bottom: 0px; display: block;');
+		$('#saveBtn', parent.document).click(function() {	
+		 	saveForm();
+		});
+	}
+	
+	$(document).ready(function () {	
+		loadDocUserGroupInfo();
+	});
+</script>
+</html>
+

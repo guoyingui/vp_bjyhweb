@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WBS镜像视图 - VP应用全生命周期管理系统</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
+    <link rel="shortcut icon" href="img/favicon.ico">
+    <link href="../../css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="../../css/font-awesome.min.css?v=4.7.0" rel="stylesheet">
+    <link href="../../css/animate.css" rel="stylesheet">
+    <link href="../../css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+    <link href="../../css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+    <!-- zTree树表 -->
+    <link href="../../css/plugins/zTree/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+    <!-- layUI表格 -->
+    <link href="../../css/plugins/chosen/chosen.css" rel="stylesheet">
+    <link href="../../css/plugins/iCheck/custom.css" rel="stylesheet">
+    <link href="../../js/plugins/layui/css/layui.css"  rel="stylesheet" media="all">
+    <link href="../../css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="../../css/common.css" rel="stylesheet">
+    <link href="../../css/vp.css" rel="stylesheet">
+    <!--[if lte IE 9]>
+        <script src="../../js/html5shiv.min.js"></script>
+        <script src="../../js/respond.js"></script>
+    <![endif]-->
+</head>
+
+<body class="white-bg">
+	<div class="sub-navigator clearfix">
+        <div class="col-sm-4 sub-head" style="padding-left:-10px; ">
+			<select id="formtype" class="chosen-select vp-width-100" tabindex="2">
+            	<option value="1" hassubinfo="true" selected>影响我的</option>
+            	<option value="2" hassubinfo="true" >我影响的</option>  
+            </select>
+        </div>
+    </div>
+    <div id="vpcontainer" style="padding-top:45px; ">
+        <div class="clearfix white-bg animated fadeInRight vp-pr">
+            <div class="vpcontent">
+	           	<div class="form-horizontal">
+					<table index="0" width="100%" class="normal_list" border="0" cellspacing="0" height="40px">
+						<tr class="normal_list_tdtitle" style="table-layout: fixed;border: solid #ededed 1px;cursor:default;background-color:#f2f2f2;">
+							<td width="40%" align="center" style="border-right: solid #ededed 1px;">任务</td>
+							<td width="10%" align="center" style="border-right: solid #ededed 1px;">预测开始</td>
+							<td width="10%" align="center" style="border-right: solid #ededed 1px;">预测结束</td>
+							<td width="10%" align="center" style="border-right: solid #ededed 1px;">计划开始</td>
+							<td width="10%" align="center" style="border-right: solid #ededed 1px;">计划结束</td>
+							<td width="10%" align="center" style="border-right: solid #ededed 1px;">实际开始</td>
+							<td width="10%" align="center" style="border-right: solid #ededed 0px;">实际结束</td>
+						</tr>
+					</table>
+				</div>
+				<div class="form-horizontal" id="valueListform" style="overflow:auto; ">
+					
+				</div>
+	        </div>
+        </div> 
+    </div>
+</body>
+    <!-- 全局js -->
+    <script src="../../js/jquery-1.11.3.min.js"></script>
+    <script src="../../../vpcommon/config.js"></script>
+    <script src="../../../vpcommon/vputils.min.js"></script>
+    
+	<!--[if IE 8]>
+	<script type="text/javascript" src="../../js/jquery-1.9.1.min.js"></script>
+	<![endif]-->
+    <script src="../../js/bootstrap.min.js?v=3.3.6"></script>
+    <!-- 自定义js -->
+    <script src="../../js/content.js?v=1.0.0"></script>
+    <!-- 日期控件 -->
+    <script src="../../js/plugins/datapicker/bootstrap-datepicker.js"></script>
+    <!-- layer弹出层 -->
+    <script src="../../js/plugins/layer/layer.min.js"></script>
+    <!-- 下拉选择列表 -->
+    <script src="../../js/plugins/chosen/chosen.jquery.js"></script>
+    <!-- jQuery 表单验证-->
+    <script src="../../js/plugins/validate/jquery.validate.min.js"></script>
+    <script src="../../js/plugins/validate/messages_zh.min.js"></script>
+    <!-- zTree模拟树表 -->
+    <script src="../../js/plugins/zTree/jquery.ztree.all.min.js"></script>
+    <script src="../../js/vpsoft/TreeTable.js"></script>
+    <!-- <script src="../../vpm/js/common.js"></script> -->
+    <script src="../../js/vpsoft/common.js"></script>
+    <script src="../../js/vpsoft/form.js"></script>
+    <script src="../../js/plugins/iCheck/icheck.min.js"></script>
+</html>
+<script>
+	var formType = '1';//影响我的
+	var projectid = getParameter("projectId");
+	var entityid = getParameter("ientityid");
+	var relentityId = getParameter("relentityId");
+	
+	var config = {'.chosen-select': {} }
+	for (var selector in config) {
+        $(selector).chosen(config[selector]);
+	}
+	//筛选数据类型
+	$(document).on('click','.active-result',function(){
+	 	var index=$(this).attr("data-option-array-index");
+	 	if($(this).closest("#formtype_chosen").attr("id")=="formtype_chosen"){
+	 		formType=$("#formtype>option:eq("+index+")").val();
+	 		loadList();
+	 	}
+	});
+	
+	function loadList(){
+		vpPostAjax(getVpmPath() + '/vpm/wbsmirror/getMirrorWbsViewData', {relentityId: relentityId, projectid: projectid, formType: formType}, "POST", function(rst) {			
+			var list = rst.list;
+			var appendStr = '';
+		    var count = 0;
+			$.each(list, function(i, item) {
+				count++;
+				var background = '';
+				if(count%2==0){
+					background = 'background-color:#f2f2f2;';
+				}
+				var space = '&nbsp;&nbsp;&nbsp;&nbsp;';
+				var icon = '<i class="fa fa-folder-open" ></i>';
+				if (item.itasktype == '92') { // 活动
+					icon = '<img src="../../vpm/images/icon_gcjh.gif" />';
+				} else if (item.itasktype == '93') { // 里程碑
+					icon = '<img src="../../vpm/images/icon_milestone.gif" />';
+				} else if (item.itasktype == '94') { // 交付物
+					icon = '<img src="../../vpm/images/icon_object.gif" />';
+				} else { // 任务
+					icon = '<img src="../../vpm/images/wbstask/icon_taskgz.gif" />';
+				}
+				var displayname = '';
+				if(item.iparentid=='0'){ //镜像任务
+					background = '';
+					displayname = space+icon+item.sname;
+				}else{ //被镜像任务
+					background  = 'background-color:#f2f2f2;';
+					displayname = space+space+space+icon+item.sname;
+				}
+				appendStr+='<table index="'+count+'" class="normal_list" height="30px" width="100%" border="0" cellspacing="0" >';
+			    appendStr+='	<tr class="normal_list_tdtitle" style="table-layout: fixed;border: solid #ededed 1px;cursor:default;'+background+'">';
+			    appendStr+='		<td width="40%" align="left"   style="border-right: solid #ededed 1px;">' + displayname + '</td>';
+			    appendStr+='		<td width="10%" align="center" style="border-right: solid #ededed 1px;">'+ item.start1 +'</td>';
+			    appendStr+='		<td width="10%" align="center" style="border-right: solid #ededed 1px;">'+ item.end1 +'</td>';
+			    appendStr+='		<td width="10%" align="center" style="border-right: solid #ededed 1px;">'+ item.start2 +'</td>';
+			    appendStr+='		<td width="10%" align="center" style="border-right: solid #ededed 1px;">'+ item.end2 +'</td>';
+			    appendStr+='		<td width="10%" align="center" style="border-right: solid #ededed 1px;">'+ item.start3 +'</td>';
+			    appendStr+='		<td width="10%" align="center" style="border-right: solid #ededed 1px;">'+ item.end3 +'</td>';
+			    appendStr+='	</tr>';
+			    appendStr+='</table>';
+			});
+			$('#valueListform').children().remove();
+			$(appendStr).appendTo("#valueListform");
+		});
+	}
+	
+	$(document).ready(function () {
+		loadList();
+	});
+</script>

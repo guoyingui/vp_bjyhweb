@@ -1,0 +1,125 @@
+<script type="text/javascript" src="static/plugins/bootstrap-validator/0.5.3/bootstrapValidator.js"></script>
+<script type="text/javascript" src="static/plugins/bootstrap-validator/0.5.3/bootstrapValidator.patch.js"></script>
+<script type="text/javascript" src="static/plugins/bootstrap-validator/i18n/zh_CN.js"></script>
+<script type="text/javascript" src="static/plugins/jquery-form/3.51.0/jquery.form.js"></script>
+<link rel="stylesheet" href="static/plugins/bootstrap-validator/0.5.3/bootstrapValidator.css" />
+<form id="outlineForm" method="put"  role="form" class="form-horizontal">
+    <div class="row">
+		<div class="form-group">
+			<label class="col-sm-3 control-label"><span style="color: #dd5a43;">*</span>大纲名称：</label>
+			<div class="col-sm-8">
+				<input class="form-control"  type="text" id="outlineName" name="outlineName" maxlength="100" original-val = ""
+						data-bv-notempty="true" data-bv-notempty-message="大纲名称不能为空" placeholder="请输入大纲名称" />
+			</div>
+		</div>
+	</div>
+</form>
+<script>
+  $(function(){
+        var VE = window.vrmEditor;
+	     //提示绑定事件
+	    vpUtils.formvalidation($("#outlineForm"),{
+		    submitHandler: function(form, _bootstrapValidator, e) {
+			    vpUtils.formSubmit(form, {
+                    url : config.outlineRename(),
+                    mask : $(".modal-content"),
+                    maskinfo: '正在提交请稍等...',
+                    method:'put',
+                    data:{docOutlineId:outlineForm.dialog.docOutlineId}
+                }, function (json) {
+                        var tree = outlineForm.dialog.tree;
+                        outlineForm.dialogClose();
+                        _bootstrapValidator.disableSubmitButtons(false);
+                        window.vrmEditor.LOCK.removeDocOutlineLock(outlineForm.dialog.docOutlineId);
+                        show_message('更改成功！点击添加修订记录','info',{
+                                onclick:function () {
+                                    vpUtils.modeWithSave({
+                                        url: config.toAddRevise(),
+                                        title: '添加修订记录',
+                                        size : BootstrapDialog.SIZE_WIDE,
+                                        onshown: function (dialog) {
+                                            var VE = window.vrmEditor;
+                                            var Outline = VE.Outline;
+                                            var $outline = Outline.findOutline(outlineForm.dialog.docOutlineId);
+                                            dialog.$outline = $outline;
+                                            //加载数据
+                                            recordForm.loadData(dialog, {
+                                                dataType: 2,
+                                                changeType : 2,
+                                                addReviseType : 1,
+                                                docOutlineId: outlineForm.dialog.docOutlineId,
+                                                reportHtml:json.reportHtml,
+                                                beforeContent:json.beforeContent,
+                                                afterContent : json.afterContent
+                                            });
+                                        },
+                                        ok_callback: function (dialog) {
+                                            recordForm.save();
+                                        }
+                                    });
+                                },
+                                "timeOut": "8000"
+                            });
+                     VE.SUBSCRIBE.docArtChange(outlineForm.dialog.docOutlineId);     
+                },function(){
+                    show_message('操作失败', 'error');
+                    window.vrmEditor.LOCK.removeDocOutlineLock($("#docOutlineId").val());
+                })
+            },
+            excluded: [':disabled'],
+            fields : {
+                outlineName : {
+                    verbose: false,
+                    validators:{
+                        callback : {
+                            delay: 2000,
+                            message: '包含了已经使用的大纲名称',
+                            callback: function (value, validator) {
+                                var _r = true;
+                                var originalVal = validator.getFieldElements('outlineName').attr('original-val');
+                                if (originalVal && originalVal == value) {
+                                    return _r;
+                                }
+                                if ($.trim(value)) {
+                                    WD_URL.rest.ajax({
+                                        url: config.checkOutline(),
+                                        type:'GET',
+                                        data: {outlineName: $.trim(value),
+                                               parentId:outlineForm.dialog.parentId,
+                                               docOutlineId:outlineForm.dialog.docOutlineId,
+                                               status : '2'
+                                            },
+                                        async: false
+                                    }, function (json) {
+                                        _r = json.vaidResult
+                                    })
+                                }
+                                return _r;
+                            }
+                        }
+                    }
+                }
+            }
+	  });
+  });
+
+  var outlineForm = {
+        dialog : null,
+        treeNode : null,
+        tree :null,
+        loadData:function(dialog,data){
+            this.dialog = dialog;
+            this.dialog.tree = data.tree || {};
+            this.dialog.docOutlineId = data.docOutlineId;
+            this.dialog.parentId = data.parentId;
+            $("#outlineName").val(data.outlineName);
+            $("#outlineName").attr("original-val",data.outlineName);
+        },
+        save : function (dialog) {
+           $('#outlineForm').submit();
+        },
+        dialogClose : function () {
+            outlineForm.dialog.close();
+        }
+    }
+</script>

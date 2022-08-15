@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="author" content="vpsoft">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>登录</title>
+    <link href="../../css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="../../css/font-awesome.min.css?v=4.7.0" rel="stylesheet">
+    <link href="../../css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+    <link href="../../css/animate.css" rel="stylesheet">
+    <link href="../../css/style.css" rel="stylesheet">
+    <link href="../../css/vp.css" rel="stylesheet">
+    <link href="../../css/common.css" rel="stylesheet">
+    <link href="../../css/plugins/zTree/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+    <script src="../../../vpcommon/config.js"></script>
+    <script src="../../../vpcommon/vputils.min.js"></script>
+    <!--[if lte IE 9]>
+        <script src="../../js/html5shiv.min.js"></script>
+        <script src="../../js/respond.js"></script>
+    <![endif]-->
+</head>
+<style>
+	.fa-fw {
+		font-size: 24px;
+	}
+	.text-fail {
+		color: #bbb;
+	}
+	.vpbutton {
+		position: fixed; z-index: 100; border-top: 1px solid #ddd; background: #fff;  margin-left: -20px; height: 50px; line-height: 50px;
+		text-align: center;
+	}
+	.btn {
+		margin-top: 5px; 
+	}
+	.vptree, .vpcontent {
+		overflow: auto; 
+	    border-bottom: 0;
+		border: 1px solid #ccc;
+		margin: 10px 0;
+		padding-bottom: 5px;
+	}
+</style>
+
+<body class="gray-bg">
+	<div class="tabs-container clearfix">
+		<div class="col-xs-2">
+			<div class="ibox-title m-t-xxs clearfix">
+				<h5 class="pull-left" id="rolegroupcount">数据字典</h5>
+			</div>
+
+			<div class="ibox-content p-n m-t-sm">
+				<div id="" class="nav vptree" style="height: 591px;">
+					<iframe id="frmtree" src="dictionarytree.html" style="height: 591px; border: 0px;"></iframe>
+				</div>
+			</div>
+
+		</div>
+		<div class="col-xs-10">
+			<div class="ibox-title clearfix">
+				<h5>数据字典明细</h5>（注意：删除后需要点保存数据才生效）
+			</div>
+			<div class="ibox-content p-n m-t-sm">
+				<div id="" class="nav nav-tabs member-tabs layui-layer-content" style="height: 591px;">
+					<div class="vp-hide newmember p-md layui-layer-wrap vpcontent" style="border: 0px; display: block; height: 541px;">
+						<div class="form-horizontal" id="adddicform" novalidate="novalidate">
+							<input type="hidden" id="dictionaryType" name="dictionaryType">
+							<input type="hidden" id="nodeDicId" name="nodeDicId">
+							<div id="headerTb" class="form-group m-b-sm">
+								<div class="col-xs-2 ">字典编码</div>
+								<div class="col-xs-2 ">字典名称</div>
+								<div class="col-xs-2 ">排序码</div>
+								<div class="col-xs-3 ">描述</div>
+								<div class="col-xs-1 ">状态</div>
+							</div>
+
+							<div id="vprow" style="height: 500;"></div>
+							<div class="col-xs-9 m-t-sm" id="newAddDiv" style="display: none;">
+								<a class="text-primary newAdd"><i class="fa fa-plus-circle"></i>再添加一个</a>
+							</div>
+
+							<div class="col-xs-9 m-t-sm vpbutton">
+								<!--<a class="text-primary newAdd"><i class="fa fa-plus-circle"></i>再添加一个</a>-->
+								<button id="btnSave" class="btn btn-sm btn-primary" disabled=true>保存</button>
+							</div>
+						</div>
+						<!-- <div class="m-t-sm text-center"><button class="btn btn-sm btn-primary">保存</button></div> -->
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+<!-- 全局js -->
+    <script src="../../js/jquery-1.11.3.min.js"></script>
+	<!--[if IE 8]>
+	<script type="text/javascript" src="../../js/jquery-1.9.1.min.js"></script>
+	<![endif]-->
+    <script src="../../js/bootstrap.min.js?v=3.3.6"></script>
+    <!-- 自定义js -->
+    <script src="../../js/content.js?v=1.0.0"></script>
+    <!-- 日期控件 -->
+    <script src="../../js/plugins/datapicker/bootstrap-datepicker.js"></script>
+    <!-- layer弹出层 -->
+    <script src="../../js/plugins/layer/layer.min.js"></script>
+    <script src="../../js/plugins/layui/layui.js"></script>
+    <!-- 下拉选择列表 -->
+    <script src="../../js/plugins/chosen/chosen.jquery.js"></script>
+    <!-- zTree模拟树表 -->
+    <script src="../../js/plugins/zTree/jquery.ztree.all.min.js"></script>
+    <script src="../../js/vpsoft/TreeTable.js"></script>
+    <script src="../../js/vpsoft/common.js"></script>
+    <script src="../../js/vpsoft/form.js"></script>
+    <script src="../../js/plugins/iCheck/icheck.min.js"></script>
+    <script>
+        // 需要添加滚动条的元素
+        showScroll('.workbox-list');
+		var height = $("body").height()-$(".ibox-title").height() - 50;
+		$(".vptree").height(height);
+		$(".vpcontent").parent().height(height);
+		$(".vpcontent").height(height - 96);
+		$(".vpbutton").width($(".vpbutton").width()-25);
+		$(".vpbutton").css("bottom", "20px");
+		
+		$(document).ready(function(){
+			addDicRow();
+
+			$(".vp-delAdd").click(function(){
+				$(this).parent(".vprow").remove();
+			});
+        });
+		
+		function delDic(obj){
+			$(obj).parent(".vprow").remove();
+		}
+
+		$(".newAdd").click(function(){
+			//addSubRow();
+			if($('#dictionaryType').val() == '1'){
+				addSubRow();
+			}else{
+				addDicRow();
+			}
+		});
+		
+		function addDicRow(){
+			$('#headerTb').empty();
+			var strTb = '';
+			strTb += '<div class="col-xs-3 ">分组编号</div>';
+			strTb += '<div class="col-xs-3 ">分组名称</div>';
+			strTb += '<div class="col-xs-2 ">排序码</div>';
+			strTb += '<div class="col-xs-3 ">描述</div>';
+			$('#headerTb').append(strTb);
+			
+			//$('#vprow').empty();
+			var irow = $("#vprow").children().length;
+			var str = '';
+			str += '<div class="form-group form-item vp-pr m-b-sm vprow">';
+			str += '	<div class="vp-delAdd" irow="'+irow+'" onclick="delDic(this)">';
+			str += '		<a href="#"><i class="fa fa-minus-circle text-danger"></i></a>';
+			str += '	</div>';
+			str += '	<div class="col-xs-3">';
+			str += '		<input id="scode'+irow+'" name="scode" placeholder="请输入分组编号" maxlength="20" class="form-control input-sm" type="text" value="">';
+			str += '	</div>';
+			str += '	<div class="col-xs-3">';
+			str += '		<input id="sname'+irow+'" name="sname" placeholder="请输入分组名称" maxlength="60" class="form-control input-sm" type="text" value="">';
+			str += '	</div>';
+			str += '	<div class="col-xs-2">';
+			str += '		<input id="ssequencekey'+irow+'" name="ssequencekey" placeholder="请输入排序码" maxlength="30" class="form-control input-sm" type="number" value="">';
+			str += '	</div>';
+			str += '	<div class="col-xs-3">';
+			str += '		<input id="sdescription'+irow+'" name="sdescription" placeholder="请输入描述" maxlength="300" class="form-control input-sm" type="text" value="">';
+			str += '	</div>';
+			str += '</div>';
+			$('#vprow').append(str);
+		}
+		
+        function addSubRow(){
+        	$('#headerTb').empty();
+			var strTb = '';
+			strTb += '<div class="col-xs-2 ">字典编码</div>';
+			strTb += '<div class="col-xs-2 ">字典名称</div>';
+			strTb += '<div class="col-xs-2 ">排序码</div>';
+			strTb += '<div class="col-xs-3 ">描述</div>';
+			strTb += '<div class="col-xs-1 ">状态</div>';
+			$('#headerTb').append(strTb);
+			
+			//$('#vprow').empty();
+			var irow = $("#vprow").children().length;
+			var str = '';
+			str += '<div class="form-group form-item vp-pr m-b-sm vprow">';
+			str += '	<input id="iid'+irow+'" name="iid" type="hidden" value="">';
+			str += '	<div class="vp-delAdd" irow="'+irow+'" onclick="delDic(this)">';
+			str += '		<a href="#"><i class="fa fa-minus-circle text-danger"></i></a>';
+			str += '	</div>';
+			str += '	<div class="col-xs-2">';
+			str += '		<input id="ivalue'+irow+'" name="ivalue" placeholder="请输入选项值" maxlength="8" class="form-control input-sm" type="number" value="">';
+			str += '	</div>';
+			str += '	<div class="col-xs-2">';
+			str += '		<input id="stext'+irow+'" name="stext" placeholder="请输入选项名称" maxlength="60" class="form-control input-sm" type="text" value="">';
+			str += '	</div>';
+			str += '	<div class="col-xs-2">';
+			str += '		<input id="ssequencekey'+irow+'" name="ssequencekey" placeholder="请输入排序码" maxlength="30" class="form-control input-sm" type="number" value="">';
+			str += '	</div>';
+			str += '	<div class="col-xs-3">';
+			str += '		<input id="sdescription'+irow+'" name="sdescription" placeholder="请输入描述" maxlength="300" class="form-control input-sm" type="text" value="">';
+			str += '	</div>';
+			str += '	<div class="col-xs-1">';
+			str += '		<i  id="iflag'+irow+'" irow="'+irow+'" class="fa fa-toggle-off fa-fw text-fail" onclick="toggleState(this)" data-toggle="tooltip" data-placement="right" title="关闭"></i>';
+			str += '	</div>';
+			str += '</div>';
+			$('#vprow').append(str);
+		}
+
+		function toggleState(obj) {
+			if (obj.className.indexOf("text-success") != -1) {
+				obj.className = "fa fa-toggle-off fa-fw text-fail";
+				obj.setAttribute("data-original-title", "关闭");
+			}
+			else if (obj.className.indexOf("text-fail") != -1) {
+				obj.className = "fa fa-toggle-on fa-fw text-success";
+				obj.setAttribute("data-original-title", "开启");
+			}
+		}
+		
+
+		$("#btnSave").click(function(){
+			var arr = new Array();
+			var flag=false;
+			if($('#nodeDicId').val()==''){
+				layer.msg('请先选择数据字典树节点！', { icon: 5, time: 2000 });
+				return false;
+			}
+			
+			if($('#dictionaryType').val() == '1'){
+				$.each($("#vprow>div"), function(i) {
+					var index = $(this).find(".vp-delAdd").attr("irow");
+					var obj = {};
+					obj["iid"] = $("#iid" + index).val();
+					
+					if ($("#ivalue" + index).val() == '') {
+						layer.msg('字典编码不能为空', { icon: 5, time: 2000 });
+						flag = true;
+						return flag;
+					}
+					else if (!/^[\d]+\.?\d*$/g.test($("#ivalue" + index).val())) {
+						layer.msg('字典编码只能是数字', { icon: 5, time: 2000 });
+						flag = true;
+						return flag;
+					}
+					else if($("#stext" + index).val() =='') {
+						layer.msg('名称不能为空', { icon: 5, time: 2000 });
+						flag = true;
+						return flag;
+					}
+					
+					obj["ivalue"] = $("#ivalue" + index).val();
+					obj["stext"] = $("#stext" + index).val();
+					obj["ssequencekey"] = $("#ssequencekey" + index).val();
+					obj["sdescription"] = $("#sdescription" + index).val();
+					obj["idefaultvalue"] = $("#idefaultvalue:checked").val();
+					if($("#iflag" + index).attr("class").indexOf('success')!=-1){
+						obj["iflag"] = 0;
+					}else{
+						obj["iflag"] = 1;
+					}
+					arr.push(obj);
+				});
+			}else{
+				$.each($("#vprow>div"), function(i) {
+					var index = $(this).find(".vp-delAdd").attr("irow");
+					var obj = {};
+					obj["iid"] = $("#iid" + index).val();
+					obj["scode"] = $("#scode" + index).val();
+					obj["sname"] = $("#sname" + index).val();
+
+					if (obj["scode"] == '') {
+						layer.msg('分组编号不能为空', { icon: 5, time: 2000 });
+						flag = true;
+						return flag;
+					}
+					else if(obj["sname"] =='') {
+						layer.msg('分组名称不能为空', { icon: 5, time: 2000 });
+						flag = true;
+						return flag;
+					}
+					obj["ssequencekey"] = $("#ssequencekey" + index).val();
+					obj["sdescription"] = $("#sdescription" + index).val();
+					arr.push(obj);
+				});
+			}
+
+			if(flag){
+				return false;
+			}
+			vpPostAjax('/cfgdictionary/save', {iid:$('#nodeDicId').val(), type:$('#dictionaryType').val(), osub:arr}, "POST", function(rst) {
+				try {
+					if(rst.success){
+						layer.msg(rst.msg, { icon: 1, time: 2000 });
+						
+						//重新加载树
+						document.getElementById("frmtree").contentWindow.refreshTree();
+					}else{
+						layer.msg(rst.msg, { icon: 2, time: 2000 });
+					}
+				}
+				catch(exception) {
+					// layer.msg("保存失败!", { icon: 2, time: 2000 });
+				}	
+			});
+		});
+    </script>
+</html>

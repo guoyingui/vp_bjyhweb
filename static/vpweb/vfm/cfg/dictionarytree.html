@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<HTML>
+<HEAD>
+    <TITLE> ZTREE DEMO - Simple Data</TITLE>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="../../css/plugins/zTree/metroStyle/metroStyle.css" type="text/css">
+    <script type="text/javascript" src="../../js/plugins/zTree/jquery-1.4.4.min.js"></script>
+    <script type="text/javascript" src="../../js/plugins/zTree/jquery.ztree.core.js"></script>
+    <script type="text/javascript" src="../../js/plugins/zTree/jquery.ztree.excheck.js"></script>
+    <script type="text/javascript" src="../../js/plugins/zTree/jquery.ztree.exedit.js"></script>
+	<style type="text/css">
+	
+	</style>
+    <script src="../../../vpcommon/config.js"></script>
+    <script src="../../../vpcommon/vputils.min.js"></script>
+	<!-- 全局js -->
+    <script src="../../js/jquery-1.11.3.min.js"></script>
+	<!--[if IE 8]>
+	<script type="text/javascript" src="../../js/jquery-1.9.1.min.js"></script>
+	<![endif]-->
+    <script src="../../js/bootstrap.min.js?v=3.3.6"></script>
+    <!-- 自定义js -->
+    <script src="../../js/content.js?v=1.0.0"></script>
+    <!-- 日期控件 -->
+    <script src="../../js/plugins/datapicker/bootstrap-datepicker.js"></script>
+    <!-- layer弹出层 -->
+    <script src="../../js/plugins/layer/layer.min.js"></script>
+    <script src="../../js/plugins/layui/layui.js"></script>
+    <!-- 下拉选择列表 -->
+    <script src="../../js/plugins/chosen/chosen.jquery.js"></script>
+    <!-- zTree模拟树表 -->
+    <script src="../../js/plugins/zTree/jquery.ztree.all.min.js"></script>
+    <script src="../../js/vpsoft/TreeTable.js"></script>
+    <script src="../../js/vpsoft/common.js"></script>
+    <script src="../../js/vpsoft/form.js"></script>
+    <script src="../../js/plugins/iCheck/icheck.min.js"></script>
+
+    <SCRIPT type="text/javascript">
+		var accesslevel = -1;
+        var setting = {
+            view: {
+				enable : true,  
+				showLine : false, 
+				//showIcon: showIconForTreeRight,  
+                addHoverDom: addHoverDom,
+                removeHoverDom: removeHoverDom,
+                selectedMulti: false
+            },
+            check: {
+                enable: false
+            },
+            data: {
+                simpleData: {
+                    enable: true
+                }
+            },
+			callback : {  
+				onClick : zTreeOnClickRight,  
+				beforeRemove: beforeRemove,
+				beforeEditName: beforeEditName,
+				//onRename: zTreeOnRename,  
+				onRemove: zTreeOnRemove,  
+			},  
+            edit: {
+                enable: true, 
+				showRemoveBtn : setEditBtn,  
+				showRenameBtn : setRemoveBtn,  
+				showAddBtn :true, 
+				removeTitle :"删除",  
+				renameTitle :"修改" 
+            }
+        };
+
+		function setEditBtn(treeId, treeNode) { 
+			return treeNode.pId==0;
+		}
+		function setRemoveBtn(treeId, treeNode) { 
+			return treeNode.pId==0;
+		}
+
+        var zNodes =[
+			{ id:11, pId:0, name:"系统配置", open:true, iconOpen:"../../css/plugins/zTree/zTreeStyle/img/diy/9.png", iconClose:"../../css/plugins/zTree/zTreeStyle/img/diy/9.png"},
+			{ id:111, pId:11, name:"许可证"},
+			{ id:112, pId:11, name:"数据字典", icon:"../../css/plugins/zTree/zTreeStyle/img/diy/3.png"},
+			{ id:113, pId:11, name:"业务参数", icon:"../../css/plugins/zTree/zTreeStyle/img/diy/5.png"}
+		];
+
+        $(document).ready(function(){
+            vpPostAjax('/cfgdictionary/tree', { }, "GET", function(rst) {
+				initTreeDate(rst);
+			});	
+			$(".edit").click(function(){
+				
+			});			
+        });
+
+		function showIconForTreeRight(treeId, treeNode) {  
+			return !treeNode.isParent;  
+		};
+
+        var newCount = 1;
+        function addHoverDom(treeId, treeNode) {
+            var sObj = $("#" + treeNode.tId + "_span");
+            if (treeNode.editNameFlag || $("#addBtn_"+treeNode.tId).length>0) return;
+			if (treeNode.level == 0) {				
+				var addStr = "<span class='button add' id='addBtn_" + treeNode.tId
+					+ "' title='新建' onfocus='this.blur();'></span>";
+				sObj.after(addStr);
+			}
+            var btn = $("#addBtn_"+treeNode.tId);
+            if (btn) btn.bind("click", function(){
+				formView('0', '新建', treeNode.id);
+                return false;
+            });
+        };
+        function removeHoverDom(treeId, treeNode) {
+            $("#addBtn_"+treeNode.tId).unbind().remove();
+        };
+		function zTreeOnClickRight(event, treeId, treeNode) {
+			$("#nodeDicId", parent.document).val(treeNode.id);
+			if(treeNode.pId == null || treeNode.pId == ''){
+				$('#dictionaryType', parent.document).val("0");
+				vpPostAjax('/cfgdictionary/get', {iid: treeNode.id}, "GET", function(rst) {
+                    if(rst.success){
+                    	showDicRow(rst.childdata);
+			    	}
+				});
+			}else{
+				$('#dictionaryType', parent.document).val("1");
+				vpPostAjax('/cfgdictionary/getSub', {idictionaryid: treeNode.id}, "GET", function(rst) {
+                    if(rst.success){
+                    	showSubRow(rst.subdata);
+			    	}
+				});
+			}
+			return false;
+		}
+		
+		function showDicRow(obj) {
+			$('#headerTb', parent.document).empty();
+			var strTb = '';
+			strTb += '<div class="col-xs-3 ">分组编号</div>';
+			strTb += '<div class="col-xs-3 ">分组名称</div>';
+			strTb += '<div class="col-xs-2 ">排序码</div>';
+			strTb += '<div class="col-xs-3 ">描述</div>';
+			$('#headerTb', parent.document).append(strTb);
+			
+			$('#vprow', parent.document).empty();
+			var str = '';
+			if(obj != null && obj != '' && obj.length > 0){
+				$.each(obj, function (irow, data) {
+					str += '<div class="form-group form-item vp-pr m-b-sm vprow">';
+					str += '	<input id="iid' + irow + '" name="iid" type="hidden" value="' + data.iid + '">';
+					str += '	<div class="vp-delAdd" irow="'+irow+'" onclick="delDic(this)">';
+					str += '		<a href="#" '+( (data.itype==0)?" style=\"display: none;\"":"" )+'><i class="fa fa-minus-circle text-danger"></i></a>';
+					str += '	</div>';
+					str += '	<div class="col-xs-3">';
+					str += '		<input id="scode'+irow+'" name="scode" '+( (data.itype==0)?" readonly":"" )+' placeholder="请输入分组编号" maxlength="20" class="form-control input-sm" type="text" value="' + data.scode + '">';
+					str += '	</div>';
+					str += '	<div class="col-xs-3">';
+					str += '		<input id="sname'+irow+'" name="sname" placeholder="请输入分组名称" maxlength="60" class="form-control input-sm" type="text" value="' + data.sname + '">';
+					str += '	</div>';
+					str += '	<div class="col-xs-2">';
+					str += '		<input id="ssequencekey'+irow+'" name="ssequencekey" placeholder="请输入排序码" maxlength="30" class="form-control input-sm" type="number" value="' + data.ssequencekey + '">';
+					str += '	</div>';
+					str += '	<div class="col-xs-3">';
+					str += '		<input id="sdescription'+irow+'" name="sdescription" placeholder="请输入描述" maxlength="300" class="form-control input-sm" type="text" value="' + data.sdescription + '">';
+					str += '	</div>';
+					str += '</div>';
+				});
+			}else{
+				var irow = $("#vprow").children().length;
+				str += '<div class="form-group form-item vp-pr m-b-sm vprow">';
+				str += '	<div class="vp-delAdd" irow="'+irow+'" onclick="delDic(this)">';
+				str += '		<a href="#"><i class="fa fa-minus-circle text-danger"></i></a>';
+				str += '	</div>';
+				str += '	<div class="col-xs-3">';
+				str += '		<input id="scode'+irow+'" name="scode" placeholder="请输入分组编号" maxlength="20" class="form-control input-sm" type="text" value="">';
+				str += '	</div>';
+				str += '	<div class="col-xs-3">';
+				str += '		<input id="sname'+irow+'" name="sname" placeholder="请输入分组名称" maxlength="60" class="form-control input-sm" type="text" value="">';
+				str += '	</div>';
+				str += '	<div class="col-xs-2">';
+				str += '		<input id="ssequencekey'+irow+'" name="ssequencekey" placeholder="请输入排序码" maxlength="30" class="form-control input-sm" type="number" value="">';
+				str += '	</div>';
+				str += '	<div class="col-xs-3">';
+				str += '		<input id="sdescription'+irow+'" name="sdescription" placeholder="请输入描述" maxlength="300" class="form-control input-sm" type="text" value="">';
+				str += '	</div>';
+				str += '</div>';
+			}
+			$('#vprow', parent.document).append(str);
+		}
+		
+		function showSubRow(obj) {
+			$('#headerTb', parent.document).empty();
+			var strTb = '';
+			strTb += '<div class="col-xs-2 ">字典编码</div>';
+			strTb += '<div class="col-xs-2 ">字典名称</div>';
+			strTb += '<div class="col-xs-2 ">排序码</div>';
+			strTb += '<div class="col-xs-3 ">描述</div>';
+			strTb += '<div class="col-xs-1 ">状态</div>';
+			$('#headerTb', parent.document).append(strTb);
+			
+			$('#vprow', parent.document).empty();
+			var str = '';
+			if (obj != null && obj.length > 0){
+				$.each(obj, function (irow, data) { 
+					str += '<div class="form-group form-item vp-pr m-b-sm vprow">';
+					str += '	<input id="iid' + irow + '" name="iid" type="hidden" value="' + data.iid + '">';
+					str += '	<div class="vp-delAdd" irow="'+irow+'"  onclick="delDic(this)">';
+					str += '		<a href="#"><i class="fa fa-minus-circle text-danger"></i></a>';
+					str += '	</div>';
+					str += '	<div class="col-xs-2">';
+					str += '		<input id="ivalue'+irow+'" name="ivalue" placeholder="请输入选项值" maxlength="8" class="form-control input-sm" type="text" value="' + data.ivalue + '">';
+					str += '	</div>';
+					str += '	<div class="col-xs-2">';
+					str += '		<input id="stext'+irow+'" name="stext" placeholder="请输入选项名称" maxlength="60" class="form-control input-sm" type="text" value="' + data.stext + '">';
+					str += '	</div>';
+					str += '	<div class="col-xs-2">';
+					str += '		<input id="ssequencekey'+irow+'" name="ssequencekey" placeholder="请输入排序码" maxlength="30" class="form-control input-sm" type="number" value="' + data.ssequencekey + '">';
+					str += '	</div>';
+					str += '	<div class="col-xs-3">';
+					str += '		<input id="sdescription'+irow+'" name="sdescription" placeholder="请输入描述" maxlength="300" class="form-control input-sm" type="text" value="' + data.sdescription + '">';
+					str += '	</div>';
+					if(data.iflag == '1'){
+						str += '	<div class="col-xs-1">';
+						str += '		<i  id="iflag' + irow + '" irow="'+irow+'" class="fa fa-toggle-off fa-fw text-fail" onclick="toggleState(this)" data-toggle="tooltip" data-placement="right" title="关闭"></i>';
+						str += '	</div>';
+					}else{
+						str += '	<div class="col-xs-1">';
+						str += '		<i  id="iflag' + irow + '" irow="'+irow+'" class="fa fa-toggle-on fa-fw text-success" onclick="toggleState(this)" data-toggle="tooltip" data-placement="right" title="开启"></i>';
+						str += '	</div>';
+					}
+					str += '</div>'; 
+				});
+			}else{
+				var irow = $("#vprow").children().length;
+				str += '<div class="form-group form-item vp-pr m-b-sm vprow">';
+				//str += '	<input id="iid'+irow+'" name="iid" type="hidden" value="">';
+				str += '	<div class="vp-delAdd" irow="'+irow+'"  onclick="delDic(this)">';
+				str += '		<a href="#"><i class="fa fa-minus-circle text-danger"></i></a>';
+				str += '	</div>';
+				str += '	<div class="col-xs-2">';
+				str += '		<input id="ivalue'+irow+'" name="ivalue" placeholder="请输入选项值" maxlength="8" class="form-control input-sm" type="text" value="">';
+				str += '	</div>';
+				str += '	<div class="col-xs-2">';
+				str += '		<input id="stext'+irow+'" name="stext" placeholder="请输入选项名称" maxlength="60" class="form-control input-sm" type="text" value="">';
+				str += '	</div>';
+				str += '	<div class="col-xs-2">';
+				str += '		<input id="ssequencekey'+irow+'" name="ssequencekey" placeholder="请输入排序码" maxlength="30" class="form-control input-sm" type="number" value="">';
+				str += '	</div>';
+				str += '	<div class="col-xs-3">';
+				str += '		<input id="sdescription'+irow+'" name="sdescription" placeholder="请输入描述" maxlength="300" class="form-control input-sm" type="text" value="">';
+				str += '	</div>';
+				str += '	<div class="col-xs-1">';
+				str += '		<i  id="iflag' + irow + '" irow="'+irow+'" class="fa fa-toggle-on fa-fw text-success" onclick="toggleState(this)" data-toggle="tooltip" data-placement="right" title="开启"></i>';
+				str += '	</div>';
+				str += '</div>';
+			}
+			
+			$('#vprow', parent.document).append(str);
+		}
+		
+		function zTreeOnRename(event, treeId, treeNode, isCancel) {
+			return false;
+		}
+		function beforeEditName(treeId, treeNode) {  
+			formView(treeNode.id, treeNode.name, treeNode.pid);
+			return false;
+		}
+		function zTreeOnRemove(event, treeId, treeNode) {  
+			
+		}
+		function beforeRemove(treeId, treeNode) {  
+			if(treeNode.isParent){  
+				alert("请先删除子节点");  
+				return false;  
+			}         
+			return confirm("确认删除 节点 -- " + treeNode.name + " 吗？");  
+		}
+
+		function formView(id, name, iparent) {
+			var param = {};
+			if (accesslevel>0) {
+				param["btn"] = new Array(["保存"]);
+			}			
+
+			parent.openWindow('dictionaryform.html?iid=' + id + "&iparent=" + iparent, name, param, function(index, layero, ibtn) {
+				try
+				{
+					$(layero).find("iframe")[0].contentWindow.saveForm(function(data) {
+						vpPostAjax('/cfgdictionary/tree', { }, "GET", function(rst) {
+							initTreeDate(rst);
+						});
+						parent.layer.close(index);	
+					});
+				}
+				catch (e)
+				{
+					layer.msg(e, { icon: 2, time: 2000 });
+				}
+			});
+		}
+		
+		function refreshTree(){
+			vpPostAjax('/cfgdictionary/tree', { }, "GET", function(rst) {
+				initTreeDate(rst)
+			});
+		}
+
+		function initTreeDate(rst) {
+			var vpnode = new Array();
+			$.each(rst.data, function (i, item) { 
+				var ico = '../../images/node.png'; //'../../css/plugins/zTree/zTreeStyle/img/diy/9.png';
+				if (item.iparent != '0') {
+					ico = '../../images/node.png'; //'../../css/plugins/zTree/zTreeStyle/img/diy/2.png';
+				}
+				vpnode.push( { id:item.iid, pId:item.iparent, name:item.sname, open:false, iconOpen:'../../images/node.png', iconClose:'../../images/node.png', icon: ico } );
+				//vpnode.push( { id:item.iid, pId:item.iparent, name:item.sname, open:true, iconOpen:"../../css/plugins/zTree/zTreeStyle/img/diy/9.png", iconClose:"../../css/plugins/zTree/zTreeStyle/img/diy/9.png", icon: ico } );
+				//vpnode.push( { id:111, pId:11, name:"许可证"} );
+
+				accesslevel = rst.accesslevel;
+				if (accesslevel>0) {
+					$("#btnSave", parent.document).removeAttr("disabled");
+					$("#newAddDiv", parent.document).show();
+				}
+			});
+			$.fn.zTree.init($("#treeDemo"), setting, vpnode );	
+		}
+    </SCRIPT>
+</HEAD>
+
+<BODY>
+<ul id="treeDemo" class="ztree"></ul>
+</BODY>
+</HTML>

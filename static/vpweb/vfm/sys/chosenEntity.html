@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>选择对象</title>
+    <link href="../../css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="../../css/font-awesome.min.css?v=4.7.0" rel="stylesheet">
+    <link rel="stylesheet" href="../../css/plugins/zTree/zTreeStyle/zTreeStyle.css" type="text/css">
+    <link rel="stylesheet" href="../../js/plugins/layui/css/layui.css"  media="all">
+    <link href="../../css/animate.css" rel="stylesheet">
+    <link href="../../css/common.css" rel="stylesheet">
+    <link href="../../css/style.css" rel="stylesheet">
+    <link href="../../css/vp.css" rel="stylesheet">
+    <script src="../../../vpcommon/config.js"></script>
+    <script src="../../../vpcommon/vputils.min.js"></script>
+    <!--[if lte IE 9]>
+        <script src="js/html5shiv.min.js"></script>
+        <script src="js/respond.js"></script>
+    <![endif]-->
+    <style>
+    	body{overflow-y: scroll;}
+    	.layui-form-radio {
+		    line-height: 20px;
+		    margin: 3px 5px 0 0;
+		    padding-right: 10px;
+		    cursor: pointer;
+		    font-size: 0;
+		}
+    </style>
+</head>
+<body class="gray-bg">
+    <div class="padding-10 p-l-xs p-r-none clearfix vp-chosen-user vp-pr">
+        <div class="col-xs-4 p-l-none vp-ovh">
+            <div class="tab-content white-bg ">
+                <div id="edit-tab-1" class="tab-pane active">
+                    <div class="padding-10 white-bg">
+                        <div class="sub-head">
+                            <input type="text" id="quickSearchText" value="" placeholder="" class="form-control input-sm padding-right-30 vp-radius"><i class="fa fa-search"></i>
+                        </div>
+                        <div class="treeSelect m-t-sm workbox-list overflow-hid">
+                            <ul id="dataTree" class="ztree"></ul>
+                        </div>
+                    </div>
+                </div>
+                <div id="edit-tab-2" class="tab-pane">
+                    <div class="padding-10 white-bg">
+                                                  按角色
+                    </div>
+                </div>
+                <div id="edit-tab-3" class="tab-pane">
+                    <div class="padding-10 white-bg">
+                                                  按组
+                    </div>
+                </div>
+                <div id="dropdown1" class="tab-pane">
+                    <div class="padding-10 white-bg">
+                                                  分类1
+                    </div>
+                </div>
+                <div id="dropdown2" class="tab-pane">
+                    <div class="padding-10 white-bg">
+                                                  分类2
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-8 p-r-none full-height">
+            <div class="select-list white-bg full-height">
+                <table class="layui-hide white-bg" id="selectTable" lay-filter="entity"></table>
+                <script type="text/html" id="barDemo">
+    				<a lay-event="select" ><input type="radio" name="radio" value="radio" title=" "></a>
+				</script>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="panel panel-default vp-transition vp-pr m-b-none">
+            <!-- 展开、收缩全部 -->
+            <span class="team-toggle text-center"><i class="fa fa-angle-double-up"></i></span>
+            <!-- 删除全部 -->
+            <span class="team-closeAll vp-pr" title="删除全部"><i class="fa">x</i></span>
+            <div class="team-box">
+                <ul class="team-members p-xs clearfix"></ul>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 全局js -->
+    <script src="../../js/jquery-1.11.3.min.js"></script>
+    <!--[if IE 8]>
+	<script type="text/javascript" src="../../js/jquery-1.9.1.min.js"></script>
+	<![endif]-->
+    <script src="../../js/bootstrap.min.js?v=3.3.6"></script>
+    <script src="../../js/plugins/metisMenu/jquery.metisMenu.js"></script>
+    <script src="../../js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+    <!-- layer弹出层 -->
+    <script src="../../js/plugins/layer/layer.min.js"></script>
+    <!-- layui表格 -->
+    <script src="../../js/plugins/layui/layui.js" charset="utf-8"></script>
+    <!-- zTree模拟树表 -->
+    <script src="../../js/plugins/zTree/jquery.ztree.all.min.js"></script>
+    <script src="../../js/zTreeList.js"></script>
+    <!-- 第三方插件 页面的加载进度条 -->
+    <script src="../../js/plugins/pace/pace.min.js"></script>
+    <script src="../../js/vpsoft/chosenEntity.js?v=1.0.0"></script>
+    <!--[if lte IE 9]>
+       <script src="js/ie8.js"></script>
+    <![endif]-->
+    
+    <!-- 自定义js -->
+    <script src="../../js/content.js?v=1.0.0"></script>
+    <script src="../../js/vpsoft/common.js"></script>
+    <script src="../../js/vpsoft/form.js"></script>
+    <script src="../../js/vpsoft/ListTable.js"></script>
+    
+    <!-- 复选框js -->
+    <script src="../../js/plugins/iCheck/icheck.min.js"></script>
+<script>
+    showScroll('.workbox-list,.main,.tab-content');
+	$(".workbox-list").parent().height(300);
+	$(".workbox-list").height(285);
+
+	var returnData = function(){
+    	return resData;
+    }
+	var cfg = parent.commonCFG;	
+	var resData = new Array();
+	var pageData;
+	var actionName = "";
+    var cols = [];
+    if(cfg.entityID=="7"){//项目
+    	actionName = "getProjectListData";
+    	cols = Chosen.getProjectCols(cfg);
+    	//快速查询栏提示信息初始化
+    	$("#quickSearchText").attr("placeholder","请输入项目名称或编号");
+    }else if(cfg.entityID=="1"){//部门
+    	actionName = "getDepartmentListData";
+    	cols = Chosen.getDepartmentCols(cfg);
+    	//快速查询栏提示信息初始化
+    	$("#quickSearchText").attr("placeholder","请输入部门名称或编号");
+    }else if(cfg.entityID=="2"){//用户
+    	actionName = "getUserListData";
+    	cols = Chosen.getUserCols(cfg);
+    	//快速查询栏提示信息初始化
+    	$("#quickSearchText").attr("placeholder","请输入用户名称或编号");
+    }else if(cfg.entityID=="flowgroup"){
+        actionName = "getFlowgroupListData";
+        cols = Chosen.getFlowgroupCols(cfg);
+        //快速查询栏提示信息初始化
+        $("#quickSearchText").attr("placeholder","请输入流程用户组名称或编号");
+    }else if(cfg.entityID=="usergroup"){
+        actionName = "getUserGroupListData";
+        cols = Chosen.getUserGroupCols(cfg);
+        //快速查询栏提示信息初始化
+        $("#quickSearchText").attr("placeholder","请输入用户组名称或编号");
+    }else{
+  		actionName = "getWorkitemListData";
+   		cols = Chosen.getWorkitemCols(cfg);
+   		//快速查询栏提示信息初始化
+  			$("#quickSearchText").attr("placeholder","请输入名称或编号");
+
+    }
+    //加载列表数据
+	function loadTableList(selectid,quicktext){//selectid:树选中的ID；quicktext:快速查询内容；condition：条件值,用于筛选过滤权限
+		var url = getVfmRootPath()+'/cfgvpchosenentity/getListData';
+        if(cfg.entityID=="flowgroup"){
+            url = getWorkflowPath() + '/rest/flowgroup/pagechosen';
+        }
+
+		layui.use('table', function() {
+	        var table = layui.table;
+			console.log(selectid+":"+quicktext+":"+cfg);
+	        table.render({
+	        	id: 'id',
+	            elem: '#selectTable',
+	            size: 'sm',
+	            url: url,
+	            cols: cols,
+				height: $("body").height() - 50, 
+				method: 'POST',
+	            page: true,
+	            done: function(res, page, count) {
+	            	pageData = res.data;
+	            },
+	            where: {
+	            	'actionName': actionName,
+	            	'entityID': cfg.entityID,
+	            	'selectid': selectid,
+	            	'quickvalue': decodeURI(quicktext),
+	            	'quicktext': decodeURI(quicktext),
+	            	'condition': cfg.condition,
+					'irolegroupid': cfg.irolegroupid,
+					//'access_token': localStorage.getItem('access_token')   //token更新
+					'access_token': token
+	            }
+	        });
+	       if(cfg.multiple){
+	    	    table.on('tool(entity)', function(obj){  // obj.data 当前行数据  obj.event event参数对应的值  obj.tr 当前行tr的DOM对象
+	                obj.data.LAY_TABLE_INDEX = '1';
+	                obj.data.LAY_CHECKED = true;
+	    	    	var data = obj.data;
+	    			if (obj.event === 'click') {
+	    				if(obj.tr.find("input[name='layTableCheckbox']").attr("checked")=='checked'){
+	    			    	obj.tr.find("input[name='layTableCheckbox']").removeAttr("checked");
+	    			    	obj.tr.find("input[name='layTableCheckbox']").prop("checked",false);
+	    			    	obj.tr.find("input[name='layTableCheckbox']").next('.layui-form-checkbox').removeClass("layui-form-checked");
+	    					delSelectValue([data]);
+			        		removeByValue(resData,data);
+	    				}else{
+	    					//先删除，再添加
+	    					delSelectValue([data]);
+	    					removeByValue(resData, data);
+	    					obj.tr.find("input[name='layTableCheckbox']").attr("checked","checked");
+	    					obj.tr.find("input[name='layTableCheckbox']").prop("checked",true);
+	    					obj.tr.find("input[name='layTableCheckbox']").next('.layui-form-checkbox').addClass("layui-form-checked");
+	    					resData.push(data);
+			        		setSelectedValue(false,[data]);
+	    				}
+	    			}
+	    		});
+	    	    
+	       		//监听多选框
+			    table.on('checkbox(entity)', function(obj){
+			        if(obj.checked==true){
+			        	if(obj.type=="all"){
+			        		for(var i=0;i<pageData.length;i++){
+				        		//先删除，再添加
+				        		delSelectValue([pageData[i]]);
+		    					removeByValue(resData, pageData[i]);
+			        			resData.push(pageData[i]);
+			        		}
+			        		setSelectedValue(false,pageData);
+			        	}else{
+			        		//先删除，再添加
+			        		delSelectValue([obj.data]);
+	    					removeByValue(resData, obj.data);
+			        		resData.push(obj.data);
+			        		setSelectedValue(false,[obj.data]);
+			        	}
+			        	
+			        }else{
+			        	if(obj.type=="all"){
+			        		delSelectValue(pageData);
+			        		for(var i=0;i<pageData.length;i++){
+			        			removeByValue(resData,pageData[i]);
+			        		}
+			        	}else{
+			        		delSelectValue([obj.data]);
+			        		removeByValue(resData,obj.data);
+			        	}
+			        }
+			    }); 
+	       }else{
+	       		//监听工具条(单选按钮)
+				table.on('tool(entity)', function(obj){
+					obj.tr.parent().find(".layui-form-radioed").html('<input type="radio" name="radio" value="radio" title=" "><div class="layui-unselect layui-form-radio"><i class="layui-anim layui-icon"></i><span> </span></div>');
+					obj.tr.find("input[name='radio']").parent().html('<input type="radio" name="radio" value="radio" title=" "><div class="layui-unselect layui-form-radio layui-form-radioed"><i class="layui-anim layui-icon layui-anim-scaleSpring"></i><span> </span></div>');
+					resData = new Array();
+				    resData.push(obj.data);
+				    setSelectedValue(false,resData);
+				});
+	       }
+	    });
+	}
+	
+    //移除数组指定元素
+    function removeByValue(arr, obj) {
+      //console.log(obj);
+	  for(var i=0; i<arr.length; i++) {
+	    if(arr[i].id == obj.id) {
+	      arr.splice(i, 1);
+	      break;
+	    }
+	  }
+	}
+	//查询点击事件绑定
+	$("#quickSearchText").closest('.sub-head').find('.fa-search').on('click',function(event) {
+		quickSearch();
+	});
+	//回车事件绑定
+	function submitByEnter(e) {
+		e = e || window.event;
+	 	var key = e ? (e.charCode || e.keyCode) : 0;
+	 	if(key == 13) {
+	    	quickSearch();
+	 	}
+	}
+	//快速查询
+    function quickSearch() {
+    	var quicktext = document.getElementById('quickSearchText').value;
+    	if(quicktext!=null&&quicktext!=''&&quicktext!=undefined){//编码快速查询内容
+    		quicktext = encodeURIComponent(quicktext);
+    	}
+    	//alert(quicktext);
+	  	loadTableList('',quicktext);
+	}
+    var quick = document.getElementById('quickSearchText');
+	try{
+	   quick.addEventListener('keyup', submitByEnter, true);
+	} catch(ex) {
+	   quick.attachEvent('onkeyup', submitByEnter);
+	}
+	
+	//删除指定已选值
+	function delSelectValue(arr){
+		//console.log(arr);
+		$('.team-members').children('li').each(function() { // 
+			//console.log($(this).children('div.item').children('span'));
+			var tmpid = $(this).children('div.item').children('span').attr('hidID');
+			if(arr!=null&&arr!=undefined&&arr.length>0){
+				for(var j=0;j<arr.length;j++){
+					if(arr[j].id==tmpid){
+						$(this).remove();
+						break;
+					}
+				}
+				/* $.each(arr, function(i, item) {
+					if(item.id==tmpid){
+						$(this).remove();
+					}
+				}); */
+			}
+		});
+	}
+	
+	//初始化已选值
+	function setSelectedValue (isInit,arr) {
+		if(isInit||arr==null){
+			arr = cfg.checkedObj;
+		}
+		//console.log(arr);
+		if(arr!=null&&arr!=undefined&&arr.length>0){
+			var htmlstr = '';
+			var tempstr = '<li class="pull-left text-center m-b-sm">		'	
+						+ '   <div class="item">							'
+						+ '        <a href=""><i class="fa vp-transition vp-pa-rt">x</i></a>	'
+						+ '        <img alt="member" class="img-circle" src="../../images/logosm.jpg" data-toggle="tooltip" data-placement="top"  data-original-title="{#selectedvals}">'
+						+ '        <span class="vp-display-block vp-text-ovh" hidID="{#selectedid}">{#selectedval}</span>		'
+						+ '   </div>	'
+						+ '</li>		';
+			if(!cfg.multiple){//单选时，先清除原有值
+				$('.team-members').children('li').remove();
+			}
+			for(var j=0;j<arr.length;j++){
+				if(isInit&&arr[j].id!=''&&arr[j].id!='0'){
+					resData.push(arr[j]);
+				}
+				//htmlstr = htmlstr + tempstr.replace("{#selectedval}",arr[j]);
+				if(arr[j].id!=null&&arr[j].id!=undefined&&arr[j].id!=''&&arr[j].id!='0'&&arr[j].id!='null'){
+					htmlstr = tempstr.replace("{#selectedval}",arr[j].sname).replace("{#selectedid}",arr[j].id).replace("{#selectedvals}",arr[j].sname);
+					$('.team-members').append(htmlstr);
+				}
+			}
+		}
+	}
+	
+    $(document).ready(function(){
+        // 展开还是收缩
+        $('.team-toggle').on('click', function(event) {
+            if($(this).closest('.panel').hasClass('team-fixed')){
+                $(this).closest('.panel').removeClass('team-fixed');
+                $(this).children('i').removeClass('fa-angle-double-down').addClass('fa-angle-double-up')
+            }else{
+                $(this).closest('.panel').addClass('team-fixed');
+                $(this).children('i').removeClass('fa-angle-double-up').addClass('fa-angle-double-down')
+            }
+        });
+        // 删除全部
+        $('.team-closeAll').on('click',function(event) {
+        	resData = new Array();
+            // 是否删除整个ul你们决定
+            $('.team-members').children('li').remove();
+        });
+        // 单个删除
+        $('.team-members').on('click', 'a', function(event) {
+            event.preventDefault();
+            var delobj = {'id':$(this).closest('div').children('span').attr('hidID')};
+            //console.log(delobj);
+            $(this).closest('li').remove();
+            removeByValue(resData,delobj);
+        });
+        
+	    //初始化已选值
+		setSelectedValue(true,null);   
+	    //加载左侧条件树
+	    vpPostAjax("/cfgvpchosenentity/getDepartmentTreeData", {ids:''}, "POST", function(rst) {
+	    	if(rst.success){
+	    		queryHandler(rst.dataTree);
+				loadTableList('','');
+	    	}else{
+	    		layer.msg("加载数据失败！");
+	    	}
+    	});
+    });
+    
+	
+	//树节点点击事件
+	function zTreeOnClick(event, treeId, treeNode) {
+	    //alert(treeNode.pid + ", " + treeNode.name+ ", " + treeNode.id);
+		loadTableList(treeNode.id,'');
+	}
+	
+    var setting = {
+		view: {
+			showLine: false,
+			nameIsHTML: false,
+			addDiyDom: addDiyDom,
+		},
+		data: {
+			simpleData: {
+				enable: true,
+				idKey: "id",
+                pIdKey: "pid",
+				rootPId:0
+			}
+		},
+		callback: {
+	        onClick: zTreeOnClick
+	    }
+	};
+    //初始化列表
+	function queryHandler(zTreeNodes) {
+		//初始化树
+		$.fn.zTree.init($("#dataTree"), setting, zTreeNodes);
+		//添加表头
+		var rows = $("#dataTree").find('li');
+		if (!rows.length > 0) {
+			$("#dataTree").append('<li ><div style="text-align: center;line-height: 30px;" >无符合条件数据</div></li>')
+		}
+	}
+	
+</script>
+</body>
+</html>

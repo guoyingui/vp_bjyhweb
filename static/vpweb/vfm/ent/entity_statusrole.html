@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>任务看板 - VP应用全生命周期管理系统</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
+    <link rel="shortcut icon" href="img/favicon.ico">
+    <link href="../../css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="../../css/font-awesome.min.css?v=4.7.0" rel="stylesheet">
+    <link href="../../css/animate.css" rel="stylesheet">
+    <link href="../../css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+    <link href="../../css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+    <!-- zTree树表 -->
+    <link href="../../css/plugins/zTree/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+    <!-- layUI表格 -->
+    <link href="../../css/plugins/chosen/chosen.css" rel="stylesheet">
+    <link href="../../css/plugins/iCheck/custom.css" rel="stylesheet">
+    <link href="../../js/plugins/layui/css/layui.css"  rel="stylesheet" media="all">
+    <link href="../../css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="../../css/common.css" rel="stylesheet">
+    <link href="../../css/vp.css" rel="stylesheet">
+    <script src="../../../vpcommon/config.js"></script>
+    <script src="../../../vpcommon/vputils.min.js"></script>
+    <!--[if lte IE 9]>
+        <script src="../../js/html5shiv.min.js"></script>
+        <script src="../../js/respond.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+	<div class="padding-10 space-10" style="top: 0px;">
+		<div class="ibox">			
+			<div class="ibox-content p-n clearfix">
+				<form class="form-horizontal m-t" id="oForm"> 
+				<input type="hidden" id="iid" name="iid">
+				<input type="hidden" id="ientityid" name="ientityid">
+					<div class="form-group">
+						<div class="col-sm-12">
+							<label class="col-sm-2 col-md-3 control-label text-ellipsis">状态名称：</label>
+							<div class="col-sm-10 col-md-9">
+								<input id="sname" name="sname" class="form-control" type="text" minlength="2" maxlength="20" type="text" readonly>
+							</div>
+						</div>
+	
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 col-md-2 control-label text-ellipsis">权限列表：</label>
+						<div class="col-sm-10 col-md-9" id="valueList">
+				            <!-- 功能列表 start-->
+							<div id="valueListform">
+								
+							</div>
+							<!-- 功能列表 end-->
+					    </div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</body>
+    <!-- 全局js -->
+    <script src="../../js/jquery-1.11.3.min.js"></script>
+	<!--[if IE 8]>
+	<script type="text/javascript" src="../../js/jquery-1.9.1.min.js"></script>
+	<![endif]-->
+    <script src="../../js/bootstrap.min.js?v=3.3.6"></script>
+    <!-- 自定义js -->
+    <script src="../../js/content.js?v=1.0.0"></script>
+    <!-- 日期控件 -->
+    <script src="../../js/plugins/datapicker/bootstrap-datepicker.js"></script>
+    <!-- layer弹出层 -->
+    <script src="../../js/plugins/layer/layer.min.js"></script>
+    <!-- 下拉选择列表 -->
+    <script src="../../js/plugins/chosen/chosen.jquery.js"></script>
+    <!-- jQuery 表单验证-->
+    <script src="../../js/plugins/validate/jquery.validate.min.js"></script>
+    <script src="../../js/plugins/validate/messages_zh.min.js"></script>
+    <!-- zTree模拟树表 -->
+    <script src="../../js/plugins/zTree/jquery.ztree.all.min.js"></script>
+    <script src="../../js/vpsoft/TreeTable.js"></script>
+    <script src="../../js/vpsoft/common.js"></script>
+    <script src="../../js/vpsoft/form.js"></script>
+    <script src="../../js/plugins/iCheck/icheck.min.js"></script>
+    <script src="../../js/vpsoft/getUrlParam.js"></script>
+</html>
+<script>
+	var ientityid_ = UrlParm.parm("entityid");
+	var iid_ = UrlParm.parm("iid");
+	var sname= decodeURI(UrlParm.parm("sname"));
+	$(document).ready(function () {
+		
+		initMenu();
+		$('#sname').val(sname);
+		$('.i-checks').iCheck({
+			checkboxClass: 'text-primary fa fa-fw fa-square-o'
+		});
+
+
+	});
+	var oldColor = "#1E9FFF";
+	function changeColor(cls,seq){
+		if(cls == 1){ //移入
+			var rgb = $("#"+seq).children(":first").css('background-color'); 
+			/* if(!$.browser.msie){ 
+				rgb = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/); 
+				function hex(x) {return ("0" + parseInt(x).toString(16)).slice(-2);} 
+				rgb= "#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]); 
+			}  */
+			oldColor = rgb; 
+			$("#"+seq).children("div").each(function(item){
+				$(this).css("background-color","#1E9FFF");
+			})
+		} else {
+			$("#"+seq).children("div").each(function(item){
+				$(this).css("background-color",oldColor);
+			})
+		}
+	}
+	function initMenu(){
+		vpPostAjax('/cfgentstatus/menu', {ientityid:ientityid_,iid:iid_}, "POST", function(rst) {			
+			var json = rst.data;
+			var html = '<div style="height:10px;"></div>'
+					 + '<div class="form-group m-b-sm" style="height:1px;">'
+					 + '    <div class="col-xs-8 radio" style="text-align:center;background-color: #E3E3E3;">功能</div>'
+					 + '    <div class="col-xs-2 radio" style="text-align:center;background-color: #E3E3E3;">读权限</div>'
+					 + '    <div class="col-xs-2 radio" style="text-align:center;background-color: #E3E3E3;">写权限</div>'
+					 + '</div>'
+					 + '<div class="form-group m-b-sm" style="height:1px;">								'
+		    		 + '	<div class="col-sm-8 radio " style="text-align:left;background-color: #E3E3E3;"></div>	'
+		    		 + '	<div class="col-sm-2 radio " style="text-align:center;background-color: #E3E3E3;margin: 0px; padding: 0px;top: 0%;">'
+		    		 + '		<input type="checkbox" id="readall"  name="function" >'
+		    		 + '	</div>'
+		    		 + '	<div class="col-sm-2 radio " style="text-align:center;background-color: #E3E3E3;margin: 0px; padding: 0px;top: 0%;">'
+		    		 + '		<input type="checkbox" id="writeall" name="function" >'
+		    		 + '	</div>'
+		    		 + '</div>';
+		    var checkedArr  = []; 
+		    var count = 0;
+			$.each(json, function(i, item) {
+				if(item.subsequencekey=='' && item.ispoint=='1'){
+					return true;//无权限点的功能不显示
+				}
+				count++;
+				if(item.ispoint=='0' && (item.iaccesslevel=='0'||item.iaccesslevel=='1')){//只读或编辑
+					checkedArr.push(item);
+				} 
+				var background = "background-color:#f2f2f2;";
+				if(count%2==0){
+					background = "";
+				}
+				var levelnum = item.levelnum;
+				var space = "";
+				for(var k=1;k<levelnum;k++){
+					space += "&nbsp;&nbsp;&nbsp;&nbsp;";
+				}
+				var funcname = "";
+				var sicon = item.sicon;
+				if(sicon==''){
+					if(item.ispoint=='0'){//权限点
+						funcname = space+'&nbsp;&nbsp;&nbsp;&nbsp;'+item.sname;
+					}else{
+						funcname = space+'<i class="fa fa-folder-open" ></i>'+item.sname;
+					}
+				}else{
+					funcname = space+'<i class="fa '+sicon+'" ></i>'+item.sname;
+				}
+				html +='<div class="form-group m-b-sm" onmouseover="changeColor(1,\''+item.ssequencekey+'\')" onmouseout="changeColor(2,\''+item.ssequencekey+'\')" id="'+item.ssequencekey+'" style="height:1px;" hidid="'+item.iid+'" ispoint="'+item.ispoint+'" sequencekey="'+item.ssequencekey+'" subsequencekey="'+item.subsequencekey+'">'
+		    		 + '	<div class="col-sm-8 radio" id="func'+item.ssequencekey+'" style="text-align:left;'+background+'" >'+funcname+'</div>'
+		    		 + '	<div class="col-sm-2 radio" style="text-align:center;'+background+' margin: 0px; padding: 0px;top: 0%;">		'
+		    		 + '		<input type="checkbox" id="read'+item.ssequencekey+'"  name="function" funtype="read"  >'
+		    		 + '	</div>'
+		    		 + '	<div class="col-sm-2 radio" style="text-align:center;'+background+' margin: 0px; padding: 0px;top: 0%;">'
+		    		 + '		<input type="checkbox" id="write'+item.ssequencekey+'" name="function" funtype="write" >'
+		    		 + '	</div>'
+		    		 + '</div>';
+			});
+			$('#valueListform').children().remove();
+			$('#valueListform').append(html);
+			
+			//设置默认选中
+			$.each(checkedArr, function(i, item) {
+				if(item.iaccesslevel=='0'){//读
+					$('#read'+item.ssequencekey).prop('checked', 'checked');
+				}else if(item.iaccesslevel=='1'){//写
+					$('#read'+item.ssequencekey).prop('checked', 'checked');
+					$('#write'+item.ssequencekey).prop('checked', 'checked');
+				}
+			});
+		});
+		//设置权限
+		$(':input[name="function"]').on('click',function(event){
+			var checkboxid = $(this).attr('id');
+			if(checkboxid=='readall'){
+				if($(this).is(':checked')){
+					$(':input[funtype="read"]').each(function(i){
+						$(this).prop('checked', 'checked');
+			  		});
+				}else{
+					$(':input[name="function"]').each(function(i){
+						$(this).removeProp('checked');
+			  		});
+				}
+			}else if(checkboxid=='writeall'){
+				if($(this).is(':checked')){
+					$(':input[name="function"]').each(function(i){
+						$(this).prop('checked', 'checked');
+			  		});
+				}else{
+					$(':input[funtype="write"]').each(function(i){
+						$(this).removeProp('checked');
+			  		});
+				}
+			}else{
+				var ispoint = $(this).closest('.form-group').attr('ispoint');
+				var sequencekey = $(this).closest('.form-group').attr('sequencekey');
+				var subsequencekey = $(this).closest('.form-group').attr('subsequencekey');
+				if(ispoint=='1'&&subsequencekey!=''){//功能点
+					var subarr = subsequencekey.split(',');
+					if(checkboxid.indexOf('read')==0){
+						if($(this).is(':checked')){
+							$.each(subarr, function(i, subitem) {
+								$('#read'+subitem).prop('checked', 'checked');
+							});
+						}else{
+							$.each(subarr, function(i, subitem) {
+								$('#read'+subitem).removeProp('checked');
+								$('#write'+subitem).removeProp('checked');
+							});
+							$('#write'+sequencekey).removeProp('checked');
+						}
+					}else{
+						if($(this).is(':checked')){
+							$('#read'+sequencekey).prop('checked', 'checked');
+							$.each(subarr, function(i, subitem) {
+								$('#read'+subitem).prop('checked', 'checked');
+								$('#write'+subitem).prop('checked', 'checked');
+							});
+						}else{
+							$.each(subarr, function(i, subitem) {
+								$('#write'+subitem).removeProp('checked');
+							});
+						}
+					}
+				}else{
+					if($(this).is(':checked')){
+						if(checkboxid.indexOf('write')==0){
+							$('#read'+sequencekey).prop('checked', 'checked');
+						}
+					}else{
+						$('#write'+sequencekey).removeProp('checked');
+					}
+				}
+			}
+		});
+	}
+	
+	
+	var callbackfunc = "";
+
+	function saveForm(callback) {
+		callbackfunc = callback;
+
+		$("#oForm").submit();
+	}
+	$("#oForm").validate({
+		submitHandler : function(form) {
+			try
+			{
+				var oFormData = $('#oForm').serializeJSON();
+				console.log(JSON.stringify(oFormData)); 
+				var funcArr  = [];
+				$(':input[name="function"]').each(function(i){
+					var ispoint = $(this).closest('.form-group').attr('ispoint');
+					if(ispoint=='0'){//只保存权限点数据
+						var resObj = new Object();
+						resObj.funpointid = $(this).closest('.form-group').attr('hidid');
+						resObj.sequencekey = $(this).closest('.form-group').attr('sequencekey');
+						if($('#write'+resObj.sequencekey).is(':checked')){
+							resObj.iaccesslevel = '1';
+						}else if($('#read'+resObj.sequencekey).is(':checked')){
+							resObj.iaccesslevel = '0';
+						}else{
+							resObj.iaccesslevel = '';
+						}
+						if(!inArray(funcArr,resObj)){
+							funcArr.push(resObj);
+						}
+					}
+		  		});
+				oFormData['function'] = funcArr;
+				oFormData['iid'] = iid_;
+				/*
+				$(":checkbox[name='iprincipal']")
+				if($(this).is(':checked')){
+					$('#'+key).val("1");
+				}else{
+					$('#'+key).val("0");
+				}
+				return false;
+				*/
+				console.log(JSON.stringify(oFormData));
+				vpPostAjax('/cfgentstatus/saverole', oFormData , "POST", function(rst) {
+					try {
+						eval(callbackfunc)();
+					}
+					catch(exception) {
+						layer.msg(msg004 + callback, { icon: 2, time: 2000 });
+					}	
+				});
+			}
+			catch (e)
+			{
+				layer.msg('取表单数据失败', { icon: 2, time: 2000 });
+			}
+			return false;
+		}
+	});
+
+	function inArray(arr,obj){
+		for(var i=0; i<arr.length; i++) {
+	    	if(arr[i].funpointid == obj.funpointid && arr[i].sequencekey == obj.sequencekey) {
+	      		return true;
+	    	}
+	  	}
+		return false;
+	}
+</script>

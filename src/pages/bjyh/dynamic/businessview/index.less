@@ -1,0 +1,80 @@
+.business {
+  .ant-row .ant-col-6 .ant-card-head h3 {
+    padding: 0 !important;
+    text-align: center;
+  }
+  .box-title-logo {
+    right: 20px;
+    left: inherit !important;
+  }
+  .content-grids {
+    .td-body {
+      width: 100%;
+    }
+
+    .td-container {
+      display: inline-block;
+      width: 45%;
+      height: 120px;
+      line-height: 90px;
+      margin: 0 1%;
+      text-align: center;
+      font-size: 48px;
+      font-weight: 600;
+      color: #e5bb2e;
+      h5 {
+        height: 30px;
+        line-height: 20px;
+        font-size: 16px;
+        font-weight: 500;
+        color: #999;
+      }
+      span{
+        cursor: pointer;
+      }
+    }
+
+    .device-use {
+      display: flex;
+      justify-content: space-around;
+    }
+
+    .time-use {
+      width: 33%;
+      div {
+        background-repeat: no-repeat;
+        background-size: 70%;
+        background-position: center;
+        height: 150px;
+        text-align: center;
+        line-height: 150px;
+        font-size: 24px;
+        font-weight: 600;
+        color: #4e4c4c;
+        cursor: pointer;
+      }
+      span {
+        display: inline-block;
+        width: 100%;
+        text-align: center;
+        font-size: 16px;
+        font-weight: 500;
+      }
+    }
+
+    .time-use div {
+      background-image: url("./img/cpu_use.png");
+    }
+
+    // .time-use:nth-child(2) div {
+    //   background-image: url("./img/cpu_use.png");
+    // }
+
+    .time-use:last-of-type div {
+      background-image: url("./img/nei_cun_use.png");
+    }
+  }
+  .flex-container .flex-status h5{
+      text-align: left !important;
+  }
+}

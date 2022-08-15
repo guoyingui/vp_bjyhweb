@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>任务看板 - VP应用全生命周期管理系统</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
+    <link rel="shortcut icon" href="img/favicon.ico">
+    <link href="../../css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="../../css/font-awesome.min.css?v=4.7.0" rel="stylesheet">
+    <link href="../../css/animate.css" rel="stylesheet">
+    <link href="../../css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+    <link href="../../css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+    <!-- zTree树表 -->
+    <link href="../../css/plugins/zTree/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+    <!-- layUI表格 -->
+    <link href="../../css/plugins/chosen/chosen.css" rel="stylesheet">
+    <link href="../../css/plugins/iCheck/custom.css" rel="stylesheet">
+    <link href="../../js/plugins/layui/css/layui.css"  rel="stylesheet" media="all">
+    <link href="../../css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="../../css/common.css" rel="stylesheet">
+    <link href="../../css/vp.css" rel="stylesheet">
+    <script src="../../../vpcommon/config.js"></script>
+    <script src="../../../vpcommon/vputils.min.js"></script>
+    <!--[if lte IE 9]>
+        <script src="../../js/html5shiv.min.js"></script>
+        <script src="../../js/respond.js"></script>
+    <![endif]-->
+</head>
+<style>
+	.fa-fw {
+		font-size: 24px;
+	}
+	.text-fail {
+		color: #bbb;
+	}
+	.btnFixed {
+	    position: fixed;
+	    bottom: -5px;
+	    left: 5px;
+	    right: 5px;
+	    padding-top: 15px;
+	    border-top: 1px solid #ddd;
+	    background: #fff;
+	    z-index: 100;
+	}
+</style>
+<body>
+	<div class="padding-10">
+		<form class="form-horizontal m-t" id="oForm"> 
+			<div class="form-group">
+				<label class="col-sm-2 col-md-3 control-label text-ellipsis" >已选文档 ：</label>
+				<div class="col-sm-10 col-md-9">
+					<textarea id="selectedlist" name="selectedlist" class="form-control" readonly="readonly"></textarea>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-2 col-md-3 control-label text-ellipsis" >授权给 ：</label>
+				<div class="col-sm-10 col-md-9">
+					<div class="form-group" style="padding-top: 7px;">
+						<div class="col-xs-2"><a id="user"><i class="fa fa-user " data-toggle="tooltip" title="个人"></i>  个人</a></div>
+						<div class="col-xs-2"><a id="usergroup"><i class="fa fa-group " data-toggle="tooltip" title="用户组"></i>  用户组</a></div>
+						<div class="col-xs-2"><a id="dept"><i class="fa fa-address-card " data-toggle="tooltip" title="部门"></i>  部门</a></div>
+					</div>
+				</div>
+			</div>
+			<div class="form-group" >
+				<label class="col-sm-2 col-md-3 control-label text-ellipsis" > </label>
+				<div class="col-sm-10 col-md-9" id="valueList">
+					
+				</div>
+			</div>
+		</form>
+		<div class="hide btnFixed text-center" id="formBtn" >
+
+		</div>
+	</div>
+</body>
+    <!-- 全局js -->
+    <script src="../../js/jquery-1.11.3.min.js"></script>
+	<!--[if IE 8]>
+	<script type="text/javascript" src="../../js/jquery-1.9.1.min.js"></script>
+	<![endif]-->
+    <script src="../../js/bootstrap.min.js?v=3.3.6"></script>
+    <!-- 自定义js -->
+    <script src="../../js/content.js?v=1.0.0"></script>
+    <!-- 日期控件 -->
+    <script src="../../js/plugins/datapicker/bootstrap-datepicker.js"></script>
+    <!-- layer弹出层 -->
+    <script src="../../js/plugins/layer/layer.min.js"></script>
+    <!-- 下拉选择列表 -->
+    <script src="../../js/plugins/chosen/chosen.jquery.js"></script>
+    <!-- jQuery 表单验证-->
+    <script src="../../js/plugins/validate/jquery.validate.min.js"></script>
+    <script src="../../js/plugins/validate/messages_zh.min.js"></script>
+    <!-- zTree模拟树表 -->
+    <script src="../../js/plugins/zTree/jquery.ztree.all.min.js"></script>
+    <script src="../../js/vpsoft/TreeTable.js"></script>
+    <script src="../../js/vpsoft/common.js"></script>
+    <script src="../../js/vpsoft/form.js"></script>
+    <script src="../../js/plugins/iCheck/icheck.min.js"></script>
+    <!--选择用户-->
+	<script src="../../js/vpsoft/chosenEntity.js?v=1.0.0" charset="utf-8"></script>
+</html>
+<script>
+	
+	$("div>a").click(function() {
+		var optFlag = $(this).attr("id");
+		if (optFlag == 'user') {
+			ientityid = "2";//待确认
+		}else if (optFlag == 'usergroup') {
+			ientityid = "usergroup";//待确认
+		}else if (optFlag == 'dept') {
+			ientityid = "1";//待确认
+		}
+		
+		var resArr = [];
+		var cfg = new Object();
+		cfg.entityID = ientityid;
+		cfg.multiple = true;
+		cfg.width = "80%";//设置弹框宽度
+    	cfg.height = "80%";//设置弹框高度
+    	var ChosenUtil;
+    	if(parent.window.appdoclist){ //
+    		ChosenUtil = Chosen;
+    	} else {
+    		ChosenUtil = parent.parent.Chosen;
+    	}
+    	ChosenUtil.chosenEntity(cfg, function(data) {
+    		console.log(data);
+			if (data.length > 0) {
+				var obj ;
+				for (var i = 0; i < data.length; i++) {
+					obj = new Object();
+					obj.iid = data[i].iid;
+					obj.sname = data[i].sname;
+					resArr.push(obj);
+				}
+			} else {
+				parent.layer.msg("请至少选择一条数据！", { icon: 2, time: 2000 });
+			}
+			addRow(resArr,optFlag);
+		});
+	});
+	
+	function addRow(arr,optFlag){
+		console.log(arr);
+		var datatype = "";
+		var icon = "";
+		if(optFlag=='user'){
+			datatype = "1";
+			icon = "fa-user";
+		}else if(optFlag=='usergroup'){
+			datatype = "3";
+			icon = "fa-group";
+		}else if(optFlag=='dept'){
+			datatype = "2";
+			icon = "fa-address-card";
+		}
+		var len = arr.length;
+		if(len>0){
+			var items = $('#valueList').find('.form-item');
+			var existNum = 0;
+			if(items){
+				existNum = items.length;
+			}
+			
+			var html = "";
+			var index = 0;
+			$.each(arr, function(i, item) {
+				 index = existNum + i;
+				 html += '<div class="form-group form-item vp-pr m-b-sm" hidid="'+item.iid+'" datatype="'+datatype+'" index="'+index+'" objname="'+item.sname+'" > ';
+				 html += '	<div class="col-xs-2"><i class="fa fa-minus-circle text-danger" data-toggle="tooltip" title="删除"></i>  <i class="fa '+icon+'"></i> '+item.sname+'</div> ';
+				 html += '	<div class="col-xs-1"><input type="radio" name="roletype'+index+'" value="1">管理者</div> 		';
+				 html += '	<div class="col-xs-1"><input type="radio" name="roletype'+index+'" value="2">编辑者</div> 		';
+				 html += '	<div class="col-xs-1"><input type="radio" name="roletype'+index+'" value="3">阅读者</div> 		';
+				 html += '	<div class="col-xs-2"><input type="radio" name="roletype'+index+'" value="4">在线阅读者</div> 	';
+				 html += '</div> 	';
+			});
+			$('#valueList').append(html);
+		}
+	}
+
+	$(document).on('click','.fa-minus-circle',function(){
+		$(this).closest('.form-item').remove();
+		$(".tooltip.fade.top.in").remove();
+		$('#valueList').find('.form-item').each(function(i){
+			$(this).attr('index',i);
+			$(this).find('input').each(function(j){
+				$(this).attr('name','roletype'+i);
+			});
+		});
+	});
+	
+	$(document).ready(function () {	
+		var names = $("#selectedlist",parent.document).val();
+		if(parent.window.appdoclist){
+			names = $("#names",parent.document).val();
+		}
+		$("#selectedlist").val(names);
+		var height = $("body").height()-148;
+		$("#frmtree").height(height);
+		if(parent.window.appdoclist){ //
+			$('#formBtn').removeClass('hide');
+			var btnHtml = '<button class="btn btn-sm btn-primary" disabled id="saveBtn" >保存</button>&nbsp;';
+			$('#formBtn').html(btnHtml);
+			if (getParameter("entityrole")=='true') {
+				$('#formBtn button').removeAttr('disabled');
+			} 
+			$('#formBtn').attr('style','display: block;');
+			$('#saveBtn').attr('style','border-radius: 14px !important;');
+			$('#saveBtn').click(function() {
+				var authObj = new Object();
+				authObj.ifolderid = "";
+				authObj.ilibraryid = "";
+				authObj.ids = "";
+				var list = [];
+				var items = $('#valueList').find('.form-item');
+				if(items){
+					var index = 0;
+					var obj ;
+					var issubmit = true;
+					$.each(items, function(i, item) {
+						obj = new Object();
+						index = $(this).attr('index');
+						obj.iid = $(this).attr('hidid');
+						obj.objname = $(this).attr('objname');
+						obj.datatype = $(this).attr('datatype');
+						var namestr = 'roletype'+index;
+						obj.roletype = $('input[name="'+namestr+'"]:checked').val();
+						if(obj.roletype==undefined){
+							layer.msg('第'+(parseInt(index)+1)+'行数据请选择授予权限的类型！', { icon: 2, time: 2000 });
+							issubmit = false;
+							return false;
+						}
+						list.push(obj);
+					});
+					if(!issubmit){
+						return;
+					}
+				}
+				
+				if(list.length<=0){
+					layer.msg("请添加授权信息", { icon: 2, time: 2000 });
+					return;
+				}
+				authObj.list = list;
+				console.log(authObj);
+				parent.window.appdoclist.confirmAuth(authObj);
+			});
+		} else {
+			$(".layui-layer-btn", parent.document).attr("style","text-align:center;");
+			if(getParameter("entityrole")=='true'){
+				//$(".layui-layer-btn", parent.document).show();
+			}else{
+				$(".layui-layer-btn", parent.document).hide();
+			}
+		}
+	});
+</script>

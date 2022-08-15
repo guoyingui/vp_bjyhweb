@@ -1,0 +1,296 @@
+<div class="box box-default" style="height: 580px">
+    <div class="box-body" style="display: block;">
+        <div></div>
+        <div class="btn-group">
+            <button type="button" class="btn btn-default btn-sm" onclick="ctlPointTree.expandAll(true)">
+                <span class="fa fa-expand"></span>展开全部
+            </button>
+            <button type="button" class="btn btn-default btn-sm" onclick="ctlPointTree.expandAll(false)">
+                <span class="fa fa-compress"></span>折叠全部
+            </button>
+            <button type="button" class="btn btn-default btn-sm" onclick="ctlPointTree.checkAll(false)">
+                <span class="fa fa-square-o"></span>取消勾选
+            </button>
+            <button type="button" class="btn btn-primary btn-sm">
+                <i class="fa fa-cog"></i>已有管控点 &nbsp;&nbsp;<span id="firstCtlpoint" class="badge"></span>
+            </button>
+            <button type="button" class="btn btn-info btn-sm ">
+                <i class="fa fa-check"></i>新增管控点 &nbsp;&nbsp;<span id="addCtlpoint" class="badge">0</span>
+            </button>
+            <button type="button" class="btn btn-danger btn-sm ">
+                <i class="fa fa-remove"></i>取消管控点 &nbsp;&nbsp;<span id="delCtlpoint" class="badge">0</span>
+            </button>
+            <button type="button" class="btn btn-success btn-sm">
+                <i class="fa fa-cogs"></i>合计管控点 &nbsp;&nbsp;<span id="ctlpointCount" class="badge"></span>
+            </button>
+        </div>
+        <div class="scroll-content-dialog" style="overflow-y: auto;">
+            <ul id="outlineTree-branch" class="ztree resize"
+                style="border: 0;overflow: scroll; margin-top:0; min-height: 450px;height:550px;"></ul>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var ctlPointTree = {
+        dialog: null,
+        firstCtlpoint: 0,
+        orgartIds: [],
+        deleteArtIds: [],
+        addArtIds: [],
+        dialogClose: function () {
+            ctlPointTree.dialog.close();
+        },
+        expandAll: function (expandFlag) {
+            ctlPointTree.tree.expandAll(expandFlag);
+        },
+        checkAll: function (checkFlag) {
+            ctlPointTree.tree.checkAllNodes(checkFlag);
+            var nodes = ctlPointTree.tree.getNodes();
+            $.each($(".node_name"), function (i, node) {
+                ctlPointTree.removeCss($(node), 'art-bg-delete');
+                ctlPointTree.removeCss($(node), 'art-bg-add');
+            });
+            if (ctlPointTree.orgartIds.length > 0) {
+                $.each(ctlPointTree.orgartIds, function (i, outlineId) {
+                    var treeNode = ctlPointTree.tree.getNodeByParam('tid', outlineId);
+                    ctlPointTree.changeNodeCss(false, outlineId, treeNode.tId);
+                });
+            }
+            ctlPointTree.countNodes();
+        },
+        initTree: function () {
+            WD_URL.rest.ajaxMask({
+                maskEl: '#outlineTree-branch',
+                maskinfo: '导航加载中...',
+                url: config.navTreeUrl(),
+                type: 'GET'
+            }, function (data) {
+                ctlPointTree.tree = $.fn.zTree.init($('#outlineTree-branch'), settingDialogTree, data);;
+                ctlPointTree.expandAll(true);
+                var firstCtlpoint = ctlPointTree.tree.getCheckedNodes(true).length;
+                $("#firstCtlpoint").text(ctlPointTree.firstCtlpoint);
+                $("#firstCtlpoint").val(ctlPointTree.firstCtlpoint);
+                $("#ctlpointCount").text(ctlPointTree.firstCtlpoint);
+            })
+        },
+        addDiyDom: function (treeId, treeNode) { //节点元素扩展
+            var $title = $('#' + treeNode.tId + '_span');
+            if (treeNode.origChapNum) {
+                $title.prepend(treeNode.origChapNum);
+                treeNode.name = treeNode.origChapNum + treeNode.name;
+            }
+            var _extends = [];
+            var req = !!(treeNode.propertys && treeNode.propertys.busFlag);
+            //判断是否有业务标识
+            if (req) {
+                // ctlPointTree.tree.addBusFlag($title, treeNode.busFlag, treeNode.busFlagName);
+                _extends.push('<span class="label label-info word-outline-asset-label" id="asset_' +
+                    treeNode.propertys.busFlag + '">' + treeNode.propertys.busFlagName + '</span>');
+                $title.after(_extends.join(''));
+                treeNode.checked = true;
+                ctlPointTree.orgartIds.push(treeNode.tid);
+                var treeObj = $.fn.zTree.getZTreeObj(treeId);
+                treeObj.updateNode(treeNode);
+                ctlPointTree.firstCtlpoint++;
+            }
+        },
+        onRightClick: function (event, treeId, treeNode) {
+            var $target = $("#" + treeNode.tId + "_span").addClass('js-tree-rightclick rightclick-selectd');
+
+            var html = '<li data-btn-click="checkChildNode"><span>选中下级子节点</span></li>' +
+                '<li data-btn-click="unCheckChildNode"><span>取消下级子节点</span></li>';
+            if (!vpCommons.isEmpty(html)) {
+                vpUtils.popover($target, {
+                    trigger: 'sticky',
+                    placement: 'horizontal',
+                    title: false,
+                    arrow: false,
+                    cache: false,
+                    delay: 0,
+                    content: '<ul class="rg-select-menu">' + html + '</ul>',
+                    onShow: function ($element) {
+                        $element.find('li').click(function (e) {
+                            e.stopPropagation();
+                            var btnClick = $(this).data('btn-click');
+                            $target.removeClass('js-tree-rightclick rightclick-selectd')
+                                .webuiPopover('destroy');
+                            ctlPointTree[btnClick](treeNode);
+                        })
+                    },
+                    onHide: function ($element) {
+                        $target.removeClass('js-tree-rightclick rightclick-selectd').webuiPopover(
+                            'destroy');
+                    }
+                });
+            }
+        },
+        checkChildNode: function (treeNode) {
+            if (treeNode.children.length > 0) {
+                var treeChildNodes = treeNode.children;
+                for (var i = 0; i < treeChildNodes.length; i++) {
+                    ctlPointTree.tree.checkNode(treeChildNodes[i], true, true);
+                    ctlPointTree.changeNodeCss(true, treeChildNodes[i].tid, treeChildNodes[i].tId);
+                }
+            }
+            ctlPointTree.countNodes();
+        },
+        unCheckChildNode: function (treeNode) {
+            if (treeNode.children.length > 0) {
+                var treeChildNodes = treeNode.children;
+                for (var i = 0; i < treeChildNodes.length; i++) {
+                    ctlPointTree.tree.checkNode(treeChildNodes[i], false, true);
+                    ctlPointTree.changeNodeCss(false, treeChildNodes[i].tid, treeChildNodes[i].tId);
+                }
+            }
+            ctlPointTree.countNodes();
+        },
+        onCheck: function (event, treeId, treeNode) {
+            if (treeNode.checked) {
+                ctlPointTree.changeNodeCss(true, treeNode.tid, treeNode.tId);
+            } else {
+                ctlPointTree.changeNodeCss(false, treeNode.tid, treeNode.tId);
+            }
+            ctlPointTree.countNodes();
+        },
+        changeNodeCss: function (isCheck, outlineId, tId) {
+            if (isCheck) {
+                if (ctlPointTree.orgartIds.indexOf(outlineId) == -1) {
+                    ctlPointTree.changeCss($('#' + tId + '_span'), 'art-bg-add');
+                } else {
+                    ctlPointTree.removeCss($('#' + tId + '_span'), 'art-bg-delete');
+                    ctlPointTree.removeCss($('#' + tId + '_span'), 'art-bg-add');
+                }
+            } else {
+                if (ctlPointTree.orgartIds.indexOf(outlineId) != -1) {
+                    ctlPointTree.changeCss($('#' + tId + '_span'), 'art-bg-delete');
+                } else {
+                    ctlPointTree.removeCss($('#' + tId + '_span'), 'art-bg-delete');
+                    ctlPointTree.removeCss($('#' + tId + '_span'), 'art-bg-add');
+                }
+            }
+        },
+        countNodes: function () {
+            $("#ctlpointCount").text(ctlPointTree.tree.getCheckedNodes(true).length);
+            $("#delCtlpoint").text($(".art-bg-delete").length);
+            $("#addCtlpoint").text($(".art-bg-add").length);
+        },
+        saveCtlPoint: function (data) {
+            ctlPointTree.getChangeNodeInfo();
+            if (ctlPointTree.addArtIds.length == 0 && ctlPointTree.deleteArtIds.length == 0 && ctlPointTree
+                .orgartIds.length == 0) {
+                ctlPointTree.dialogClose();
+                return;
+            }
+            if (ctlPointTree.addArtIds.length == 0 && ctlPointTree.deleteArtIds.length == 0) {
+                ctlPointTree.dialogClose();
+                return false;
+            } else {
+                WD_URL.rest.ajaxMask({
+                    url: !!this.dialog.tree.editor.scene && this.dialog.tree.editor.scene.auth(
+                            "headermenu-advfunc-batchsetpointuseodmflag") ? config
+                        .updateControlPointUseodm() : config.updateControlPoint(),
+                    type: 'PUT',
+                    data: {
+                        addIds: vpUtils.Str.changeToStr(ctlPointTree.addArtIds),
+                        delIds: vpUtils.Str.changeToStr(ctlPointTree.deleteArtIds),
+                        busFlag: 1
+                    },
+                    dataType: 'json',
+                    maskinfo: '正在保存请稍等...'
+                }, function (json) {
+                    show_message('操作成功', 'success');
+                    ctlPointTree.dialogClose();
+                }, function () {
+                    show_message('操作失败', 'success');
+                })
+            }
+        },
+        getChangeNodeInfo: function () {
+            function filter(node) {
+                return node.checked;
+            }
+            var ckNodes = ctlPointTree.tree.getNodesByFilter(filter);
+            if (ckNodes.length == 0 && ctlPointTree.orgartIds.length == 0) {
+                return false;
+            }
+            if (ctlPointTree.orgartIds.length > 0 && ckNodes.length == 0) {
+                ctlPointTree.deleteArtIds = ctlPointTree.orgartIds;
+            } else if (ctlPointTree.orgartIds.length == 0 && ckNodes.length > 0) {
+                $.each(ckNodes, function (i, node) {
+                    ctlPointTree.addArtIds.push(node.tid);
+                });
+            } else {
+                var newIds = [];
+                $.each(ckNodes, function (i, node) {
+                    newIds.push(node.tid);
+                    if (ctlPointTree.orgartIds.indexOf(node.tid) == -1) {
+                        ctlPointTree.addArtIds.push(node.tid);
+                    }
+                });
+                $.each(ctlPointTree.orgartIds, function (i, outlineId) {
+                    if (newIds.indexOf(outlineId) == -1) {
+                        ctlPointTree.deleteArtIds.push(outlineId);
+                    }
+                });
+            }
+        },
+        changeCss: function ($el, css, cssPrefix) {
+            if (!$el.hasClass(css)) {
+                $el.addClass(css);
+            }
+        },
+        removeCss: function ($el, css) {
+            if ($el.hasClass(css)) {
+                $el.removeClass(css)
+            }
+        },
+        loadData: function (dialog, data) {
+            this.dialog = dialog;
+            this.dialog.tree = data.tree;
+        }
+    };
+
+    var settingDialogTree = {
+        view: {
+            showLine: true,
+            showIcon: true,
+            selectedMulti: true,
+            dblClickExpand: false,
+            addDiyDom: ctlPointTree.addDiyDom
+        },
+        check: {
+            enable: true,
+            chkStyle: "checkbox",
+            chkboxType: {
+                "Y": "",
+                "N": ""
+            }
+        },
+        data: {
+            simpleData: {
+                enable: true,
+                idKey: "tid",
+                pIdKey: "pid",
+                rootPId: 0
+            }
+        },
+        callback: {
+            onClick: function (e, treeId, treeNode, clickFlag) {
+                ctlPointTree.tree.checkNode(treeNode, !treeNode.checked, true);
+                if (treeNode.checked) {
+                    ctlPointTree.changeNodeCss(true, treeNode.tid, treeNode.tId);
+                } else {
+                    ctlPointTree.changeNodeCss(false, treeNode.tid, treeNode.tId);
+                }
+                ctlPointTree.countNodes();
+            },
+            onRightClick: ctlPointTree.onRightClick,
+            onCheck: ctlPointTree.onCheck
+        }
+    };
+
+    $(function () {
+        ctlPointTree.initTree();
+    });
+</script>

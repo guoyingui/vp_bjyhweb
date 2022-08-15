@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title id="title">附件预览</title>
+    <style>
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            margin:0px;
+        }
+    </style>
+    <link href="../vpstatic/favicon.ico" rel="icon" type="image/x-icon" />
+    <script src="../vpstatic/plugins/jquery-1.11.1.min.js"></script>
+    <script src="../vpcommon/config.js"></script>
+    <script src="../vpcommon/vputils.min.js"></script>
+</head>
+<body>
+<iframe id="view" src="" style="height: 100%;width: 100%;border: 0px;text-align: center"></iframe>
+<script>
+    $("#title").text(vp.cookie.getUrlParams('filename'));
+    var loadUrl = window.vp.config.URL.download.replace("\{vpplat\}",window.vp.config.SETTING.vpplat);
+    loadUrl+="?fileid="+vp.cookie.getUrlParams('fileid');
+    loadUrl+="&fullfilename="+vp.cookie.getUrlParams('fullfilename');
+    loadUrl+="&access_token="+vp.cookie.getToken();
+    loadUrl+="&iaccesslevel=1";
+    $("#view").attr("src",window.vp.config.previewServer+"?url="+encodeURIComponent(loadUrl));
+</script>
+</body>
+</html>

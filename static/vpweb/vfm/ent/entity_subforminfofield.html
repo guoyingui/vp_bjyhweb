@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>任务看板 - VP应用全生命周期管理系统</title>
+<meta name="keywords" content="">
+<meta name="description" content="">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Cache-control" content="no-cache">
+<meta http-equiv="Cache" content="no-cache">
+<link rel="shortcut icon" href="img/favicon.ico">
+<link href="../../css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+<link href="../../css/font-awesome.min.css?v=4.7.0" rel="stylesheet">
+<link href="../../css/animate.css" rel="stylesheet">
+<link href="../../css/plugins/datapicker/datepicker3.css"
+	rel="stylesheet">
+<link
+	href="../../css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css"
+	rel="stylesheet">
+<!-- zTree树表 -->
+<link href="../../css/plugins/zTree/zTreeStyle/zTreeStyle.css"
+	rel="stylesheet">
+<!-- layUI表格 -->
+<link rel="stylesheet" href="../../js/plugins/layui/css/layui.css"
+	media="all">
+<link href="../../css/style.css?v=4.1.0" rel="stylesheet">
+<link href="../../css/common.css" rel="stylesheet">
+<link href="../../css/vp.css" rel="stylesheet">
+    <script src="../../../vpcommon/config.js"></script>
+    <script src="../../../vpcommon/vputils.min.js"></script>
+<!--[if lte IE 9]>
+        <script src="../../js/html5shiv.min.js"></script>
+        <script src="../../js/respond.js"></script>
+    <![endif]-->
+<!-- 全局js -->
+<script src="../../js/jquery-1.11.3.min.js"></script>
+<!--[if IE 8]>
+	<script type="text/javascript" src="../../js/jquery-1.9.1.min.js"></script>
+	<![endif]-->
+<script src="../../js/bootstrap.min.js?v=3.3.6"></script>
+<!-- 自定义js -->
+<script src="../../js/content.js?v=1.0.0"></script>
+<!-- 日期控件 -->
+<script src="../../js/plugins/datapicker/bootstrap-datepicker.js"></script>
+<!-- layer弹出层 -->
+<script src="../../js/plugins/layer/layer.min.js"></script>
+<!-- 下拉选择列表 -->
+<script src="../../js/plugins/chosen/chosen.jquery.js"></script>
+<!-- layui表格 -->
+<script src="../../js/plugins/layui/layui.js" charset="utf-8"></script>
+<script src="../../js/vpsoft/common.js"></script>
+<script src="../../js/vpsoft/form.js"></script>
+<script src="../../js/vpsoft/getUrlParam.js"></script>
+<script src="../../js/plugins/iCheck/icheck.min.js"></script>
+
+<script language="javascript" src="../../js/jquery-1.3.2.js"></script>
+<script language="javascript" src="../../js/ui.core.js"></script>
+<script language="javascript" src="../../js/ui.sortable.js"></script>
+<script language="javascript" src="../../js/vpsoft/createentityview.js"></script>
+<script language="javascript" src="../../js/jshashset.js"></script>
+<style>
+	tr {
+		height: 30px;
+	}
+</style>
+</head>
+
+<body class="wight-bg">
+<div id="headRegion" >
+<table class="normal_list" width="100%" border="0" cellspacing="0" >
+	<tr class="normal_list_tdtitle">
+		<td width="5%" style="padding-left:10px;"><input type="checkbox" name="selectAllItem" id="selectAllItem" dataType="form"/></td>
+		<td width="15%">表单元素</td>
+		<td width="15%">类型</td>
+		<td width="15%">字段行为</td>
+		<td width="15%">占据列数</td>
+		<td width="15%">移动端显示</td>
+	</tr>
+	<tr >
+		<td >&nbsp;&nbsp;</td>
+		<td  id="formname"></td>
+		<td ><span style="width:40px;">&nbsp;&nbsp;</span>表单</td>
+		<td ><span style="width:40px;">&nbsp;&nbsp;</span></td>
+		<td ><span style="width:40px;">&nbsp;&nbsp;</span></td>
+		<td ><span style="width:40px;">&nbsp;&nbsp;</span></td>
+	</tr>
+</table>
+</div>
+<!--移动区域开始	 -->		
+<div id="moveAreaContainer" style="width:100%; height:380px;overflow-y:scroll;overflow-x:hidden;">
+	<div id="moveArea" style="width:99%; position: inherit; top:0px; right:0px; z-index: -1;" >
+	
+	</div>
+</div>
+<!--移动区域结束	 -->
+</body>
+<script>
+$("#moveAreaContainer").css({
+	height: $("body").height() - 70
+})
+var globalSequencekey=0;
+/**
+ * 编辑表单信息
+ * @param {} resObj
+ * @return {Boolean}
+ */
+function editFormInfo(){
+	var checkObj=$(":checkbox:checked");
+	if(checkObj.length>1){
+		layer.msg('只能编辑一个表单字段或节！', { icon: 1, time: 2000 });
+		return false;
+	}
+	if(checkObj.length==0){
+		layer.msg('请选择一个表单字段或节！', { icon: 1, time: 2000 });
+		return false;
+	}
+	$(":checkbox:checked").each(function(){
+		var editType=$(this).attr("dataType");//编辑类型
+		if(editType=='form'){//表单
+		}
+		if(editType=='section'){//节
+		  var sec=$(this).val().split(",");
+			var param = {};
+			param["btn"] = new Array(["确定"]);
+			console.log($(this).val());
+			addSection(sec[2]);
+		}
+		if(editType=='field'){//字段
+		  var sec=$(this).val().split(",");
+	      console.log($(this).val());
+
+		  editfield(sec[3]);
+		  
+		  
+		}
+	});
+}
+
+/**
+ * 删除表单信息
+ * @param {} resObj 删除类型 0：表单，1：节 2：字段
+ */
+function delFormInfo(resObj){
+
+	var secArr=[];
+	var fieldArr=[];
+	
+	$(":checkbox:checked").each(function(){
+		if($(this).attr("dataType")=='section'){
+			secArr.push($(this).val());
+		}
+		if($(this).attr("dataType")=='field'){
+			fieldArr.push($(this).val());
+		}
+	});
+	if(secArr.length<1&&fieldArr<1){
+		layer.msg('没有可删除的字段信息！', { icon: 1, time: 2000 });
+		return false;
+	}
+
+	//if(Common.showConfirm("是否确认删除选择的表单信息?")){
+		var dataObj=new Object();
+		if(secArr.length>0){
+			dataObj.secArr=secArr.join(",,,");
+		}else{
+			dataObj.secArr="";
+		}
+		if(fieldArr.length>0){
+			dataObj.fieldArr=fieldArr.join(",,,");
+		}else{
+			dataObj.fieldArr="";
+		}
+		
+		dataObj.iviewid=UrlParm.parm("iid");
+		
+		var action='/cfgentview/subdelformfield';
+
+	   vpPostAjax(action, dataObj, 'POST', function(rst) {
+		   if(rst.success){   
+			parent.layer.msg('删除成功！', { icon: 1, time: 2000 });
+			 location.reload();
+		}else{
+			parent.layer.msg('删除失败，！'+rst.msg, { icon: 2, time: 2000 });
+		}
+	   });
+		
+		
+}
+
+ /**
+	 * 拖拽完成后保存节点的sequencekey
+	 * @param {} event
+	 * @param {} ui
+	 */
+	function saveSectionSeqen(event,ui){
+		 debugger
+		var newsort= $("#moveArea").sortable("toArray");
+		var sortArr=[];
+		for(var i=0;i<newsort.length;i++){
+			sortArr.push(newsort[i].split("@")[1]+","+(i+1));
+		}
+
+		var dataObj=new Object();
+		dataObj.secParamList=sortArr.join(",,,");
+		dataObj.updateFieldSeqentype=1;
+		dataObj.iviewid=UrlParm.parm("iid");
+		console.log(dataObj);
+		var action='/cfgentview/updateFieldSeqen';
+
+		   vpPostAjax(action, dataObj, 'POST', function(rst) {
+			   if(rst.success){   
+				//parent.layer.msg('成功！', { icon: 1, time: 2000 });
+				 //location.reload();
+				}else{
+					//parent.layer.msg('删除失败，！'+rst.msg, { icon: 2, time: 2000 });
+				}
+		   });
+	};
+	/**
+	 * 拖拽完成后保存字段的sequencekey及所属节的信息
+	 * @param {} oriEl 移动后的元素
+	 * @param {} copyEl 移动前的备份元素
+	 * 移动字段元素ID规则：节点名称_字段名称
+	 */
+	function saveFieldSeqen(oriEl,copyEl){
+		debugger
+		var parentID=oriEl.attr("id").split("@")[0];
+		var sortArr=[];
+		$("div[id^='"+parentID+"'][datatype='field']").each(function(){
+			var curID=$(this).attr("id");
+			var curSeq=$(this).attr("sequencekey");
+			sortArr.push(curID.split("@")[0]+","+curID.split("@")[1]+","+curSeq);
+		});
+		var isUpdateSecField=false;//是否要更新节点信息，如果字段是从另一个节拖拽过来的则需要删除原来那个节点的字段信息
+		if(parentID!=copyEl.attr("id").split("@")[0]){
+			isUpdateSecField=true;
+		}
+		var v_fromSecParam=copyEl.attr("id").split("@")[0]
+							+","+copyEl.attr("id").split("@")[1]
+							+","+parentID+","+oriEl.attr("sequencekey");
+
+		var dataObj=new Object();
+		dataObj.fieldParamList=sortArr.join(",,,");
+		dataObj.fromSecParam=v_fromSecParam;
+		dataObj.isUpdateSecField=isUpdateSecField;
+		dataObj.updateFieldSeqentype=2;
+		dataObj.iviewid=UrlParm.parm("iid");
+		dataObj.viewtype='subview';
+		var action='/cfgentview/updateFieldSeqen';
+
+		   vpPostAjax(action, dataObj, 'POST', function(rst) {
+			   if(rst.success){   
+				//parent.layer.msg('成功！', { icon: 1, time: 2000 });
+				 //location.reload();
+				}else{
+					//parent.layer.msg('删除失败，！'+rst.msg, { icon: 2, time: 2000 });
+				}
+		   });
+		
+		
+		console.log(dataObj);
+	};
+	/**
+	 * 拖拽完成后保存节的sequencekey
+	 * @param {} oriEl
+	 */
+	function saveSecSeqen(oriEl){
+		 
+		var sortArr=[];
+		$("div[datatype='section']").each(function(){
+			var curID=$(this).attr("id");
+			var curSeq=$(this).attr("sequencekey");
+			sortArr.push(curID+","+curSeq);
+		});
+
+		var dataObj=new Object();
+		dataObj.secParamList=sortArr.join(",,,");
+		dataObj.updateFieldSeqentype=3;
+		dataObj.iviewid=UrlParm.parm("iid");
+		console.log(dataObj);
+		
+		var action='/cfgentview/updateFieldSeqen';
+
+		   vpPostAjax(action, dataObj, 'POST', function(rst) {
+			   if(rst.success){   
+				//parent.layer.msg('成功！', { icon: 1, time: 2000 });
+				 //location.reload();
+				}else{
+					//parent.layer.msg('删除失败，！'+rst.msg, { icon: 2, time: 2000 });
+				}
+		   });
+	}
+ 
+/**
+*检查是否是表单字段类型
+*/
+ function checkField(obj){ 
+     	var val=$(obj).attr("dataType");
+     	if(val=='field'){
+     		 $("#moveArea").sortable("disable");
+     		$("div[id^='parent_div']").sortable("enable");
+     		
+     	}else{
+     		$("div[id^='parent_div']").sortable("disable");
+     		$("#moveArea").sortable("enable");
+     	}
+     }
+     
+ function wrapChild(obj){
+	$(obj).css("cursor","move");
+	$(obj).attr("isDown","true");
+	if($(obj).attr("datatype")=="section"){
+		$("div[datatype='section']").each(function(){
+			var allChilds=$("div[id^='"+$(this).attr("id")+"'][datatype='field']");
+			$(this).append(allChilds);
+		});
+	}
+
+ }
+ var isMove = false;
+ function moveSection(obj){
+	 if($(obj).attr("isDown") == "true"){
+		 isMove = true;
+	 }
+ }
+ function unwrapChild(obj){
+	 $(obj).css("cursor","auto");
+	 if(!isMove){
+		 kickOutChildren();
+	 }
+	 isMove = false;
+ }
+ 
+ function kickOutChildren(){
+	 jQuery('#moveArea').find("div[datatype='section']").each(function(){
+		 	var parentID=$(this).attr("id");
+			var cls=$("div[id^='"+parentID+"'][datatype='field']");
+			$(this).after($("div[id^='"+parentID+"'][datatype='field']"));
+	 });
+	
+ }
+ function releaseChild(obj){
+ 	$(obj).css("cursor","move");
+ 	if($(obj).attr("datatype")=="field"){
+		if($(obj).parent().attr("datatype")=="section"){
+			$("div[datatype='section']").each(function(){
+				var parentID=$(this).attr("id");
+				$(this).after($("div[id^='"+parentID+"'][datatype='field']"));
+			});
+ 		}
+ 	}
+ }
+ 
+function addSection(sectionid){
+	var param = {};
+	param["btn"] = new Array(["确定"]);
+	parent.openWindow('../ent/entity_createFormSection.html?iviewid='+ UrlParm.parm("iid")+"&sectionid="+sectionid, '新建节', param, function(layerindex,layero,index) {		
+		try{
+			 var isClose = $(layero).find("iframe")[0].contentWindow.addSection();
+			 if(isClose){
+				 parent.layer.close(layerindex);
+				 location.reload();
+			 }
+		} catch(exception) {
+			
+		}
+	});
+	
+} 
+ 
+function editfield(iid){
+	var param = {};
+	param["btn"] = new Array(["确定"]);
+
+	//parent.openWindow('createFormSection.html?iviewid'+ UrlParm.parm("iid") , '属性', param, function(data, index) {
+	parent.openWindow('../ent/entity_formfieldevent.html?iviewid='+ UrlParm.parm("iid")+'&iviewattrid='+iid, '编辑字段事件', param, function(layerindex,layero,index) {		
+		try{
+			
+			 var resData = $(layero).find("iframe")[0].contentWindow.addSection();
+			 parent.layer.close(layerindex);
+			 location.reload();
+			
+		
+		} catch(exception) {
+			
+		}
+	});
+	
+} 	
+	
+function addFields() {
+	var param = {};
+	param["btn"] = new Array([ "确定" ]);
+	
+	var secArr=[];
+	
+	$(":checkbox:checked").each(function(){
+		if($(this).attr("dataType")=='section'){
+			secArr.push($(this).val());
+		}
+	});
+	
+	if(secArr.length!=1){
+		layer.msg('请选择一个节！', { icon: 1, time: 2000 });
+		return false;
+	}
+
+	//parent.openWindow('createFormSection.html?iviewid'+ UrlParm.parm("iid") , '属性', param, function(data, index) {
+	parent.openWindow('../ent/entity_subcreateFormFields.html?iviewid=' + UrlParm.parm("iid") + '&iselectionid=' + secArr[0].split(",")[2], '新建属性', param, function(layerindex, layero, index) {
+		try {
+			var resData = $(layero).find("iframe")[0].contentWindow.addFields();
+			parent.layer.close(layerindex);
+			location.reload();
+		} catch (exception) {
+
+		}
+	});
+} 
+ 
+$(document).ready(function() {
+	//-----移动配置开始
+	$("#moveArea").sortable({
+		opacity: 0.6,
+		forcePlaceholderSize: true ,
+		placeholder:"ui-state-highlight",
+		stop:function(event, ui){
+			kickOutChildren();
+		},
+		update : function(event, ui) {
+			var copyEl=$(ui.item).clone();//备份移动的元素,方便更新原有数据
+			if ($(ui.item).attr("datatype") == "section") {// 节移动
+				// 先得到紧邻的后面同辈元素，得到其ID和sequencekey
+				if ($(ui.item).next().html() != null) {
+					var nextSec = $(ui.item).next();
+					var nextSeq = nextSec.attr("sequencekey");
+					var nextID = nextSec.attr("id");
+					$(ui.item).attr("sequencekey", nextSeq);
+					$(ui.item).nextAll("[datatype='section']").each(function() {
+								nextSeq++;
+								$(this).attr("sequencekey", nextSeq);
+							});
+				} else {
+					var prevSec = $(ui.item).prev();
+					var prevSeq = prevSec.attr("sequencekey");
+					var prevID = prevSec.attr("id");
+					prevSeq++;
+					$(ui.item).attr("sequencekey", prevSeq);
+				}
+				saveSecSeqen($(ui.item));
+			} else {// 字段移动
+				if ($(ui.item).prev().attr("datatype") == "section") {
+					var curSeq = 1;
+					var oriEl = $(ui.item);
+					var secID = oriEl.prev().attr("id");
+					var fieldName = oriEl.attr("id").split("@")[1];
+					var secName = oriEl.attr("id").split("@")[0];
+					var isreturn = false;
+					// 判断字段是否已经存在
+					$("div[id^='" + secID + "'][datatype='field']").each(
+							function() {
+								var curIDArr=$(this).attr("id").split("@");
+								if (curIDArr[1] == fieldName && curIDArr[0]!=secName) {
+									Common.showMessage("该字段已经存在！");
+									$(ui.item).remove();
+									isreturn = true;
+									return false;
+								}
+							});
+					if (isreturn)
+						return false;
+					oriEl.attr("id", secID + "@" + fieldName);
+					oriEl.attr("sequencekey", (Number(curSeq)));
+					$("div[id^='" + secID + "'][datatype='field']").each(
+							function() {
+								curSeq++;
+								var curID = $(this).attr("id");
+								$(this).attr("sequencekey", curSeq);
+							});
+					var fieldName = oriEl.attr("id").split("@")[1];
+
+				} else if ($(ui.item).prev().attr("datatype") == "field") {
+					var oriEl = $(ui.item);
+					var prevSeq = oriEl.prev().attr("sequencekey");
+					var prevID = oriEl.prev().attr("id");
+					var parentID = prevID.split("@")[0];
+					var fieldName = oriEl.attr("id").split("@")[1];
+					var secName=oriEl.attr("id").split("@")[0];
+					var isreturn = false;
+					// 判断字段是否已经存在
+					$("div[id^='" + parentID + "'][datatype='field']").each(
+							function() {
+								var curIDArr=$(this).attr("id").split("@");
+								if (curIDArr[1] == fieldName && curIDArr[0]!=secName) {
+									Common.showMessage("该字段已经存在！");
+									$(ui.item).remove();
+									isreturn = true;
+									return false;
+								}
+							});
+					if (isreturn)
+						return false;
+					prevSeq++;
+					oriEl.attr("sequencekey", (Number(prevSeq)));
+					oriEl.attr("id", parentID + "@" + fieldName);
+					oriEl.nextAll("[id^='" + parentID + "']").each(function() {
+								prevSeq++;
+								$(this).attr("sequencekey", prevSeq);
+							});
+
+				} else {
+					var oriEl = $(ui.item).clone();
+					$(ui.item).remove();
+					return false;
+				}
+				 saveFieldSeqen($(ui.item),copyEl);
+			}
+		}
+	});
+
+   $("#selectAllItem").click(function() {
+	if ($(this).attr("checked") == true) { // 全选 
+	   $(":checkbox").each(function() { 
+	   $(this).attr("checked", true); 
+	  }); 
+	} else { // 取消全选 
+	   $(":checkbox").each(function() { 
+	   $(this).attr("checked", false); 
+	  }); 
+	} 
+	}); 
+
+	
+	var sparam = { ientityid : UrlParm.parm("ientityid"), iid : UrlParm.parm("iid"),itype:3,forminfo:3 };
+	
+	
+	  vpPostAjax('/cfgentview/subget', sparam, 'POST', function(rst) {
+		   if(rst.success){   
+			   if(rst.data.sname!=undefined){
+				  // document.getElementById("name").value=rst.data.sname;
+				   document.getElementById('formname').innerHTML=rst.data.sname;
+			       var viewcode=rst.data.scode;
+				   if(rst.data.viewsections){
+					    if(rst.data.viewsections.length>0){
+							$.each(rst.data.viewsections, function(i, item) {
+								var sectionsname=rst.data.viewsections[i].sname;
+								var sectionscode=rst.data.viewsections[i].scode;
+								var sectionsiid=rst.data.viewsections[i].iid;
+								var ishow=rst.data.viewsections[i].ishow;
+								var sectionssequencekey=rst.data.viewsections[i].ssequencekey;
+								var iexpend=rst.data.viewsections[i].iexpend;
+								
+								getViewsection(viewcode,sectionsname,sectionsiid,UrlParm.parm("ientityid"),sectionssequencekey);
+								
+								if(rst.data.viewsections[i].attributelist.length>0){
+									$.each(rst.data.viewsections[i].attributelist, function(j, itemi) {
+										var sname=rst.data.viewsections[i].attributelist[j].sname;
+										var scode=rst.data.viewsections[i].attributelist[j].scode;
+										var siid=rst.data.viewsections[i].attributelist[j].iid;
+										var ssequencekey=rst.data.viewsections[i].attributelist[j].ssequencekey;
+										var idisplaycolumn=rst.data.viewsections[i].attributelist[j].idisplaycolumn;
+										var imobileshow=rst.data.viewsections[i].attributelist[j].imobileshow;
+										var iconstraint=rst.data.viewsections[i].attributelist[j].iconstraint;
+										
+										getViewField(sectionsiid,viewcode,sname,siid,UrlParm.parm("ientityid"),ssequencekey,iconstraint,idisplaycolumn,imobileshow);
+										
+									});
+									
+								}
+								
+								
+							});
+						
+						}
+					    
+				   }
+			   
+
+			   } 
+			   
+			}else{
+				parent.layer.msg('查询失败，！'+rst.msg, { icon: 2, time: 2000 });
+			}
+	   });
+
+});
+
+function saveformInfo(){
+	var paramArr2=[];
+	$("select[name='dataType'] option:selected").each(function(){
+		var width=$(this).val();
+		var aliasVal=$(this).attr("aliasVal");
+		paramArr2.push(aliasVal.split("@")[0]+","+aliasVal.split("@")[1]+","+width);
+		
+	});
+	var paramArr=[];
+	$("select[name='inputType'] option:selected").each(function(){
+		var width=$(this).val();
+		var aliasVal=$(this).attr("aliasVal");
+		paramArr.push(aliasVal.split("@")[0]+","+aliasVal.split("@")[1]+","+width);
+		
+	});
+	
+	var paramArr3=[];
+	$("select[name='ismobile'] option:selected").each(function(){
+		var width=$(this).val();
+		var aliasVal=$(this).attr("aliasVal");
+		paramArr3.push(aliasVal.split("@")[0]+","+aliasVal.split("@")[1]+","+width);
+	});
+	
+	if(paramArr.length<1&&paramArr2.length<1&&paramArr3.length<1){
+		parent.layer.msg('没有可保存的字段信息！！', { icon: 1, time: 2000 });
+		return false;
+	}
+
+		var dataObj=new Object();
+
+		dataObj.ientityid=UrlParm.parm("ientityid");
+		dataObj.iviewid=UrlParm.parm("iid");
+
+		dataObj.secParamList=paramArr.join(",,,");
+		dataObj.secParamList2=paramArr2.join(",,,");
+		dataObj.secParamList3=paramArr3.join(",,,");
+
+		var action='/cfgentview/updateformfield';
+		console.log(dataObj);
+
+	   vpPostAjax(action, dataObj, 'POST', function(rst) {
+		   if(rst.success){   
+			parent.layer.msg('保存成功！', { icon: 1, time: 2000 });
+		}else{
+			parent.layer.msg('保存失败，！'+rst.msg, { icon: 2, time: 2000 });
+		}
+	   });
+	}
+function getCheckValue(attrName) {
+	var v = 0;
+	var len = document.getElementsByName(attrName).length;
+	for ( var i = 0; i < len; i++) {
+		if (document.getElementsByName(attrName)[i].checked) {
+			v = document.getElementsByName(attrName)[i].value;
+		}
+
+	}
+	return v;
+}
+
+
+function getViewsection(viewcode,sname,sectionsiid,entityid,ssequencekey) {
+	var v = "";
+	v=v+'<div id="'+sectionsiid+'" sequencekey="'+ssequencekey+'"  onmouseup="unwrapChild(this);" onmousedown="wrapChild(this);" datatype="section" style="width:99%;">';
+	v=v+'<div>';	
+	v=v+'<table height="22" width="99%" border="0" cellspacing="0" style="border-top: solid white 0px;border-bottom: solid #ededed 1px;" >';
+	v=v+'<tr >';
+	v=v+'<td width="5%" style="padding-left:10px;"><input type="checkbox" aliasName="'+sectionsiid+'" name="selectAllField"  ';
+	v=v+'value="'+entityid+','+viewcode+','+sectionsiid+'" datatype="section"/></td>';
+	v=v+'<td width="20%" style="padding-left:10px;"><span style="width:40px;">&nbsp;&nbsp;</span>'+sname+'</td>';
+	v=v+'<td width="15%" style="padding-left:10px;"><span style="width:40px;">&nbsp;&nbsp;</span>节</td>';
+	v=v+'<td width="20%" style="padding-left:10px;"><span style="width:40px;">&nbsp;&nbsp;</span>&nbsp;</td>';
+	v=v+'<td style="padding-left:10px;"><span style="width:40px;">&nbsp;&nbsp;</span>&nbsp;</td>';
+	v=v+'<td style="padding-left:20px;"><span style="width:40px;">&nbsp;&nbsp;</span>&nbsp;</td>';
+	v=v+'</tr></table></div></div>';	
+	$(v).appendTo("#moveArea");
+}
+
+function getViewField(sectionsiid,viewcode,sname,siid,entityid,ssequencekey,iconstraint,idisplaycolumn,imobileshow) {
+	
+	var v = "";
+	v=v+'<div id="'+sectionsiid+'@'+siid+'" sequencekey="'+ssequencekey+'"  onmouseup="this.style.cursor=\'auto\';" datatype="field" onmousedown="releaseChild(this);" style="width:100%">';
+	v=v+'<div>';
+	v=v+'<table  width="100%" border="0" cellspacing="0"   style="border-top: solid white 0px;border-bottom: solid #ededed 1px;">';
+	v=v+'<tr >';
+	v=v+'<td width="5%" style="padding-left:10px;"><input type="checkbox" aliasName="'+sectionsiid+'@field" name="selectField" dataType="field" ';
+	v=v+'value="'+entityid+','+viewcode+','+sectionsiid+','+siid+'"/></td>';
+	v=v+'<td width="15%" style="padding-left:50px;">'+sname+'</td>';
+	v=v+'<td width="15%" style="padding-left:20px;">字段</td>';
+	v=v+'<td style="padding-left:10px;">';
+	v=v+'<select name="inputType" class="inputSelect"  style="width:90%">';	
+	
+	if(entityid==10&&iconstraint==2){
+		if(iconstraint==2){
+			v=v+'<option aliasVal="'+sectionsiid+'@'+siid+'"  value="2"  selected>只读</option>';
+		} else if(iconstraint==1){
+			v=v+'<option aliasVal="'+sectionsiid+'@'+siid+'"  value="2"  selected>只读</option>';
+		}else{
+			v=v+'<option aliasVal="'+sectionsiid+'@'+siid+'"  value="2"  selected>只读</option>';
+		}
+	}else{
+		if(iconstraint==2){
+			v=v+'<option aliasVal="'+sectionsiid+'@'+siid+'"  value="2"  selected>只读</option>';
+			v=v+'<option aliasVal="'+sectionsiid+'@'+siid+'"  value="1"  >可选输入</option>';
+			v=v+'<option aliasVal="'+sectionsiid+'@'+siid+'"  value="0"  >必须输入</option>';
+		} else if(iconstraint==1){
+			v=v+'<option aliasVal="'+sectionsiid+'@'+siid+'"  value="2"  >只读</option>';
+			v=v+'<option aliasVal="'+sectionsiid+'@'+siid+'"  value="1"  selected>可选输入</option>';
+			v=v+'<option aliasVal="'+sectionsiid+'@'+siid+'"  value="0"  >必须输入</option>';
+		}else{
+			v=v+'<option aliasVal="'+sectionsiid+'@'+siid+'"  value="2"  >只读</option>';
+			v=v+'<option aliasVal="'+sectionsiid+'@'+siid+'"  value="1"  >可选输入</option>';
+			v=v+'<option aliasVal="'+sectionsiid+'@'+siid+'"  value="0" selected >必须输入</option>';
+		}
+	}
+
+	v=v+'</select><input type="hidden"  style="border:solid #ededed 0px;font-weight: normal;" value="2" aliasVal="'+sectionsiid+'@'+siid+'"/></td>';
+	v=v+'<td width="15%" style="padding-left:10px;">';
+	
+	if(idisplaycolumn==1){
+		v=v+'<select name="dataType" class="inputSelect"  style="width:90%" ><option aliasVal="'+sectionsiid+'@'+siid+'"  value="1"  selected>一列</option>';
+		v=v+'<option aliasVal="'+sectionsiid+'@'+siid+'"  value="2"  >两列</option></select>';
+	}else{
+		v=v+'<select name="dataType" class="inputSelect"  style="width:90%" ><option aliasVal="'+sectionsiid+'@'+siid+'"  value="1">一列</option>';
+		v=v+'<option aliasVal="'+sectionsiid+'@'+siid+'"  value="2" selected >两列</option></select>';
+	}
+	
+	
+	
+	v=v+'<input type="hidden"  style="border:solid #ededed 0px;font-weight: normal;" value="1" aliasVal="'+sectionsiid+'@'+siid+'"/></td>';
+	v=v+'<td width="15%" style="padding-left:20px;">';
+	v=v+'<select name="ismobile" class="inputSelect" style="width:90%" >';
+	if(imobileshow==1){
+		v=v+'<option aliasVal="'+sectionsiid+'@'+siid+'"  value="0"  >否</option>';
+		v=v+'<option aliasVal="'+sectionsiid+'@'+siid+'"  value="1"  selected>是</option></select>';
+	}else{
+		v=v+'<option aliasVal="'+sectionsiid+'@'+siid+'"  value="0"  selected>否</option>';
+		v=v+'<option aliasVal="'+sectionsiid+'@'+siid+'"  value="1"  >是</option></select>';
+	}
+	
+
+	v=v+'<input type="hidden"  style="border:solid #ededed 0px;font-weight: normal;" value="1" aliasVal="'+sectionsiid+'@'+siid+'"/></td></tr>';
+	v=v+'</table></div>';
+	 $(v).appendTo("#moveArea");
+}
+
+</script>
+</html>

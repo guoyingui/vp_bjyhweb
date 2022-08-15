@@ -1,0 +1,169 @@
+.workbench {
+    .ant-badge-count{
+        height: 16px;
+        line-height: 14px;
+        border-radius: 8px;
+    }
+    .title-a {
+        a {
+            color: #666;
+            &:hover {
+                color: #2db7f5;
+            }
+        }
+    }
+    .selected {
+        .work-box {
+            border: 1px solid #F8C68A;
+        }
+    }
+    .work-box {
+        border-radius: 2px;
+        box-shadow: #666;
+    }
+    .ibox-content {
+        // max-height: 320px;
+        .success {
+            line-height: 180px;
+        }
+        .ibox-content-list {
+            &:hover {
+                .processed,
+                .dispose {
+                    display: block;
+                }
+            }
+            .processed,
+            .dispose {
+                border-radius: 2px;
+                position: absolute;
+                right: 20px;
+                top: 20px;
+                display: none;
+            }
+            .dispose {
+                color: #F8C68A;
+                border: 1px solid #F8C68A;
+            }
+        }
+    }
+    .left-bottom {
+        .font-num {
+            font-family: impact;
+        }
+        ul {
+            .span-menu {
+                color: #fff;
+                border-radius: 2px;
+            }
+        }
+        .bg-gray.work-big-box {
+            .triangle-down {
+                display: none;
+            }
+        }
+        .triangle-down {
+            &:before {
+                content: "";
+                position: absolute;
+                bottom: -7px;   
+                left: 45%;
+                z-index: 2;
+                width: 0;
+                height: 0;
+                border: 8px solid;
+                border-color: #fff transparent;
+                border-bottom: 0;
+            }
+            &:after {
+                content: "";
+                position: absolute;
+                bottom: -9px;
+                left: 44%;
+                z-index: 1;
+                width: 0;
+                height: 0;
+                border: 10px solid;
+                border-color: #F8C68A transparent;
+                border-bottom: 0;
+            }
+        }
+    }
+    .list-content {
+        min-height: 80px;
+        max-height: 340px;
+        .waring-list {
+            border-bottom: 1px dotted #e8e8e8;
+        }
+        li {
+            & > span {
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                width: 90%;
+            }
+        }
+    }
+    .t-container{
+      
+        height: 420px;
+        max-height: 420px;
+    }
+    .tool-content {
+        min-height: 80px;
+        .tool-list,
+        .new-add {
+            border: 1px dashed #e8e8e8;
+            border-radius: 3px;
+            &:hover {
+                border-color: #2baee9;
+                color: #2baee9;
+                transition: all 0.5s 
+            }
+        }
+        .add-or-subtract {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+        }
+        .new-add {
+            padding: 25px;
+            i {
+                color: #e8e8e8
+            }
+        }
+    }
+}
+.myworkitem{
+    .menuleft{
+        .search{
+            position: absolute;
+            top: 0;
+            left: 8px;
+            right: 8px;
+        }
+    }
+    .navswitch{
+        position: absolute;
+        bottom: 0;
+        left: 10px;
+        right: 10px;
+    }
+    .ant-menu-inline .ant-menu-selected, .ant-menu-inline .ant-menu-item-selected{
+        background-color: #eaf8fe;
+    }
+    .ant-menu-vertical > .ant-menu-item, .ant-menu-inline > .ant-menu-item, .ant-menu-item-group-list > .ant-menu-item, .ant-menu-vertical > .ant-menu-submenu > .ant-menu-submenu-title, .ant-menu-inline > .ant-menu-submenu > .ant-menu-submenu-title, .ant-menu-item-group-list > .ant-menu-submenu > .ant-menu-submenu-title{
+        font-size: 14px;
+    }
+    .ant-table-scroll{
+        .ant-table-body{
+            overflow: hidden !important;
+            &:hover{
+                overflow: auto !important;
+            }
+        }
+    }
+}
+
+
+

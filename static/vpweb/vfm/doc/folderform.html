@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>任务看板 - VP应用全生命周期管理系统</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
+    <link rel="shortcut icon" href="img/favicon.ico">
+    <link href="../../css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="../../css/font-awesome.min.css?v=4.7.0" rel="stylesheet">
+    <link href="../../css/animate.css" rel="stylesheet">
+    <link href="../../css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+    <link href="../../css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+    <!-- zTree树表 -->
+    <link href="../../css/plugins/zTree/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+    <!-- layUI表格 -->
+    <link href="../../css/plugins/chosen/chosen.css" rel="stylesheet">
+    <link href="../../css/plugins/iCheck/custom.css" rel="stylesheet">
+    <link href="../../js/plugins/layui/css/layui.css"  rel="stylesheet" media="all">
+    <link href="../../css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="../../css/common.css" rel="stylesheet">
+    <link href="../../css/vp.css" rel="stylesheet">
+    <script src="../../../vpcommon/config.js"></script>
+    <script src="../../../vpcommon/vputils.min.js"></script>
+    <!--[if lte IE 9]>
+        <script src="../../js/html5shiv.min.js"></script>
+        <script src="../../js/respond.js"></script>
+    <![endif]-->
+</head>
+<style>
+	.fa-fw {
+		font-size: 24px;
+	}
+	.text-fail {
+		color: #bbb;
+	}
+</style>
+<body>	
+<div class="padding-10">
+	<div class="ibox-content p-n clearfix">
+	<form class="form-horizontal m-t" id="oForm">
+		<div class="form-group">
+			<div class="ibox-title clearfix">
+				<h5>基本信息</h5>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-2 col-md-2 control-label text-ellipsis">文件夹名称：</label>
+			<div class="col-sm-10 col-md-10">
+				<input id="sfoldername" name="sfoldername" class="form-control" type="text" onclick="setName()" onkeyup="setName()" onkeydown="setName()" onmouseleave="setName()" onmouseout="setName()" minlength="2" maxlength="20" type="text" required>
+			</div>
+		</div>
+	</form>
+	</div>
+</div>
+</body>
+    <!-- 全局js -->
+    <script src="../../js/jquery-1.11.3.min.js"></script>
+	<!--[if IE 8]>
+	<script type="text/javascript" src="../../js/jquery-1.9.1.min.js"></script>
+	<![endif]-->
+    <script src="../../js/bootstrap.min.js?v=3.3.6"></script>
+    <!-- 自定义js -->
+    <script src="../../js/content.js?v=1.0.0"></script>
+    <!-- 日期控件 -->
+    <script src="../../js/plugins/datapicker/bootstrap-datepicker.js"></script>
+    <!-- layer弹出层 -->
+    <script src="../../js/plugins/layer/layer.min.js"></script>
+    <!-- 下拉选择列表 -->
+    <script src="../../js/plugins/chosen/chosen.jquery.js"></script>
+    <!-- jQuery 表单验证-->
+    <script src="../../js/plugins/validate/jquery.validate.min.js"></script>
+    <script src="../../js/plugins/validate/messages_zh.min.js"></script>
+    <!-- zTree模拟树表 -->
+    <script src="../../js/plugins/zTree/jquery.ztree.all.min.js"></script>
+    <script src="../../js/vpsoft/TreeTable.js"></script>
+    <script src="../../js/vpsoft/common.js"></script>
+    <script src="../../js/vpsoft/form.js"></script>
+    <script src="../../js/plugins/iCheck/icheck.min.js"></script>
+</html>
+<script>
+	$(document).ready(function () {	
+		var iid = getParameter("iid");
+		var accesslevel = -1;
+		if (iid > 0 ) {
+			vpPostAjax('/document/get', { iid: 0 }, "POST", function(rst) {			
+				var json = rst.data;
+				accesslevel = rst.accesslevel;
+				var sfoldername = $('#sfoldername', parent.document).val();
+				$("#sfoldername").val(sfoldername);
+			});
+		} else {
+			accesslevel = 1;
+			$("#sfoldername").val('');
+		}
+		$(".layui-layer-btn", parent.document).attr("style","text-align:center;");
+		if(accesslevel=="1"){
+			//$(".layui-layer-btn", parent.document).show();
+		}else{
+			$(".layui-layer-btn", parent.document).hide();
+		}
+		setName();
+	});
+	function setName(){
+		var sfoldername = $('#sfoldername').val();
+		if (sfoldername == '新建文件夹' ) {
+			$('#sfoldername', parent.document).val('');
+		} else {
+			$('#sfoldername', parent.document).val(sfoldername);
+		}
+	}
+</script>

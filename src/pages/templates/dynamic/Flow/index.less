@@ -1,0 +1,144 @@
+.workflow{
+    .handle-form {
+        .title{
+            width: 75%;
+            margin: 1% auto;
+        }
+        .handle-form-right {
+            .icon {
+                padding: 0 2px;
+                color: #fff;
+                border-radius: 0 14px 14px 0;
+                background: #4bb8f5;
+                cursor: pointer;
+            }
+            .detail {
+                .content {
+                    .msg-title {
+                        width: 30%;
+                        & + span {
+                            width: 60%;
+                        }
+                    }
+                }
+            }
+            .children-task {
+                .subtask {
+                    .list-title {
+                        margin-top: -2px;
+                        width: 50%;
+                        overflow: hidden;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                    }
+                    .calendar-box {
+                        .ant-calendar-picker {
+                            width: 0 !important;
+                            height: 0 !important;
+                            .ant-input {
+                                padding: 0;
+                                border: 0;
+                            }
+                        }
+                        .ant-calendar-picker-icon {
+                            top: 8px;
+                            cursor: pointer;
+                        }
+                        .ant-calendar-picker-icon:after {
+                            font-size: 16px;
+                        }
+                        .ant-calendar-range-picker-separator,
+                        .ant-calendar-picker-clear {
+                            display: none;
+                        }
+                    }
+                    .add-subtask-box {
+                        .add-subtask-input {
+                            width: 60%;
+                        }
+                    }
+                }
+            }
+            .user-img {
+                width: 18px;
+                height: 18px;
+                border-radius: 50%;
+                img {
+                    width: 100%;
+                    height: 100%;
+                    border-radius: 50%;
+                }
+            }
+            .related-content-table {
+                &:hover {
+                    background: #f0f2f5;
+                    .delete {
+                        display: block
+                    }
+                }
+                .delete {
+                    display: none;
+                    position: absolute;
+                    right: 5px;
+                    top: 15px;
+                }
+            }
+        }
+    }
+    .relevance-modal {
+        .ant-table .ant-table-thead > tr > th, 
+        .ant-table .ant-table-tbody > tr > td {
+            border-right: 0;
+        }
+        .ant-table {
+            border: 0;
+        }
+    }
+
+
+    .ant-modal-footer{
+        text-align: center;
+    }
+    // .ant-table-body{
+    //     min-height: 300px;
+    // }
+    .ant-collapse-content{
+        overflow: initial;
+    }
+    .form-edit-table {
+        .ant-table .ant-table-tbody > tr > td {
+            position: relative;
+            // overflow: inherit;
+        }
+        .widget-box {
+            .ant-select-selection.ant-select-selection--multiple {
+                height: 30px;
+                overflow: hidden;
+            }
+        }
+        .ant-tabs .ant-tabs-bar .ant-tabs-nav {
+            // margin-left: 0;
+        }
+    }
+    .ant-table-body > table{
+        border: none;
+        // border-bottom: 1px solid #e9e9e9;
+    }
+}
+.coum-collapse {
+    .ant-collapse {
+        border: 0;
+        .ant-collapse-header {
+            background: #fff;
+            border-bottom: 1px solid #e8e8e8;
+            font-size: 14px;
+        }
+    }
+}
+// 解决流程中vpsin在有spinning属性时没有高度导致滚动条不出现
+
+.drawer-box .drawer-main>div[class=""],.drawer-box .drawer-main>div[class=""] .ant-spin-container{
+    height: 100%;
+}
+
