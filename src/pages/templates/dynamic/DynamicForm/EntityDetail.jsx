@@ -32,7 +32,6 @@ class EntityDetail extends Component{
             , iid: this.props.iid,
             functionid:this.props.functionid
         }).then((response) => {
-            debugger
             let tabsarr = response.data.tabs;
             if(this.props.type&&this.props.type=='child'){
                 tabsarr = tabsarr.slice(0,1)
@@ -71,7 +70,6 @@ class EntityDetail extends Component{
             return null;
         }
         let defaultActiveKey = this.state.tabs_array[0].skey + 'tab';
-        debugger
         let tabs_array = this.state.tabs_array;
         return (
             <VpTabs defaultActiveKey={this.props.defaultActiveKey||defaultActiveKey} destroyInactiveTabPane>
@@ -94,7 +92,6 @@ class EntityDetail extends Component{
                                     stabparam = tabUrl[1]
                                 }
                                 let skey = item.skey;
-
                                 let skeyentity = "entity" + this.props.entityid + "_doclist";
                                 if (skey != skeyentity) {
                                     //TODO 测试完后记得删掉
@@ -103,8 +100,10 @@ class EntityDetail extends Component{
                                     }
                                     let Tabs = requireFile(staburl) || NotFind;
                                     Tabs = VpFormCreate(Tabs);
-                                    return <VpTabPane tab={item.sname}
-                                                      key={item.skey == undefined ? idx : item.skey + 'tab'}>
+                                    return <VpTabPane
+                                            tab={item.sname}
+                                            key={item.skey == undefined ? idx : item.skey + 'tab'}
+                                        >
                                         <Tabs
                                             setBreadCrumb={(sname) => this.props.setBreadCrumb(sname)}
                                             add={false} //是否添加页面
@@ -121,20 +120,24 @@ class EntityDetail extends Component{
                                             iaccesslevel={item.iaccesslevel} //(0:读 1:写)
                                             entityrole={item.iaccesslevel == '1' ? true : false}
                                             stabparam={stabparam} //标签页参数
+                                            zfxtab={this.props.zfxtab} //是否是政府信息标签页
                                             doctype="3"
                                         />
                                     </VpTabPane>
                                 } else {
                                     let Tabs = requireFile(staburl)
-                                    return <VpTabPane tab={item.sname}
-                                                      key={item.skey == undefined ? idx : item.skey + 'tab'}>
-                                        <DocumentList doctype="3"
-                                                      iaccesslevel={item.iaccesslevel} //(0:读 1:写)
-                                                      entityrole={item.iaccesslevel == '1' ? true : false}
-                                                      irelentityid={this.props.entityid}
-                                                      irelobjectid={this.props.iid}
-                                                      mainentityid="7"
-                                                      mainiid={this.state.subItemProjectId}/>
+                                    return <VpTabPane
+                                            tab={item.sname}
+                                            key={item.skey == undefined ? idx : item.skey + 'tab'}
+                                        >
+                                        <DocumentList
+                                            doctype="3"
+                                            iaccesslevel={item.iaccesslevel} //(0:读 1:写)
+                                            entityrole={item.iaccesslevel == '1' ? true : false}
+                                            irelentityid={this.props.entityid}
+                                            irelobjectid={this.props.iid}
+                                            mainentityid="7"
+                                            mainiid={this.state.subItemProjectId}/>
                                     </VpTabPane>
                                 }
                             }

@@ -449,6 +449,7 @@ class NormalTable extends Component {
         return this.renderRightBoxBody(props);
     }
     renderRightBoxBody(props) {
+    console.log(props, 'node');
         return <EntityDetail {...props} />;
     }
 

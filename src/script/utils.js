@@ -37,7 +37,6 @@ export const requireFile = (filename) => {
         module = 'NotFind';
     }
     let  comp = app.definde[module];
-    console.log(filename, comp);
     return  comp;
 }
 

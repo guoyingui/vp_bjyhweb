@@ -228,6 +228,16 @@ import Demo from "./pages/bjyh/dynamic/index/index";
 				}, 'wbxxList'))
 			}
 		},
+		// TODO 项目子风险
+		{
+			code: 'xmfxList',
+			path: 'bjyh/xmfxList/:entityid/:iid',
+			component: (location, cb) => {
+				wrapper(require.ensure([], require => {
+					cb(null, require('pages/bjyh/dynamic/xmfx/xmfxList').default);
+				}, 'xmfxList'))
+			}
+		},
 	]);
 
 	function wrapper(loadComponent) {

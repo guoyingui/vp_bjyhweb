@@ -1,30 +1,77 @@
 import React, { Component } from "react";
-import { vpQuery, VpFormCreate } from 'vpreact';
-import FlowForm from '../../../templates/dynamic/Flow/FlowForm';
+import { VpFormCreate } from 'vpreact';
 import EntityList from '../../../templates/dynamic/List/index';
 /**
- * 阶段设计评审流程
+ *  项目子风险列表
  */
-class XmfxEntityList extends EntityList.Component{
-
-  getCustomeButtons(){
-    return ['add']
-  }
+class RiskNormalTable extends EntityList.NormalTable.Component {
+    getCustomOperationColButtons(record) {
+        return ["delete"];
+    }
 }
-XmfxEntityList = EntityList.createClass(XmfxEntityList);
+RiskNormalTable = EntityList.NormalTable.createClass(RiskNormalTable)
 
-class xmfxList extends Component {
-  constructor(props) {
-      super(props)
-  }
-  render() {
-      return (
-          <XmfxEntityList
-              entityid = {this.props.params.entityid}//实体id
-              {...this.props}
-          />
-      )
-  }
+class RiskListFilter extends EntityList.ListFilter.Component {
+    /**
+    * 获取过滤器列表
+    */
+    getFilters = (props) => {
+        if (!props.filterData) {
+            return null;
+        }
+        let filterGroups = [];
+        let filtervalue = props.filterData.statusFilters[0].value || '0';
+        let { statusFilters } = props.filterData;
+        let currentkey = "status";
+        if (statusFilters) {
+            filterGroups.push({
+                key: "status",
+                type: "vpicon-loading",
+                text: "状态",
+                filters: statusFilters,
+            });
+        }
+        let filterVal = {
+            filtervalue,
+            currentkey,
+            openKeys: ["status"],
+        };
+        this.setState({
+            ...filterVal,
+            filters: filterGroups,
+        });
+        this.changeQueryParams({
+            filtervalue,
+            currentkey,
+        });
+    };
 }
-
-export default xmfxList = VpFormCreate(xmfxList);
+RiskListFilter = EntityList.ListFilter.createClass(RiskListFilter)
+class RiskEntityList extends EntityList.Component {
+    getCustomeButtons() {
+        return ["add"];
+    }
+    /**
+    * 渲染过滤器
+    * @returns {*}
+    */
+    renderTableFilter(props) {
+        console.log(props,"props");
+        return <RiskListFilter {...props} />;
+    }
+    renderNormalTable(props) {
+        return <RiskNormalTable {...props} />;
+    }
+}
+RiskEntityList = EntityList.createClass(RiskEntityList);
+class RiskList extends Component {
+    render() {
+        return (
+            <RiskEntityList
+                entityid={this.props.params.entityid} //实体id
+                {...this.props}
+            />
+        );
+    }
+}
+export default RiskList;

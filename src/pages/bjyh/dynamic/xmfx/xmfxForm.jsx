@@ -1,27 +1,18 @@
 import React, { Component } from "react";
 import DynamicForm from "../../../templates/dynamic/DynamicForm/DynamicForm";
-import { vpPostAjax } from "../../../templates/dynamic/utils";
-import {vpQuery, VpAlertMsg, VpConfirm, VpMWarning, vpAdd} from "vpreact";
-import {common, validationRequireField} from '../code';
+import {vpQuery, VpConfirm} from "vpreact";
 import moment from "moment";
 
-// 架构评审
-class xmfxForm extends DynamicForm.Component {
+// 子风险属性页面
+class RiskForm extends DynamicForm.Component {
     constructor(props) {
         super(props);
-        moment.locale('zh_cn');
-        console.log('moment', moment().format('YYYYMMDD'));
-        console.log('jgspForm', this);
     }
-
-
-
     //自定义控件行为
     onDataLoadSuccess = formData => {
         let _this = this;
         this.basicsInfoAuto(_this, formData)
         this.projectChange(_this, formData)
-       
         // 架构评审中项目名称选择只显示启动和暂停状态的项目
         let rxmmc = formData.findWidgetByName('rxmmc');
         rxmmc.field.props.modalProps.condition=[{
@@ -36,8 +27,15 @@ class xmfxForm extends DynamicForm.Component {
      * @param formData
      */
     basicsInfoAuto = (_this, formData) => {
-        
-
+        formData.groups[0].fields.map((item) => {
+            if (item.field_name === 'djjrq') {
+                item.fieldProps.initialValue = moment().format('YYYY-MM-DD');
+            }
+        })
+        _this.props.form.setFieldsValue({
+            roleid1000198: '',
+            roleid1000198_label: '',
+        });
     }
     /**
      * 选择项目事件
@@ -97,30 +95,52 @@ class xmfxForm extends DynamicForm.Component {
                 let data = response.data
                 console.log('data', data)
                 _this.props.form.setFieldsValue({
-                    rxmjl: data.xmjl,
-                    rxmjl_label:data.xmjlname,
-                    rjsjl: data.rkffzr,
-                    rjsjl_label:data.rkffzrname,
-                })
+                    roleid115: data.xmjl,
+                    roleid115_label: data.xmjlname,
+                });
             }
         })
     }
     getCustomeButtons = () => {
-        return ['ok', {
-            name:'chuli',
-            text:'处理',
-            className:"vp-btn-br",
-            handler: this.hanglecl
-        }, 'cancel']
+        console.log('getCustomeButtons', this.props);
+        const { add, zfxtab } = this.props;
+        const buttons = ['ok'];
+        // 控制从菜单项目子页签进入按钮是否显示
+        if (!add && zfxtab) {
+            buttons.push({
+                name:'deals',
+                text:'处理',
+                className:"vp-btn-br",
+                handler: this.handleDeals.bind(this)
+            });
+        }
+        // 控制从项目中进入的项目子页签按钮是否显示
+        if (zfxtab) {
+            buttons.push({
+                name:'refuse',
+                text:'取消',
+                className:"vp-btn-br",
+                handler: this.handleRefuse.bind(this)
+            });
+        }
+        return buttons;
     }
-    hanglecl = () => {
+    // 拒绝
+    handleRefuse() {
+    }
+    // 处理
+    handleDeals() {
         console.log(this.props.formData);
+        VpConfirm({
+            title: '您是否确认要删除这项内容',
+            content: '',
+            onOk() {
+                console.log('确定');
+            },
+            onCancel() {},
+        });
     }
-
-
-
-
 }
 
-xmfxForm = DynamicForm.createClass(xmfxForm)
-export default xmfxForm
+RiskForm = DynamicForm.createClass(RiskForm)
+export default RiskForm

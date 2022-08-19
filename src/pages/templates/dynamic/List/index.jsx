@@ -322,6 +322,7 @@ class EntityList extends Component {
      * @return {GamepadButton[] | number}
      */
     getCustomeButtons() {
+        console.log('GamepadButton');
         let customBtns = this.props.buttons;
         if(!customBtns){
             //没有自定义按钮时，用默认的

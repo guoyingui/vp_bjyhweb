@@ -165,7 +165,7 @@ class ListFilter extends Component {
                 {
                     this.state.filters.map((groupItem,groupIndex) => {
                         return (
-                            <VpSubMenu key={groupItem.key} title={<span><VpIconFont type={groupItem.type} className="m-r-xs" /><span>{groupItem.text}</span></span>}>
+                            <VpSubMenu key={groupItem.key} title={<span><VpIconFont key={groupItem.key} type={groupItem.type} className="m-r-xs" /><span>{groupItem.text}</span></span>}>
                                 {
                                     groupItem.filters.map((item, index) => {
                                         return <VpMenuItem key={item.value} className="menu-text-overflow">{item.name}</VpMenuItem>
