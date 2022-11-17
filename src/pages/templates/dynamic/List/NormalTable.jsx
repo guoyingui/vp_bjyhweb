@@ -37,6 +37,7 @@ class NormalTable extends Component {
         this.state = {
             table_headers: [],
             expandedRowKeys: [],
+            tableData: []
         }
         this.onRowClick = this.onRowClick.bind(this);
         this.reloadTable = this.reloadTable.bind(this);

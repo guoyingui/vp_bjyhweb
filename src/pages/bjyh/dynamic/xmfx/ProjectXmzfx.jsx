@@ -11,9 +11,9 @@ class CustomNormalTable extends NormalTable.Component {
     getCustomOperationColButtons(record) {
         const _this = this;
         return [{
-            name: "churls",
-            title: "处理",
-            iconType: "vpicon-implement-tool",
+            name: "quxiao",
+            title: "取消",
+            iconType: "vpicon-cross-circle",
             iconClassName: "text-primary m-lr-xs cursor",
             handler: function (record) {
                 _this.onRowClick(record);
@@ -22,12 +22,10 @@ class CustomNormalTable extends NormalTable.Component {
     }
     _renderRightBoxBody() {
         let props = {
-            ...this.props,
             entityid: this.state.record.ientityid,
             iid: this.state.iid,
             closeRightModal: this.closeRightModal,
-            defaultActiveKey: this.state.defaultActiveKey,
-            zfxtab: true
+            defaultActiveKey: this.state.defaultActiveKey
         }
         return this.renderRightBoxBody(props);
     }

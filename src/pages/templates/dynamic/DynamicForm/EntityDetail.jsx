@@ -120,7 +120,6 @@ class EntityDetail extends Component{
                                             iaccesslevel={item.iaccesslevel} //(0:读 1:写)
                                             entityrole={item.iaccesslevel == '1' ? true : false}
                                             stabparam={stabparam} //标签页参数
-                                            zfxtab={this.props.zfxtab} //是否是政府信息标签页
                                             doctype="3"
                                         />
                                     </VpTabPane>

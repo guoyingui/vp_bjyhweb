@@ -228,6 +228,15 @@ import Demo from "./pages/bjyh/dynamic/index/index";
 				}, 'wbxxList'))
 			}
 		},
+		{
+			code: 'DemoList',
+			path: 'bjyh/DemoList/:entityid/:iid',
+			component: (location, cb) => {
+				wrapper(require.ensure([], require => {
+					cb(null, require('pages/bjyh/dynamic/xmfx/DemoList').default);
+				}, 'DemoList'))
+			}
+		},
 		// TODO 项目子风险
 		{
 			code: 'xmfxList',
@@ -238,6 +247,7 @@ import Demo from "./pages/bjyh/dynamic/index/index";
 				}, 'xmfxList'))
 			}
 		},
+		
 	]);
 
 	function wrapper(loadComponent) {

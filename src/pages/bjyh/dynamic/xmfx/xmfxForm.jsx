@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import DynamicForm from "../../../templates/dynamic/DynamicForm/DynamicForm";
-import {vpQuery, VpConfirm} from "vpreact";
+import { vpQuery, VpAlertMsg } from "vpreact";
 import moment from "moment";
 
 // 子风险属性页面
@@ -101,46 +101,41 @@ class RiskForm extends DynamicForm.Component {
             }
         })
     }
-    getCustomeButtons = () => {
-        console.log('getCustomeButtons', this.props);
-        const { add, zfxtab } = this.props;
-        const buttons = ['ok'];
-        // 控制从菜单项目子页签进入按钮是否显示
-        if (!add && zfxtab) {
-            buttons.push({
-                name:'deals',
-                text:'处理',
-                className:"vp-btn-br",
-                handler: this.handleDeals.bind(this)
-            });
-        }
-        // 控制从项目中进入的项目子页签按钮是否显示
-        if (zfxtab) {
-            buttons.push({
-                name:'refuse',
-                text:'取消',
-                className:"vp-btn-br",
-                handler: this.handleRefuse.bind(this)
-            });
-        }
-        return buttons;
-    }
-    // 拒绝
-    handleRefuse() {
-    }
-    // 处理
-    handleDeals() {
-        console.log(this.props.formData);
-        VpConfirm({
-            title: '您是否确认要删除这项内容',
-            content: '',
-            onOk() {
-                console.log('确定');
+    /**
+     * 处理状态按钮
+     * @param variid 状态ID
+     * @param statusFormValues 状态表单数据
+     */
+    handleStatus(variid,statusFormValues){
+    console.log(variid,statusFormValues, 'variid,statusFormValues');
+    return
+        let btnName = "status";
+        this.submit(btnName,{
+            onSaveSuccess:({mainFormSaveReturnData,btnName}) => {
+                VpAlertMsg({
+                    message:"消息提示",
+                    description:'操作成功！',
+                    type:"success",
+                    closeText:"关闭",
+                    showIcon: true
+                }, 5);
+                this.onSaveSuccess(mainFormSaveReturnData,btnName);
+                this.loadFormData();
+                this.queryEntityRole();
+                this.queryStatusList();
+                this.props.closeRightModal && this.props.closeRightModal();
             },
-            onCancel() {},
-        });
+            onSave:(formData,successCallback,errorCallback) => {
+                let sparam = JSON.parse(formData.sparam);
+                sparam = { ...sparam, ...statusFormValues , sydcs: statusFormValues.sadvice };
+                formData.variid = variid;
+                formData.sparam = JSON.stringify(sparam);
+                this.onSave(formData,btnName,(data) => {
+                    successCallback(data.data.iid,data);
+                })
+            }
+        })
     }
 }
-
 RiskForm = DynamicForm.createClass(RiskForm)
 export default RiskForm
